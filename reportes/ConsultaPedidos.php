@@ -170,11 +170,11 @@ return;
  * Envía Consulta a la base de datos y devuelve un array con
  * los resultados obtenidos.
  * 
+ * @param string $TipoUsuario
+ * @param int $Usuario
  * @param int $ClienteCodigo
  * @param int $ClienteFilial
- * @param string $Password
  * @param string $Status
- * @param string $AgenteCodigo
  * @return array
  */
 FUNCTION SelectPedidos($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFilial, $Status)
