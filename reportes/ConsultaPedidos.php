@@ -66,7 +66,7 @@ try {
   }
 
 } catch (Exception $e) {
-  http_response_code(401);
+  http_response_code(400);
   echo json_encode(["Code" => K_API_FAILAUTH, "Mensaje" => $e->getMessage()]);
   exit;
 }
@@ -259,7 +259,7 @@ FUNCTION SelectPedidos($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFilial, $
     http_response_code(503);  // Service Unavailable
     $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => $e->getMessage(), "Contenido" => []];
     echo json_encode($response);
-
+    exit;
   }
 
   $conn = null;   // Cierra conexión

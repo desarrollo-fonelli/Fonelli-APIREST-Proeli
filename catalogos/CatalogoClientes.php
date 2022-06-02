@@ -319,7 +319,7 @@ FUNCTION SelectClientes($ClienteCodigo, $ClienteFilial, $Password, $Status, $Age
     http_response_code(503);  // Service Unavailable
     $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => $e->getMessage(), "Contenido" => []];
     echo json_encode($response);
-
+    exit;
   }
 
   $conn = null;   // Cierra conexión

@@ -94,7 +94,7 @@ try {
   }
   
 } catch (Exception $e) {
-  http_response_code(401);
+  http_response_code(400);
   echo json_encode(["Code" => K_API_FAILAUTH, "Mensaje" => $e->getMessage()]);
   exit;
 }
@@ -256,9 +256,10 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
     
   # Instrucción SELECT para documentos en estado de cuenta
   $sqlCmd = "SELECT trim(a.sc_num) sc_num,trim(a.sc_fil) sc_fil,
-    a.sc_of, a.sc_tica, a.sc_serie, a.sc_apl, a.sc_feex, a.sc_feve, 
+    a.sc_of, a.sc_tica, trim(a.sc_serie) sc_serie, trim(a.sc_apl) sc_apl, 
+    a.sc_feex, a.sc_feve, 
     a.sc_cargos, a.sc_abonos, a.sc_saldo, a.sc_dias, a.sc_saldove,
-    a.sc_serie2, a.sc_ref, a.sc_age, 
+    trim(a.sc_serie2) sc_serie2, trim(a.sc_ref) sc_ref, a.sc_age, 
     trim(c.cc_raso) cc_raso,trim(c.cc_suc) cc_suc, c.cc_status,
     TRIM(b.t_descr) t_descr 
     FROM edocta a
@@ -289,7 +290,7 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
     http_response_code(503);  // Service Unavailable
     $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => $e->getMessage(), "Contenido" => []];
     echo json_encode($response);
-
+    exit;
   }
 
   $conn = null;   // Cierra la conexión 
@@ -465,7 +466,7 @@ FUNCTION SelectResumenStatusClte($TipoUsuario, $Usuario)
       SELECT cc_num,cc_status FROM cli010 $where GROUP BY cc_num,cc_status";
 
       $oSQL2 = $conn-> prepare($sqlCmd);
-      var_dump($strUsuario);
+      //var_dump($strUsuario);
       if($TipoUsuario == "A"){
         $oSQL2-> bindParam(":strUsuario" , $strUsuario, PDO::PARAM_STR);
       }
