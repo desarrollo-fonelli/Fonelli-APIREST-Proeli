@@ -296,9 +296,9 @@ FUNCTION CreaDataCompuesta( $data )
           "FechaPedido" => $row["pe_fepe"],
           "FechaCancelacion"  => $row["pe_fecao"],
           "FechaSurtido" => $row["pe_fecs"],
-          "CantidadPedida"  => $row["pe_canpe"],
-          "CantidadSurtida" => $row["pe_cansu"],
-          "DiferenciaPedidosSurtido" => $row["pe_difcia"]
+          "CantidadPedida"  => intval($row["pe_canpe"]),
+          "CantidadSurtida" => intval($row["pe_cansu"]),
+          "DiferenciaPedidosSurtido" => intval($row["pe_difcia"])
         ]
       ;
 

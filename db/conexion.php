@@ -53,7 +53,7 @@ class DB
       // https://www.ibm.com/docs/es/db2/11.1?topic=pdo-handling-db2-errors-warning-messages
       // https://www.php.net/manual/en/pdo.errorinfo.php
 
-      $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => "error de conexión a la base de datos", "Contenido" => []];
+      $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => "error de conexion a la base de datos", "Contenido" => []];
       echo json_encode($response);
       exit;   
 

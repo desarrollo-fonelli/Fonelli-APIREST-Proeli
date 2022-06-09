@@ -4,7 +4,7 @@ header('Content-type: application/json');
 date_default_timezone_set('America/Mexico_City');
 
 /**
- * Estado de Cuenta de Clientes
+ * Relacion de Pedidos
  * --------------------------------------------------------------------------
  */
 
@@ -579,16 +579,19 @@ FUNCTION CreaDataCompuesta( $data )
         "FechaPedidoProduccion"=> $row["pe_fepep"],
         "FechaCancelacion"=> $row["pe_fecao"],
         "PedidoStatus"=> $row["pe_status"],
-        "DiasAtraso"=> $row["dias_atras"],
-        "CantidadPedida"=> $row["pe_canpe"],
-        "CantidadPedidaImporte"=> $row["imp_canpe"],
-        "CantidadSurtida"=> $row["pe_cansu"],
-        "CantidadSurtidaImporte"=> $row["imp_cansu"],
-        "DiferenciaCantidadSurtido"=> $row["pe_difcia"],
-        "DiferenciaImporteSurtido"=> $row["imp_dif"],
-        "CantidadPedidaProduccion"=> $row["pe_canpep"],
-        "CantidadProducida"=> $row["pe_canpro"],
-        "DiferenciaCantidadProducido"=> $row["canp_dif"],
+        "DiasAtraso"=> intval($row["dias_atras"]),
+        "CantidadPedida"=> intval($row["pe_canpe"]),
+        "CantidadPedidaImporte"=> floatval($row["imp_canpe"]),
+        "CantidadPedidaValorAgregado" => floatval($row["va_imppe"]),
+        "CantidadSurtida"=> intval($row["pe_cansu"]),
+        "CantidadSurtidaImporte"=> floatval($row["imp_cansu"]),
+        "CantidadSurtidaValorAgregado" => floatval($row["va_impsu"]),
+        "DiferenciaCantidadSurtido"=> intval($row["pe_difcia"]),
+        "DiferenciaImporteSurtido"=> floatval($row["imp_dif"]),
+        "DiferenciaValorAgregado" => floatval($row["va_imppe"] - $row["va_impsu"]),
+        "CantidadPedidaProduccion"=> intval($row["pe_canpep"]),
+        "CantidadProducida"=> intval($row["pe_canpro"]),
+        "DiferenciaCantidadProducido"=> intval($row["canp_dif"]),
         "InternoExterno"=> $row["pe_tipoie"]
       ];
 

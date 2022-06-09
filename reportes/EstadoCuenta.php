@@ -242,7 +242,8 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
 
   # Construyo dinamicamente la condicion WHERE
   $where = "WHERE CONCAT(a.sc_num,a.sc_fil) >= :strClteInic AND CONCAT(a.sc_num,a.sc_fil) <= :strClteFinal 
-  AND a.sc_tica >= :strCarteraDesde AND a.sc_tica <= :strCarteraHasta ";
+  AND a.sc_tica >= :strCarteraDesde AND a.sc_tica <= :strCarteraHasta 
+  AND SUBSTRING(b.t_param,2,1) = '1' ";
   
   if(in_array($TipoUsuario, ["A"])){
     // Solo aplica filtro cuando el usuario es un agente
@@ -352,7 +353,7 @@ FUNCTION SelectResumenCartera($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesd
     # Construyo dinamicamente la condicion WHERE
     $where = "WHERE CONCAT(a.sc_num,a.sc_fil) >= :strClteInic AND CONCAT(a.sc_num,a.sc_fil) <= :strClteFinal 
     AND a.sc_tica >= :strCarteraDesde AND a.sc_tica <= :strCarteraHasta 
-    AND a.sc_saldo<>0 ";
+    AND a.sc_saldo<>0 AND SUBSTRING(b.t_param,2,1)='1' ";
   
     if(in_array($TipoUsuario, ["A"])){
       // Solo aplica filtro cuando el usuario es un agente
@@ -678,11 +679,11 @@ FUNCTION SelectResumenTipoClte($TipoUsuario, $Usuario)
         "DocumentoFolio"        => $row["sc_apl"],
         "FechaExpedicion"       => $row["sc_feex"],
         "FechaVencimiento"      => $row["sc_feve"],
-        "Cargos"                => $row["sc_cargos"],
-        "Abonos"                => $row["sc_abonos"],
-        "Saldo"                 => $row["sc_saldo"],
+        "Cargos"                => floatval($row["sc_cargos"]),
+        "Abonos"                => floatval($row["sc_abonos"]),
+        "Saldo"                 => floatval($row["sc_saldo"]),
         "DiasVencimiento"       => $row["sc_dias"],
-        "SaldoVencido"          => $row["sc_saldove"],
+        "SaldoVencido"          => floatval($row["sc_saldove"]),
         "Documento2Serie"       => $row["sc_serie2"],
         "Referencia"            => $row["sc_ref"]
       ]);
@@ -719,10 +720,10 @@ FUNCTION SelectResumenTipoClte($TipoUsuario, $Usuario)
     $oFila = [
       "TipoCarteraCodigo"   => $row["sc_tica"],
       "TipoCarteraDescripc" => $row["t_descr"] ,
-      "TipoCarteraCargos"   => $row["sum_cargos"],
-      "TipoCarteraAbonos"   => $row["sum_abonos"],
-      "TipoCarteraSaldo"    => $row["sum_saldo"],
-      "TipoCarteraSaldoVencido" => $row["sum_saldove"]
+      "TipoCarteraCargos"   => floatval($row["sum_cargos"]),
+      "TipoCarteraAbonos"   => floatval($row["sum_abonos"]),
+      "TipoCarteraSaldo"    => floatval($row["sum_saldo"]),
+      "TipoCarteraSaldoVencido" => floatval($row["sum_saldove"])
     ];
 
     // Se agrega el array a la seccion "contenido"
@@ -752,7 +753,7 @@ FUNCTION SelectResumenTipoClte($TipoUsuario, $Usuario)
     
     $oFila = [
       "StatusClienteDescripc" => $status_descripc,
-      "StatusClienteNumero"   => $row["numcltes"]
+      "StatusClienteNumero"   => floatval($row["numcltes"])
     ];
 
     // Se agrega el array a la seccion "contenido"
@@ -768,7 +769,7 @@ FUNCTION SelectResumenTipoClte($TipoUsuario, $Usuario)
 
     $oFila = [
       "TipoClienteCodigo" => $row["cc_ticte"],
-      "TipoClienteTotal"  => $row["numcltes"]
+      "TipoClienteTotal"  => floatval($row["numcltes"])
     ];
 
     // Se agrega el array a la seccion "contenido"
