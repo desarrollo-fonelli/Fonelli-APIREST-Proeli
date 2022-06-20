@@ -261,25 +261,34 @@ require_once "../db/conexion.php";
 # Ejecuta la consulta 
 try {
 
-  if($OrdenReporte == "C") // C=Categoria
-  {
-    if($Presentacion == "R") // R=Resumido
+  /* En esta version, se utiliza una misma estructura para el JSON que 
+     se va a devolver */
+  $data = SelectClteCategoResumido($TipoUsuario,$Usuario,$OficinaDesde, 
+  $OficinaHasta,$FechaDesde,$FechaHasta,$ClienteDesde,$FilialDesde, 
+  $ClienteHasta,$FilialHasta,$LineaDesde,$LineaHasta,$ClaveDesde, 
+  $ClaveHasta,$CategoriaDesde,$SubcategoDesde,$CategoriaHasta,$SubcategoHasta,
+  $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina);
+  /*
+    if($OrdenReporte == "C") // C=Categoria
     {
-      $data = SelectClteCategoResumido($TipoUsuario,$Usuario,$OficinaDesde, 
-      $OficinaHasta,$FechaDesde,$FechaHasta,$ClienteDesde,$FilialDesde, 
-      $ClienteHasta,$FilialHasta,$LineaDesde,$LineaHasta,$ClaveDesde, 
-      $ClaveHasta,$CategoriaDesde,$SubcategoDesde,$CategoriaHasta,$SubcategoHasta,
-      $TipoArticulo,$TipoOrigen,$Pagina);
-    
+      if($Presentacion == "R") // R=Resumido
+      {
+        $data = SelectClteCategoResumido($TipoUsuario,$Usuario,$OficinaDesde, 
+        $OficinaHasta,$FechaDesde,$FechaHasta,$ClienteDesde,$FilialDesde, 
+        $ClienteHasta,$FilialHasta,$LineaDesde,$LineaHasta,$ClaveDesde, 
+        $ClaveHasta,$CategoriaDesde,$SubcategoDesde,$CategoriaHasta,$SubcategoHasta,
+        $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina);
+      
+      } else {
+        $data = SelectClteCategoDetallado();  
+
+      }
     } else {
-      $data = SelectClteCategoDetallado();  
+      // Piezas/Importe solo hay Resumido
+      $data = SelectCltePzasImporteResum();
 
     }
-  } else {
-    // Piezas/Importe solo hay Resumido
-    $data = SelectCltePzasImporteResum();
-
-  }
+  */
 
   # Asigna código de respuesta HTTP por default
   http_response_code(200);
@@ -356,7 +365,7 @@ FUNCTION SelectClteCategoResumido($TipoUsuario,$Usuario,$OficinaDesde,
 $OficinaHasta,$FechaDesde,$FechaHasta,$ClienteDesde,$FilialDesde, 
 $ClienteHasta,$FilialHasta,$LineaDesde,$LineaHasta,$ClaveDesde, 
 $ClaveHasta,$CategoriaDesde,$SubcategoDesde,$CategoriaHasta,$SubcategoHasta,
-$TipoArticulo,$TipoOrigen,$Pagina) 
+$TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina) 
 {
   // Doy un plazo de hasta Cinco minutos para completar la consulta...
   set_time_limit(300);
@@ -485,7 +494,7 @@ $TipoArticulo,$TipoOrigen,$Pagina)
     $oSQL = $conn-> prepare($sqlCmd);
     $oSQL-> execute();   
     
-    # Creas tabla temporal resumida por por cliente y categoria/subcaregoria
+    # Creas tabla temporal resumida por por cliente y categoria/subcategoria
     $sqlCmd = "CREATE TEMPORARY TABLE tmp1 AS 
     SELECT va_num,va_fil,va_cat,va_scat, SUM(va_pza+va_pzae) AS va_pza,
     SUM(va_can+va_cane) AS va_can,SUM(va_venta+va_ventae) AS va_venta
@@ -607,14 +616,28 @@ $TipoArticulo,$TipoOrigen,$Pagina)
 
     // Une la tabla detallada con la de totales para presentar
     // datos finales.
+
+    switch ($OrdenReporte){
+      case "C":
+        $orderby = "ORDER BY a.va_num,a.va_fil,a.va_cat,va_scat,a.va_lin,a.va_clave";
+        break;
+      case "P":
+        $orderby = "ORDER BY a.va_cat,va_scat,a.va_pza DESC,a.va_num DESC,a.va_fil DESC,a.va_lin DESC,a.va_clave DESC";
+        break;
+      case "I":
+        $orderby = "ORDER BY a.va_cat,va_scat,a.va_venta DESC,a.va_num DESC,a.va_fil DESC,a.va_lin DESC,a.va_clave DESC";
+        break;
+    }
+
     $sqlCmd = "SELECT a.*, trim(c.cc_raso) cc_raso,
-    round(a.va_pza/b.va_pza*100,2) AS porc_pza, 
-    round(a.va_can/b.va_can*100 ,2) AS porc_can
+    round(a.va_pza::numeric(12,2)/b.va_pza::numeric(12,2)*100,2) AS porc_pza, 
+    round(a.va_can/b.va_can*100,2) AS porc_can
     FROM tmp2 a 
     LEFT JOIN tmp1 b ON a.va_num = b.va_num AND a.va_fil = b.va_fil 
           AND a.va_cat = b.va_cat AND a.va_scat = b.va_scat 
     LEFT JOIN cli010 c ON a.va_num=c.cc_num AND a.va_fil=c.cc_fil 
-    ORDER BY a.va_num,a.va_fil,a.va_cat,va_scat,a.va_lin,a.va_clave";
+    $orderby ";
+
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL-> execute();
 
@@ -708,8 +731,8 @@ FUNCTION CreaDataCompuesta( $data )
         ]);
 
         array_push($arrSubcatego, [
-          "SubcategoCodigo" => $SubcategoCodigo,
-          "SubcategoNombre" => $SubcategoNombre,
+          "SubcategoriaCodigo" => $SubcategoCodigo,
+          "SubcategoriaNombre" => $SubcategoNombre,
           "LineasProducto"  => $arrLineas
         ]);
         
@@ -765,8 +788,8 @@ FUNCTION CreaDataCompuesta( $data )
         ]);
 
         array_push($arrSubcatego, [
-          "SubcategoCodigo" => $SubcategoCodigo,
-          "SubcategoNombre" => $SubcategoNombre,
+          "SubcategoriaCodigo" => $SubcategoCodigo,
+          "SubcategoriaNombre" => $SubcategoNombre,
           "LineasProducto"  => $arrLineas
         ]);
 
@@ -868,8 +891,8 @@ FUNCTION CreaDataCompuesta( $data )
     ]);
 
     array_push($arrSubcatego, [
-      "SubcategoCodigo" => $SubcategoCodigo,
-      "SubcategoNombre" => $SubcategoNombre,
+      "SubcategoriaCodigo" => $SubcategoCodigo,
+      "SubcategoriaNombre" => $SubcategoNombre,
       "LineasProducto"   => $arrLineas
     ]);
 
@@ -894,4 +917,4 @@ FUNCTION CreaDataCompuesta( $data )
 
   return $contenido; 
 
-}
+} 
