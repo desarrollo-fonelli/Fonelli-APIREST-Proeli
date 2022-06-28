@@ -188,6 +188,10 @@ return;
     $DatosArray["Mensaje"];
     */
 
+    // Por ahora dejo fija la dirección para recibir el correo, más adelante se 
+    // debe configurar el buzón desde un módulo de administración.
+    $buzonReceptor = 'vrendon@agasys.com.mx';
+
     $correo  = $DatosArray["Email"];
     $asunto  = "Solicitud de Contacto Fonelli";
     $mensaje = "Un prospecto esta solicitando informacion desde el Sitio Web<br>".
@@ -210,9 +214,10 @@ return;
 
     $mail->Username   = 'envios@agasys.com.mx';
     $mail->Password   = 'agasys2015.';
-    $mail->SetFrom('envios@agasys.com.mx', 'FONELLI ATENCION A CLIENTES');
-    $mail->addAddress(''.$correo.'', 'Receptor');
-    //$mail->addCC('Sistemasuno@bzr.com.mx');
+    $mail->SetFrom('envios@agasys.com.mx', 'FONELLI');
+
+    $mail->addAddress($buzonReceptor, 'Receptor');
+    // $mail->addCC('Sistemasuno@bzr.com.mx');
 
     $mail->Subject = ''.$asunto.'';
     $mail->Body    = ''.$mensaje.'';

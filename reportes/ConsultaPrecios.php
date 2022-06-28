@@ -57,7 +57,7 @@ try {
     if(! in_array($TipoUsuario, ["C","A","G"])){
       throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
     }
-    if($TipoUsuario = 'C'){
+    if($TipoUsuario == 'C'){
       if (!isset($_GET["ClienteCodigo"])) {
         throw new Exception("El parametro obligatorio 'ClienteCodigo' no fue definido.");
       } else {
@@ -227,7 +227,8 @@ $ParidadTipo, $ArticuloLinea, $ArticuloCodigo)
   global $C_CA1E, $C_CA2E, $C_CA3E, $C_CA4E, $C_CA5E, $C_CA6E, $C_CA7E, $C_CA8E, $C_CA9E;
   global $C_GR1E, $C_GR2E, $C_GR3E, $C_GR4E, $C_GR5E, $C_GR6E, $C_GR7E, $C_GR8E, $C_GR9E;
   global $TPRE, $TPG, $TPREE, $TPGE;
- 
+
+  global $C_COSCOM;   // dRendon 24/jun/2022 Costo de Compra, usado en Formulacion 5 recien agregada
 
   $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
 
@@ -418,14 +419,15 @@ $ParidadTipo, $ArticuloLinea, $ArticuloCodigo)
       }
       $rowListaPrecLinea = $oSQL->fetch(PDO::FETCH_ASSOC);
       $W_FACTOR = $rowListaPrecLinea["r_facimp"];
-      if ($Formulacion == "1" || $Formulacion == "3" || $Formulacion == "4") {
+      if ($Formulacion == "1" || $Formulacion == "3" || $Formulacion == "4" || $Formulacion == "5") {
         $TipoCosteo = 1;
       } else {
         $TipoCosteo = 2;
       }
     }
-    
+
     // Datos asociados al articulo
+    $C_COSCOM = 0;
     $sqlCmd = "SELECT * FROM inv010 WHERE c_lin= :linea AND c_clave= :clave";
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL->bindParam(":linea", $ArticuloLinea , PDO::PARAM_STR);
@@ -441,6 +443,8 @@ $ParidadTipo, $ArticuloLinea, $ArticuloCodigo)
     $W_CODE = trim($rowArticulos["c_clavee"]);        // Codigo equivalente
     $W_CODBARH = trim($rowArticulos["c_codbarh"]);    // Codigo de barras
     $ArticuloDescr = trim($rowArticulos["c_descr"]);
+
+    $C_COSCOM = $rowArticulos["c_coscom"];    // dRendon 24/jun/2022 Costo de Compra, usado en Formulacion 5 recien agregada
 
     // Estas variables se utilizan en el codigo heredado de proeli (../include/preciosrutinas.php)
     $C_CO1 = $rowArticulos["c_co1"];
@@ -696,7 +700,55 @@ $ParidadTipo, $ArticuloLinea, $ArticuloCodigo)
             #(segun ATNCT020.prg)
             sumaInsumosGpo2ConPrecioVentayGrupo3Normal();                
 
-            break;                
+            break; 
+
+          # dRendon 24/jun/2022 Se agrega esta nueva fornmulacion
+          # COSTEO PIEZA [ Costo=Costo Compra * Paridad del Día (C_COSCOM*Paridad Normal del Día) 
+          #    Venta=Costo * Factor de Incremento (de la Tabla de Valores Agregados de acuerdo a la Lista de Precios, imagen 2) ]
+          case "5":
+            $W_COSTO=0;   // dRendon 23/jul/2019
+            $W_VENTA=0;   // dRendon 23/jul/2019
+          
+            #Suma todos los insumos Grupo 1, Grupo 2 y Grupo 3
+            $TPRE = 0;
+            $TPG  = 0;
+            $TPREE = 0;
+            $TPGE = 0;
+
+            $W_NOAUMENTO = 1;     // Requerido codigo heredado proeli
+            //$W_REDO = 2;        // Requerido codigo heredado proeli
+            $W_PARIDADUSD = 0;    // Paridad del dollar
+
+            # Obtiene la paridad del USD (TI_LLAVE = '3')
+            $sqlCmd = "SELECT * FROM inv100 WHERE TI_LLAVE = '3'";
+            $oPARUSD = $conn->prepare($sqlCmd);
+            $oPARUSD->execute();
+            $numRows = $oPARUSD->rowCount();
+            if ($numRows < 1) {
+              http_response_code(400);
+              throw new Exception("Paridad USD no registrada: ");
+              exit;
+            }
+            $rowPARUSD = $oPARUSD->fetch(PDO::FETCH_ASSOC);        
+            $W_PARIDADUSD = $rowPARUSD["ti_par"];
+
+            # Multiplica el costo de compra del articulo por la paridad del dia por el valor agregado
+            $W_VENTA = ($C_COSCOM*$W_PARIDADUSD)*(1+($W_FACTOR/100));
+            $TPRE = $W_VENTA;
+            $TPG  = $W_VENTA;
+            
+            if ($NormalEquivalente == "E" and trim($W_CODE) <> "") {
+              $W_COSTOE = 0;
+              $W_VENTAE = 0;
+
+              $W_VENTAE = ($C_COSCOM*$W_PARIDADUSD)*(1+($W_FACTOR/100));
+              $TPREE = $W_VENTAE;
+              $TPGE  = $W_VENTAE;
+            }
+            $ValorAgregado = $W_FACTOR;
+            $Precio = $TPRE;
+            $PrecioEquivalente = $TPREE;
+            break;
           }
         } else {
           #MONEDA USD                         <------------------
@@ -880,6 +932,55 @@ $ParidadTipo, $ArticuloLinea, $ArticuloCodigo)
     
               break;
           
+            # dRendon 24/jun/2022 Se agrega esta nueva fornmulacion
+            # COSTEO PIEZA [ Costo=Costo Compra * Paridad del Día (C_COSCOM*Paridad Normal del Día) 
+            #    Venta=Costo * Factor de Incremento (de la Tabla de Valores Agregados de acuerdo a la Lista de Precios, imagen 2) ]
+            case "5":
+              $W_COSTO=0;   // dRendon 23/jul/2019
+              $W_VENTA=0;   // dRendon 23/jul/2019
+            
+              #Suma todos los insumos Grupo 1, Grupo 2 y Grupo 3
+              $TPRE = 0;
+              $TPG  = 0;
+              $TPREE = 0;
+              $TPGE = 0;
+  
+              $W_NOAUMENTO = 1;     // Requerido codigo heredado proeli
+              //$W_REDO = 2;        // Requerido codigo heredado proeli
+              $W_PARIDADUSD = 0;    // Paridad del dollar
+  
+              # Obtiene la paridad del USD (TI_LLAVE = '3')
+              $sqlCmd = "SELECT * FROM inv100 WHERE TI_LLAVE = '3'";
+              $oPARUSD = $conn->prepare($sqlCmd);
+              $oPARUSD->execute();
+              $numRows = $oPARUSD->rowCount();
+              if ($numRows < 1) {
+                http_response_code(400);
+                throw new Exception("Paridad USD no registrada: ");
+                exit;
+              }
+              $rowPARUSD = $oPARUSD->fetch(PDO::FETCH_ASSOC);        
+              $W_PARIDADUSD = $rowPARUSD["ti_par"];
+  
+              # Multiplica el costo de compra del articulo por la paridad del dia por el valor agregado
+              $W_VENTA = ($C_COSCOM*$W_PARIDADUSD)*(1+($W_FACTOR/100));
+              $TPRE = $W_VENTA;
+              $TPG  = $W_VENTA;
+              
+              if ($NormalEquivalente == "E" and trim($W_CODE) <> "") {
+                $W_COSTOE = 0;
+                $W_VENTAE = 0;
+  
+                $W_VENTAE = ($C_COSCOM*$W_PARIDADUSD)*(1+($W_FACTOR/100));
+                $TPREE = $W_VENTAE;
+                $TPGE  = $W_VENTAE;
+              }
+              $ValorAgregado = $W_FACTOR;
+              $Precio = $TPRE;
+              $PrecioEquivalente = $TPREE;
+              
+              break;
+    
 
           }
         }

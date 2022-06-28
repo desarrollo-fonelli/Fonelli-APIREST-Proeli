@@ -1,6 +1,7 @@
 <?php
 @session_start();
 header('Content-type: application/json');
+date_default_timezone_set('America/Mexico_City');
 
 /*
 header('Access-Control-Allow-Origin: *');
@@ -8,8 +9,6 @@ header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Conte
 header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 */
-
-date_default_timezone_set('America/Mexico_City');
 
 /**
  * Lista del Catalogo de Clientes 
@@ -33,7 +32,8 @@ $response = null;   // JSON devuelto por el endpoint conteniendo todos los nodos
 $sqlCmd   = "";     // comando SQL que se envía al engine de datos
 
 # Variables asociadas a los parámetros recibidos
-$Usuario        = null;     // Id del usuario (cliente o agente)
+$TipoUsuario    = null;     // Tipo de usuario
+$Usuario        = null;     // Id del usuario (cliente, agente o gerente)
 $ClienteCodigo  = null;     // Id del cliente
 $ClienteFilial  = null;     // Filial del cliente
 $Password       = null;     // Contraseña asignada al cliente
@@ -52,23 +52,44 @@ if ($requestMethod != "GET") {
 
 # Hay que comprobar que se pasen los parametros obligatorios
 # OJO: Los nombres de parametro son sensibles a mayusculas/minusculas
-
 /*
-    19.may.2022 dRendon: Por ahora el Usuario va a ser un parámetro OPCIONAL
-
 try {
-  if (!isset($_GET["Usuario"])) {
-    throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+  if (!isset($_GET["TipoUsuario"])) {
+    throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");
+  } else {
+    $TipoUsuario = $_GET["TipoUsuario"];
+    if(! in_array($TipoUsuario, ["C","A","G"])){
+      throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
+    }
+    if($TipoUsuario == 'C'){
+      if (!isset($_GET["ClienteCodigo"])) {
+        throw new Exception("El parametro 'ClienteCodigo' no fue definido.");
+      } else {
+        $ClienteCodigo = $_GET["ClienteCodigo"];
+      }    
+      if (!isset($_GET["ClienteFilial"])) {
+        throw new Exception("El parametro 'ClienteFilial' no fue definido.");
+      } else {
+        $ClienteFilial = $_GET["ClienteFilial"] ;
+      }    
+    }
+    if($TipoUsuario == "A" || $TipoUsuario == "G"){
+      if (!isset($_GET["Usuario"])) {
+        throw new Exception("El parametro 'Usuario' no fue definido.");
+      } else {
+        $Usuario = $_GET["Usuario"];
+      }
+    }
   }
 } catch (Exception $e) {
-  http_response_code(401);
-  echo json_encode(["Code" => K_API_FAILAUTH, "Mensaje" => $e->getMessage()]);
+  http_response_code(400);
+  echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $e->getMessage()]);
   exit;
 }
 */
 
 # Lista de parámetros aceptados por este endpoint
-$arrPermitidos = array("Usuario", "ClienteCodigo", "ClienteFilial", 
+$arrPermitidos = array("TipoUsuario", "Usuario", "ClienteCodigo", "ClienteFilial", 
 "Password", "Status", "AgenteCodigo", "Pagina");
 
 # Obtiene todos los parametros pasados en la llamada y verifica que existan
@@ -93,6 +114,44 @@ if(strlen($mensaje) > 0){
 # Hay que inicializarverificar parametros opcionales y en caso 
 # que estos no se indiquen, asignar valores por omisión.
 # (dichos valores se definieron al inicio del script, al declarar las variables)
+if(isset($_GET["TipoUsuario"])){
+  $TipoUsuario = $_GET["TipoUsuario"];
+}
+
+// Primero este parámetro porque puede cambiar después
+if (isset($_GET["AgenteCodigo"])) {
+  $AgenteCodigo = $_GET["AgenteCodigo"];
+  if(isset($TipoUsuario) && $TipoUsuario == "A"){
+    if(isset($_GET["Usuario"]) && $AgenteCodigo != $_GET["Usuario"]){
+      $mensaje = "'Usuario' y 'AgenteCodigo' deben ser iguales para 'TipoUsuario' = 'A'";
+      http_response_code(400);  
+      echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
+      exit; 
+    }
+  }
+}
+
+if (isset($_GET["Usuario"])) {
+  if(!isset($_GET["TipoUsuario"])){
+    $mensaje = "Debe indicar 'TipoUsuario' cuando indica valor para 'Usuario'";
+    http_response_code(400);  
+    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
+    exit; 
+  }
+  
+  $Usuario = $_GET["Usuario"];
+  if($TipoUsuario == "A"){
+    $AgenteCodigo = $Usuario;
+  }
+} else {
+  if($TipoUsuario == "A"){
+    $mensaje = "Debe indicar 'Usuario' cuando 'TipoUsuario' es 'A'";
+    http_response_code(400);  
+    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
+    exit;  
+  }
+}
+
 if (isset($_GET["ClienteCodigo"])) {
   $ClienteCodigo = $_GET["ClienteCodigo"];
 }
@@ -123,17 +182,14 @@ if (isset($_GET["Status"])) {
   $Status = $_GET["Status"];
 }
 
-if (isset($_GET["AgenteCodigo"])) {
-  $AgenteCodigo = $_GET["AgenteCodigo"];
-}
-
 if (isset($_GET["Pagina"])) {
   $Pagina = $_GET["Pagina"];
 }
 
 # Ejecuta la consulta 
 try {
-  $data = SelectClientes($ClienteCodigo, $ClienteFilial, $Password, $Status, $AgenteCodigo);
+  $data = SelectClientes($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFilial, 
+  $Password, $Status, $AgenteCodigo);
 
   # Asigna código de respuesta HTTP 
   http_response_code(200);
@@ -186,6 +242,8 @@ return;
  * Envía Consulta a la base de datos y devuelve un array con
  * los resultados obtenidos.
  * 
+ * @param string $TipoUsuario
+ * @param int $Usuario
  * @param int $ClienteCodigo
  * @param int $ClienteFilial
  * @param string $Password
@@ -193,11 +251,16 @@ return;
  * @param string $AgenteCodigo
  * @return array
  */
-FUNCTION SelectClientes($ClienteCodigo, $ClienteFilial, $Password, $Status, $AgenteCodigo)
+FUNCTION SelectClientes($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFilial, 
+$Password, $Status, $AgenteCodigo)
+
 {
   $where = "";
 
   # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
+  if(isset($Usuario)){
+    $strUsuario = str_pad($Usuario, 2," ",STR_PAD_LEFT);
+  }
   if(isset($ClienteCodigo)){
     $strClienteCodigo = str_pad($ClienteCodigo, 6," ",STR_PAD_LEFT);
   }
@@ -241,6 +304,7 @@ FUNCTION SelectClientes($ClienteCodigo, $ClienteFilial, $Password, $Status, $Age
     }
     $where .= " TRIM(a.cc_status) = :Status ";
   }
+
   if(isset($AgenteCodigo)){
     if($where == ""){
       $where = "WHERE ";
@@ -301,13 +365,13 @@ FUNCTION SelectClientes($ClienteCodigo, $ClienteFilial, $Password, $Status, $Age
       $oSQL-> bindParam(":strClienteFilial", $strClienteFilial, PDO::PARAM_STR);
     }
     if(isset($Password)){
-      $oSQL-> bindParam(":Password" , $Password, PDO::PARAM_STR);
+      $oSQL-> bindParam(":Password", $Password, PDO::PARAM_STR);
     }
     if(isset($Status)){
-      $oSQL-> bindParam(":Status" , $Status, PDO::PARAM_STR);
+      $oSQL-> bindParam(":Status", $Status, PDO::PARAM_STR);
     }
     if(isset($AgenteCodigo)){
-      $oSQL-> bindParam(":strAgenteCodigo" , $strAgenteCodigo, PDO::PARAM_STR);
+      $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
     //$oSQL-> bindParam(":provocaerror", "",PDO::PARAM_STR);  usado para pruebas de control de errores
 
