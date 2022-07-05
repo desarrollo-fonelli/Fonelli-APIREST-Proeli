@@ -171,8 +171,7 @@ try {
     throw new Exception("El parametro obligatorio 'OrdenReporte' no fue definido.");
   } else {
     $OrdenReporte = $_GET["OrdenReporte"] ;
-    //if(! in_array($OrdenReporte, ["C","P","I"]) )
-    if(! in_array($OrdenReporte, ["C"]) ){
+    if(! in_array($OrdenReporte, ["C","P","I"]) ){
       throw new Exception("Valor '". $OrdenReporte. "' NO permitido para 'OrdenReporte'");
     }  
   }
@@ -181,7 +180,8 @@ try {
     throw new Exception("El parametro obligatorio 'Presentacion' no fue definido.");
   } else {
     $Presentacion = $_GET["Presentacion"] ;
-    if(! in_array($Presentacion, ["D","R"]) ){
+    //if(! in_array($Presentacion, ["D","R"]) )
+    if(! in_array($Presentacion, ["R"]) ){
       throw new Exception("Valor '". $Presentacion. "' NO permitido para 'Presentacion'");
     }  
   }
@@ -259,7 +259,7 @@ if (isset($_GET["Pagina"])) {
 # Ejecuta la consulta 
 try {
 
-  $data = SelectClteCatego($TipoUsuario,$Usuario,$OficinaDesde, 
+  $data = SelectCltePzasImporte($TipoUsuario,$Usuario,$OficinaDesde, 
   $OficinaHasta,$FechaDesde,$FechaHasta,$ClienteDesde,$FilialDesde, 
   $ClienteHasta,$FilialHasta,$LineaDesde,$LineaHasta,$ClaveDesde, 
   $ClaveHasta,$CategoriaDesde,$SubcategoDesde,$CategoriaHasta,$SubcategoHasta,
@@ -306,7 +306,6 @@ echo $response;
 
 return;
 
-
 /**
  * Envía Consulta a la base de datos y devuelve un array con
  * los resultados obtenidos.
@@ -336,7 +335,7 @@ return;
  * @param string $Pagina
  * @return array
  */
-FUNCTION SelectClteCatego($TipoUsuario,$Usuario,$OficinaDesde, 
+FUNCTION SelectCltePzasImporte($TipoUsuario,$Usuario,$OficinaDesde, 
 $OficinaHasta,$FechaDesde,$FechaHasta,$ClienteDesde,$FilialDesde, 
 $ClienteHasta,$FilialHasta,$LineaDesde,$LineaHasta,$ClaveDesde, 
 $ClaveHasta,$CategoriaDesde,$SubcategoDesde,$CategoriaHasta,$SubcategoHasta,
@@ -365,7 +364,7 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
       $strUsuario = str_pad($Usuario, 2," ",STR_PAD_LEFT);
       break;      
   }
-  
+
   $OficinaDesde  = str_pad($OficinaDesde, 2, "0", STR_PAD_LEFT);
   $OficinaHasta  = str_pad($OficinaHasta, 2, "0", STR_PAD_LEFT);
   $strClteInic   = str_replace(' ','0',str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT));
@@ -376,7 +375,7 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
 
   $strCategoDesde   = $CategoriaDesde. $SubcategoDesde;
   $strCategoHasta   = $CategoriaHasta. $SubcategoHasta;
-  
+
   # Se conecta a la base de datos
   // require_once "../db/conexion.php";
 
@@ -392,7 +391,7 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
   AND concat(a.va_cat,a.va_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego) ";
 
   // Solo aplica filtro cuando el usuario es un agente
-  if(in_array($TipoUsuario, ["A"])){    
+  if(in_array($TipoUsuario, ["A"])){
     $where .= "AND a.va_age = :strUsuario ";
   }
 
@@ -421,13 +420,12 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
     }    
     $where .= $filtroTipoie;
   }
-
-  //var_dump($where); exit;
-
+  
   try {
 
     # Se conecta a la base de datos
     require_once "../db/conexion.php";  
+
 
     # Handler para la conexión a la base de datos
     //$conn = DB::getConn();
@@ -458,7 +456,7 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
     $sqlCmd = "CREATE TEMPORARY TABLE catego AS 
     SELECT trim(t_gpo) as idcatego, t_descr AS descripc 
       FROM var020 WHERE t_tica = '02' AND SUBSTR(t_param,1,1) = '1' 
-      ORDER BY T_GPO";    
+      ORDER BY T_GPO"; 
     $oSQL = $conn-> prepare($sqlCmd);
     $oSQL-> execute();   
 
@@ -472,8 +470,8 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
 
     $oSQL = $conn-> prepare($sqlCmd);
     $oSQL-> execute();   
-    
-    # Creas tabla temporal resumida por por cliente y categoria/subcategoria
+
+    # Crea tabla temporal resumida por cliente y categoria/subcategoria
     $sqlCmd = "CREATE TEMPORARY TABLE tmp1 AS 
     SELECT va_num,va_fil,va_cat,va_scat, SUM(va_pza+va_pzae) AS va_pza,
     SUM(va_can+va_cane) AS va_can,SUM(va_venta+va_ventae) AS va_venta
@@ -484,9 +482,8 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
     GROUP BY va_num,va_fil,va_cat,va_scat 
     ORDER BY replace(va_num,' ','0'),replace(va_fil,' ','0'),va_cat,va_scat ";
 
-    //var_dump($sqlCmd); exit;
+    $oSQL = $conn->prepare($sqlCmd);
 
-    $oSQL = $conn-> prepare($sqlCmd);
     $oSQL-> bindParam(":OficinaDesde", $OficinaDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
     $oSQL-> bindParam(":FechaDesde", $FechaDesde, PDO::PARAM_STR);
@@ -528,24 +525,26 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
       return [];
 
     }
-
+    
     # Crea tabla con detalle del reporte agrupado por cliente, categoria y linea de producto
     # Utilizo la función agregada MAX para no incluir en la clausula GROUP BY todas las columnas
-    $sqlCmd = "CREATE TEMPORARY TABLE tmp2 AS 
-    SELECT va_num,va_fil,va_cat,va_scat,trim(MAX(d.namecatego)) namecatego,
-    trim(MAX(d.namesubcatego)) namesubcatego,va_lin,va_clave,trim(MAX(b.t_descr)) t_descr,
-    trim(MAX(b.t_ref)) t_ref,trim(max(c.c_descr)) c_descr,max(c.c_tipole) c_tipole,
+    unset($oSQL);
+    $sqlCmd = "CREATE TEMPORARY TABLE tmp2 AS
+    SELECT va_num,va_fil,va_cat,va_scat,TRIM(MAX(d.namecatego)) namecatego,
+    TRIM(MAX(d.namesubcatego)) namesubcatego,va_lin,va_clave,TRIM(MAX(b.t_descr)) t_descr,
+    TRIM(MAX(b.t_ref)) t_ref,TRIM(MAX(c.c_descr)) c_descr,MAX(c.c_tipole) c_tipole,
     sum(va_pza+va_pzae) as va_pza,sum(va_can+va_cane) as va_can,
     sum(va_venta+va_ventae) as va_venta 
-     FROM inv050 a 
-     LEFT JOIN var020 b ON CONCAT('05',a.va_lin)=concat(b.t_tica,b.t_gpo)
-     LEFT JOIN inv010 c ON a.va_lin=c.c_lin AND a.va_clave= c.c_clave
-     LEFT JOIN subcatego d ON a.va_cat=d.idcatego AND a.va_scat=d.idsubcatego
-     INNER JOIN var020 e ON e.t_tica='02' AND TRIM(e.t_gpo)=a.va_cat AND SUBSTR(e.t_param,1,1)='1' 
-    $where
-    GROUP BY va_num,va_fil,va_cat,va_scat,va_lin,va_clave
-    ORDER BY va_cat,va_scat,replace(va_num,' ','0'),replace(va_fil,' ','0'),va_lin,va_clave ";
-      
+    FROM inv050 a 
+    LEFT JOIN var020 b ON CONCAT('05',a.va_lin)=concat(b.t_tica,b.t_gpo)
+    LEFT JOIN inv010 c ON a.va_lin=c.c_lin AND a.va_clave= c.c_clave
+    LEFT JOIN subcatego d ON a.va_cat=d.idCatego AND a.va_scat=d.idSubcatego
+    INNER JOIN var020 e ON e.T_TICA='02' AND TRIM(e.T_GPO)=a.va_cat AND SUBSTR(e.T_PARAM,1,1)='1' 
+    $where 
+    GROUP BY va_cat,va_scat,va_num,va_fil,va_lin,va_clave
+    ORDER BY va_cat,va_scat,replace(va_num,' ','0'),replace(va_fil,' ','0'),va_lin,va_clave";
+
+
     /* ------ OJO --- OJO --- OJO --- OJO ---
       Hay que ver si se debe retirar esta linea de la clausula WHERE    
       AND concat(a.va_cat,a.va_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego)
@@ -593,34 +592,32 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
       return [];
     }
 
-    // Une la tabla detallada con la de totales para presentar
-    // datos finales.
-
-    switch ($OrdenReporte){
-      case "C":
-        $orderby = "ORDER BY replace(a.va_num,' ','0'),replace(a.va_fil,' ','0'),a.va_cat,va_scat,a.va_lin,a.va_clave";
-        break;
-      case "P":
-        $orderby = "ORDER BY a.va_cat,va_scat,a.va_pza DESC,replace(a.va_num,' ','0') DESC,replace(a.va_fil,' ','0') DESC,a.va_lin DESC,a.va_clave DESC";
-        break;
-      case "I":
-        $orderby = "ORDER BY a.va_cat,va_scat,a.va_venta DESC,replace(a.va_num,' ','0') DESC,replace(a.va_fil,' ','0') DESC,a.va_lin DESC,a.va_clave DESC";
-        break;
+    $orderby = '';
+    if($OrdenReporte == "P"){
+      // Piezas
+      $orderby = "ORDER BY a.va_cat,va_scat,a.va_pza DESC,replace(a.va_num,' ','0') DESC,replace(a.va_fil,' ','0') DESC,a.va_lin DESC,a.va_clave DESC";
+    } elseif($OrdenReporte == "I") {
+      // Importe
+      $orderby = "ORDER BY a.va_cat,va_scat,a.va_venta DESC,replace(a.va_num,' ','0') DESC,replace(a.va_fil,' ','0') DESC,a.va_lin DESC,a.va_clave DESC";
     }
 
-    $sqlCmd = "SELECT a.*, trim(c.cc_raso) cc_raso,
+    // Une la tabla detallada con la de totales para presentar
+    // datos finales.
+    unset($oSQL);
+    unset($arrData);
+
+    $sqlCmd = "SELECT a.*, 
     round(a.va_pza::numeric(12,2)/b.va_pza::numeric(12,2)*100,2) AS porc_pza, 
     round(a.va_can/b.va_can*100,2) AS porc_can
-    FROM tmp2 a 
-    LEFT JOIN tmp1 b ON a.va_num = b.va_num AND a.va_fil = b.va_fil 
-          AND a.va_cat = b.va_cat AND a.va_scat = b.va_scat 
-    LEFT JOIN cli010 c ON a.va_num=c.cc_num AND a.va_fil=c.cc_fil 
-    $orderby ";
+    FROM tmp2 a LEFT JOIN tmp1 b 
+      ON a.va_num = b.va_num AND a.va_fil = b.va_fil 
+     AND a.va_cat = b.va_cat AND a.va_scat = b.va_scat 
+     $orderby ";
 
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL-> execute();
 
-    $numrows = $oSQL->rowCount();    
+    $numrows = $oSQL->rowCount();
     $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
 
     // Borra tablas temporales
@@ -647,16 +644,11 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
     exit;
   }
 
-  /* ------------------ DEBUG
-    var_dump($oSQL-> fetchAll(PDO::FETCH_ASSOC));
-    exit;
-  */
-
   // Cierra la conexión 
   $conn = null;   
 
   # Falta tener en cuenta la paginacion
-  return $arrData;
+  return $arrData; 
 
 }
 
@@ -671,183 +663,62 @@ FUNCTION CreaDataCompuesta( $data )
 {
 
   $contenido     = array();
-  $arrClientes   = array();
   $arrCategorias = array();
   $arrSubcatego  = array();
-  $arrLineas     = array();
-  $arrArticulos  = array();
-  
+  $arrDetalle    = array();
+
   // Organiza Reporte por Cliente
   if(count($data)>0){
+    $CategoCodigo    = $data[0]["va_cat"];
+    $CategoNombre    = $data[0]["namecatego"];
+    $SubcategoCodigo = $data[0]["va_scat"];
+    $SubcategoNombre = $data[0]["namesubcatego"];
+    $CategoSubcatego = $data[0]["va_cat"]. $data[0]["va_scat"];
 
-    $ClteFil       = $data[0]["va_num"].$data[0]["va_fil"];
-    $ClteFilCatego = $data[0]["va_num"].$data[0]["va_fil"].$data[0]["va_cat"];
-    $ClteFilCategoSubcatego = $data[0]["va_num"].$data[0]["va_fil"].$data[0]["va_cat"].$data[0]["va_scat"];
-    $ClteFilCategoSubcategoLinea = $data[0]["va_num"].$data[0]["va_fil"].$data[0]["va_cat"].$data[0]["va_scat"].$data[0]["va_lin"];
-    $ClienteCodigo = $data[0]["va_num"];
-    $ClienteFilial = $data[0]["va_fil"];
-    $ClienteNombre = $data[0]["cc_raso"];
-    $CategoCodigo  = $data[0]["va_cat"];
-    $CategoNombre  = $data[0]["namecatego"];
-    $SubcategoCodigo  = $data[0]["va_scat"];
-    $SubcategoNombre  = $data[0]["namesubcatego"];
-    $CategoSubcatego  = $CategoCodigo. $SubcategoCodigo;
-    $LineaCodigo      = $data[0]["va_lin"];
-    $LineaDescripc    = $data[0]["t_descr"];
-    $LineaColeccion   = $data[0]["t_ref"];
-
-  
     foreach($data as $row) {
-  
-      // Cambio de cliente y filial
-      if ($row["va_num"].$row["va_fil"] != $ClteFil){
-        
-        array_push($arrLineas, [
-          "LineaCodigo"       => $LineaCodigo,
-          "LineaDescripc"     => $LineaDescripc,
-          "ColeccionDescripc" => $LineaColeccion,
-          "Articulos"         => $arrArticulos
-        ]);
+      // Cambio de categoria 
+      if($row["va_cat"] != $CategoCodigo){
 
         array_push($arrSubcatego, [
-          "SubcategoriaCodigo" => $SubcategoCodigo,
-          "SubcategoriaNombre" => $SubcategoNombre,
-          "LineasProducto"  => $arrLineas
-        ]);
-        
-        array_push($arrCategorias, [
-          "CategoriaCodigo" => $CategoCodigo,
-          "CategoNombre"    => $CategoNombre,
-          "Subcategorias"   => $arrSubcatego
-        ]);
+          "SubcategoriaCodigo"  => $SubcategoCodigo,
+          "SubcategoriaNombre"  => $SubcategoNombre,
+          "Detalle"             => $arrDetalle]);
 
-        $arrClientes = [
-          "ClienteCodigo" => trim($ClienteCodigo),
-          "ClienteFilial" => trim($ClienteFilial),
-          "ClienteNombre" => trim($ClienteNombre),
-          "Categorias"    => $arrCategorias
-        ];
-
-        // Se agrega el array del nuevo cliente a la seccion "contenido"
-        array_push($contenido, $arrClientes);
-
-        $ClienteCodigo = $row["va_num"];
-        $ClienteFilial = $row["va_fil"];
-        $ClienteNombre = $row["cc_raso"];
-
-        $CategoCodigo  = $row["va_cat"];
-        $CategoNombre  = $row["namecatego"];
-
-        $SubcategoCodigo = $row["va_scat"];
-        $SubcategoNombre = $row["namesubcatego"];
-
-        $LineaCodigo   = $row["va_lin"];
-        $LineaDescripc = $row["t_descr"];
-        $LineaDescripc = $row["t_ref"];
-       
-        $ClteFil       = $row["va_num"].$row["va_fil"];
-        $ClteFilCatego = $row["va_num"].$row["va_fil"].$row["va_cat"];
-        $ClteFilCategoSubcatego = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"];
-        $ClteFilCategoSubcategoLinea = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"].$row["va_lin"];
-
-        $arrCategorias = array();
-        $arrSubcatego  = array();
-        $arrLineas     = array();
-        $arrArticulos  = array();
-
-      }
-
-      // Cambio en Categoria
-      if($ClteFilCatego != $row["va_num"].$row["va_fil"].$row["va_cat"]){
-        array_push($arrLineas, [
-          "LineaCodigo"       => $LineaCodigo,
-          "LineaDescripc"     => $LineaDescripc,
-          "ColeccionDescripc" => $LineaColeccion,
-          "Articulos"         => $arrArticulos
-        ]);
-
-        array_push($arrSubcatego, [
-          "SubcategoriaCodigo" => $SubcategoCodigo,
-          "SubcategoriaNombre" => $SubcategoNombre,
-          "LineasProducto"  => $arrLineas
-        ]);
-
-        array_push($arrCategorias, [
+        //array_push($arrCategorias, [
+        array_push($contenido, [
           "CategoriaCodigo" => $CategoCodigo,
           "CategoriaNombre" => $CategoNombre,
           "Subcategorias"   => $arrSubcatego
         ]);
 
-        array_push($arrClientes, $arrCategorias);
+        $SubcategoCodigo = $row["va_scat"];
+        $SubcategoNombre = $row["namesubcatego"];
+        $CategoCodigo    = $row["va_cat"];
+        $CategoNombre    = $row["namecatego"];
+        $CategoSubcatego = $row["va_cat"]. $row["va_scat"];
 
-        $CategoCodigo     = $row["va_cat"];
-        $CategoNombre     = $row["namecatego"];       
-        $SubcategoCodigo  = $row["va_scat"];
-        $SubcategoNombre  = $row["namesubcatego"];
-        $LineaCodigo      = $row["va_lin"];
-        $LineaDescripc    = $row["t_descr"];
-        $LineaDescripc    = $row["t_ref"];
-
-        $ClteFilCatego = $row["va_num"].$row["va_fil"].$row["va_cat"];
-        $ClteFilCategoSubcatego = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"];
-        $ClteFilCategoSubcategoLinea = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"].$row["va_lin"];
-
+        $arrDetalle   = array();
         $arrSubcatego = array();
-        $arrLineas    = array();
-        $arrArticulos = array();
-
       }
 
-      // Cambio en SubCategoria
-      if($ClteFilCategoSubcatego != $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"]){
-        array_push($arrLineas, [
-          "LineaCodigo"       => $LineaCodigo,
-          "LineaDescripc"     => $LineaDescripc,
-          "ColeccionDescripc" => $LineaColeccion,
-          "Articulos"         => $arrArticulos
-        ]);
-
+      // Cambio de categoría + subcategoria
+      if($row["va_cat"]. $row["va_scat"] != $CategoSubcatego){
         array_push($arrSubcatego, [
-          "SubcategoriaCodigo" => $SubcategoCodigo,
-          "SubcategoriaNombre" => $SubcategoNombre,
-          "LineasProducto"     => $arrLineas
-        ]);        
+          "SubcategoriaCodigo"  => $SubcategoCodigo,
+          "SubcategoriaNombre"  => $SubcategoNombre,
+          "Detalle"             => $arrDetalle]);
 
         $SubcategoCodigo = $row["va_scat"];
         $SubcategoNombre = $row["namesubcatego"];
-        $LineaCodigo     = $row["va_lin"];
-        $LineaDescripc   = $row["t_descr"];
-        $LineaColeccion  = $row["t_ref"];
+        $CategoSubcatego = $row["va_cat"]. $row["va_scat"];
 
-        $ClteFilCategoSubcatego = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"];
-        $ClteFilCategoSubcategoLinea = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"].$row["va_lin"];
-        
-        $arrLineas    = array();
-        $arrArticulos = array();
-
+        $arrDetalle = array();
       }
 
-      // Cambio en lineas
-      if($ClteFilCategoSubcategoLinea != $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"].$row["va_lin"]){
-        array_push($arrLineas, [
-          "LineaCodigo"       => $LineaCodigo,
-          "LineaDescripc"     => $LineaDescripc,
-          "ColeccionDescripc" => $LineaColeccion,
-          "Articulos"         => $arrArticulos
-        ]);
-
-
-        $LineaCodigo    = $row["va_lin"];
-        $LineaDescripc  = $row["t_descr"];
-        $LineaColeccion = $row["t_ref"];
-
-        $ClteFilCategoSubcategoLinea = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"].$row["va_lin"];
-
-        $arrArticulos = array();
-
-      }
-      
-      array_push($arrArticulos, [
+      array_push($arrDetalle, [
+        "ClienteCodigo"     => trim($row["va_num"]),
+        "ClienteFilial"     => trim($row["va_fil"]),
+        "LineaCodigo"       => $row["va_lin"],
         "ArticuloCodigo"    => trim($row["va_clave"]),
         "ArticuloDescripc"  => trim($row["c_descr"]),
         "ArticuloTipo"      => $row["c_tipole"],
@@ -855,45 +726,28 @@ FUNCTION CreaDataCompuesta( $data )
         "PiezasPorcentaje"  => floatval($row["porc_pza"]),
         "Gramos"            => floatval($row["va_can"]),
         "GramosPorcentaje"  => floatval($row["porc_can"]),
-        "ImporteVenta"      => floatval($row["va_venta"]),
+        "ImporteVenta"      => floatval($row["va_venta"])
       ]);
 
-    } // foreach($data as $row)   
-   
+    } // foreach($data as $row)
 
     // Ultimo registro
-    array_push($arrLineas, [
-      "LineaCodigo"       => $LineaCodigo,
-      "LineaDescripc"     => $LineaDescripc,
-      "ColeccionDescripc" => $LineaColeccion,
-      "Articulos"         => $arrArticulos
-    ]);
 
     array_push($arrSubcatego, [
-      "SubcategoriaCodigo" => $SubcategoCodigo,
-      "SubcategoriaNombre" => $SubcategoNombre,
-      "LineasProducto"   => $arrLineas
-    ]);
+      "SubcategoriaCodigo"  => $SubcategoCodigo,
+      "SubcategoriaNombre"  => $SubcategoNombre,
+      "Detalle"             => $arrDetalle]);
 
-    array_push($arrCategorias, [
+    //array_push($arrCategorias, [
+    array_push($contenido, [
       "CategoriaCodigo" => $CategoCodigo,
       "CategoriaNombre" => $CategoNombre,
       "Subcategorias"   => $arrSubcatego
     ]);
-    
-    $arrClientes = [
-      "ClienteCodigo" => trim($ClienteCodigo),
-      "ClienteFilial" => trim($ClienteFilial),
-      "ClienteNombre" => trim($ClienteNombre),
-      "Categorias"    => $arrCategorias
-    ];
 
-    // Se agrega el array del nuevo cliente a la seccion "contenido"
-    array_push($contenido, $arrClientes);
-    
+    //array_push($contenido, $arrCategorias);
+
   } // count($data)>0
 
-
   return $contenido; 
-
-} 
+}

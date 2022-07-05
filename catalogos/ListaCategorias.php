@@ -204,10 +204,14 @@ FUNCTION SelectCategorias($CategoriaCodigo,$Subcategoria)
         }
       } else {
         # $where .= "AND a.t_clave = ' ' ";
-        # 23.may.2022 dRendon 
+        # 23.may.2022 dRendon: 
         # Por instrucciones de JMaravilla, no se devuelven resultados cuando
         # no se indica especificamente una SUBCATEGORIA                   
-        $where = "WHERE 1=2 ";
+        # 30.jun.2022 dRendon:
+        # Por instrucciones de JMaravilla, ahora se devuelven todas las subcategorias
+        # de la categoria indicada
+        // $where = "WHERE 1=2 ";
+        
       }
     }
   } else {
