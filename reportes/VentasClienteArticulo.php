@@ -4,8 +4,11 @@ header('Content-type: application/json');
 date_default_timezone_set('America/Mexico_City');
 
 /**
- * Ventas por Cliente y Artículo
+ * Ventas por Cliente y Artículo (ordenado por categoría)
  * --------------------------------------------------------------------------
+ * Este servicio maneja el caso en que el reporte se ordena por Categoría.
+ * Cuando el reportes se ordena por Piezas o Importe se escribió el servicio
+ * VentasClienteArticuloPzasImpo.php
  */
 
 # En el script 'constantes.php' se definen:
@@ -32,14 +35,18 @@ $TipoUsuario  = null;     // Tipo de usuario
 $Usuario      = null;     // Id del usuario (cliente, agente o gerente)
 $OficinaDesde = null;     // Código Oficina en que se registra el pedido 
 $OficinaHasta = null;     // Código Oficina en que se registra el pedido
-$FechaDesde   = null;     // Fecha de registro del pedido
-$FechaHasta   = null;     // Fecha de registro del pedido
+$FechaDesde   = null;     // Fecha de registro inicial
+$FechaHasta   = null;     // Fecha de registro final
 $ClienteDesde = null;     // Código del cliente inicial
 $FilialDesde  = null;     // Filial del cliente inicial
 $ClienteHasta = null;     // Código del cliente final
 $FilialHasta  = null;     // Filial del cliente final
+$CategoriaDesde = null;   // Código de categoria inicial
+$SubcategoDesde = null;   // Código de Subcategoria inicial
+$CategoriaHasta = null;   // Código de categoria final
+$SubcategoHasta = null;   // Código de Subcategoria final
 $TipoArticulo = null;     // Tipo de artículo: L=Línea | E=Especiales
-$TipoOrigen   = null;     // Origen del pedido: I=inteno | E=externo
+$TipoOrigen   = null;     // Origen de producción del artículo: I=inteno | E=externo
 $OrdenReporte = null;     // Orden del reporte: C=Categoría | P=Piezas | I=Importe
 $Presentacion = null;     // Presentación del reporte: D=Detallado | R=Resumido
 $Pagina       = 1;        // Pagina devuelta del conjunto de datos obtenido

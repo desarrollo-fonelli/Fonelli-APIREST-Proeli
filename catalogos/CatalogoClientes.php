@@ -351,7 +351,7 @@ $Password, $Status, $AgenteCodigo)
     LEFT JOIN var020 m ON (m.T_TICA = '10' AND m.T_GPO = '19' AND m.T_CLAVE = a.CC_FORPAG) 
     LEFT JOIN prov10 n ON n.PR_NOM  = a.CC_PROVADM 
     $where 
-    ORDER BY a.cc_num,a.cc_fil";
+    ORDER BY replace(a.cc_num,' ','0'),replace(a.cc_fil,' ','0')";
 
   //var_dump($sqlCmd);
 

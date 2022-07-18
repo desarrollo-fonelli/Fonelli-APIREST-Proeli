@@ -14,7 +14,7 @@ date_default_timezone_set('America/Mexico_City');
 require_once "../include/constantes.php";
 
 # Constantes locales
-const K_SCRIPTNAME  = "estadocuenta.php";
+const K_SCRIPTNAME  = "EstadoCuenta.php";
 
 # Declara variables generales
 $codigo   = null;   // codigo devuelto en el json de respuesta
@@ -779,9 +779,9 @@ FUNCTION SelectResumenTipoClte($TipoUsuario, $Usuario)
 
   $contenido = [
     "Clientes" => $contenido,
-    "ResumenTipoCartera" => $arrResumenCartera,
-    "ResumenStatusCliente" => $arrResumenStatusClte,
-    "ResumenTipoCliente" => $arrResumenTipoClte
+    "ResumenTipoCartera"  => $arrResumenCartera,
+    "ResumenStatusCliente"=> $arrResumenStatusClte,
+    "ResumenTipoCliente"  => $arrResumenTipoClte
   ];
 
   return $contenido; 
