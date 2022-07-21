@@ -149,7 +149,15 @@ echo $response;
 
 return;
 
-
+/**
+ * Envía Consulta a la base de datos y devuelve un array con
+ * los resultados obtenidos.
+ * 
+ * @param int $AgenteDesde
+ * @param int $AgenteHasta
+ * @param string $FechaCorte
+ * @return array
+ */
 FUNCTION SelectIndicadores($AgenteDesde,$AgenteHasta,$FechaCorte)
 {
 
@@ -502,7 +510,6 @@ FUNCTION SelectIndicadores($AgenteDesde,$AgenteHasta,$FechaCorte)
   # Falta tener en cuenta la paginacion
   return $arrData;
 
-  return [];
 }
 
 /**

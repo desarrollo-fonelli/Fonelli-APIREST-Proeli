@@ -263,6 +263,10 @@ FUNCTION CreaDataCompuesta($arrClte, $arrVtas1, $arrVtas2, $arrResumCart, $arrPe
   $arrCategorias = array();
   $arrSubcatego  = array();  
   
+  if(count($arrClte) < 1){
+    return [];
+  }
+
   if(count($arrVtas1) > 0){
     $CategoCodigo     = $arrVtas1[0]["e1_cat"];
     $CategoNombre     = $arrVtas1[0]["desc_cat"];
@@ -509,8 +513,7 @@ FUNCTION SelectClte($TipoUsuario,$Usuario,$ClienteCodigo,$FilialDesde, $FilialHa
     //cc_num= LPAD(:pNum,6,' ') AND cc_fil BETWEEN LPAD(:pFilInic,3,' ') AND LPAD(:pFilFinal,3,' ') "
     $where = "WHERE concat(replace(a.cc_num,' ','0'),replace(a.cc_fil,' ','0')) >= :strClteInic
     AND concat(replace(a.cc_num,' ','0'),replace(a.cc_fil,' ','0')) <= :strClteFinal ";
-
-    if(in_array($TipoUsuario, ["A"])){
+    if($TipoUsuario == "A"){
       // Solo aplica filtro cuando el usuario es un agente
       $where .= "AND a.cc_age = :strUsuario ";
     }
@@ -629,7 +632,7 @@ $FilialHasta,$FechaDesde,$FechaHasta)
     AND concat(replace(e1_num,' ','0'),replace(e1_fil,' ','0')) <= :strClteFinal
     AND (e1_fecha BETWEEN :pFechaDesde AND :pFechaHasta) 
     AND concat(e1_cat,e1_scat) IN (SELECT concat(idCatego,idSubcatego) as llave FROM subcatego) ";
-    if(in_array($TipoUsuario, ["A"])){
+    if($TipoUsuario == "A"){
       // Solo aplica filtro cuando el usuario es un agente
       $where .= "AND e1_age = :strUsuario ";
     }
@@ -669,7 +672,7 @@ $FilialHasta,$FechaDesde,$FechaHasta)
     AND concat(replace(va_num,' ','0'),replace(va_fil,' ','0')) <= :strClteFinal
     AND (va_fecha BETWEEN :pFechaDesde AND :pFechaHasta ) 
     AND concat(va_cat,va_scat) IN (SELECT concat(idCatego,idSubcatego) as llave FROM subcatego) ";
-    if(in_array($TipoUsuario, ["A"])){
+    if($TipoUsuario == "A"){
       // Solo aplica filtro cuando el usuario es un agente
       $where .= "AND va_age = :strUsuario ";
     }
@@ -789,7 +792,7 @@ $FilialDesde,$FilialHasta,$Fecha2Hasta)
     $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
     AND concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) <= :strClteFinal
     AND sc_feex <= :pFechaHasta ";
-    if(in_array($TipoUsuario, ["A"])){
+    if($TipoUsuario == "A"){
       // Solo aplica filtro cuando el usuario es un agente
       $where .= "AND sc_age = :strUsuario ";
     }
@@ -816,7 +819,7 @@ $FilialDesde,$FilialHasta,$Fecha2Hasta)
     $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
     AND concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) <= :strClteFinal
     AND sc_feex <= :pFechaHasta ";
-    if(in_array($TipoUsuario, ["A"])){
+    if($TipoUsuario == "A"){
       // Solo aplica filtro cuando el usuario es un agente
       $where .= "AND sc_age = :strUsuario ";
     }
@@ -959,6 +962,10 @@ FUNCTION SelectPedidos($TipoUsuario,$Usuario,$ClienteCodigo,$FilialDesde,$Filial
     $oSQL=$conn->prepare($sqlCmd);
     $oSQL->bindParam(":strClteInic",$strClteInic,PDO::PARAM_STR);
     $oSQL->bindParam(":strClteFinal",$strClteFinal,PDO::PARAM_STR);    
+    if($TipoUsuario == "A"){
+      $oSQL-> bindParam(":strUsuario" ,$strUsuario,PDO::PARAM_STR);
+    }
+
     $oSQL->execute();
     $numRows=$oSQL->rowCount();
 

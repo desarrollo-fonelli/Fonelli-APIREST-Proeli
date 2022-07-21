@@ -171,7 +171,8 @@ FUNCTION SelectCarteras($CarteraCodigo)
   $oSQL-> execute();
 
   # Construyo dinamicamente la condicion WHERE
-  $where = "WHERE a.t_tica = '10' AND t_gpo = '88' ";
+  $where = "WHERE a.t_tica = '10' AND t_gpo = '88' 
+  AND SUBSTRING(a.t_param,2,1) = '1' ";
 
   if(isset($CarteraCodigo)){
     if(trim($CarteraCodigo) == ""){
