@@ -231,8 +231,8 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
       break;      
   }
   
-  $strClteInic      = str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT);
-  $strClteFinal     = str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT). str_pad($FilialHasta , 3, " ", STR_PAD_LEFT);
+  $strClteInic   = str_replace(' ','0',str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT));
+  $strClteFinal  = str_replace(' ','0',str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT). str_pad($FilialHasta , 3, " ", STR_PAD_LEFT));
   $strCarteraDesde  = str_pad($CarteraDesde, 1, " ", STR_PAD_RIGHT);
   $strCarteraHasta  = str_pad($CarteraHasta, 1, " ", STR_PAD_RIGHT);
 
@@ -241,7 +241,8 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
   require_once "../db/conexion.php";
 
   # Construyo dinamicamente la condicion WHERE
-  $where = "WHERE CONCAT(a.sc_num,a.sc_fil) >= :strClteInic AND CONCAT(a.sc_num,a.sc_fil) <= :strClteFinal 
+  $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
+  AND concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) <= :strClteFinal
   AND a.sc_tica >= :strCarteraDesde AND a.sc_tica <= :strCarteraHasta 
   AND SUBSTRING(b.t_param,2,1) = '1' ";
   
@@ -266,7 +267,8 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
     FROM edocta a
     LEFT JOIN var020 b ON t_tica='10' AND t_gpo='88' AND t_clave=sc_tica
     LEFT JOIN cli010 c ON c.cc_num = a.sc_num AND c.cc_fil = a.sc_fil 
-    $where ORDER BY a.sc_num,a.sc_fil,a.sc_tica,a.sc_of,a.sc_serie,a.sc_apl ";
+    $where 
+    ORDER BY replace(a.sc_num,' ','0'),replace(a.sc_fil,' ','0'),a.sc_tica,a.sc_of,a.sc_serie,a.sc_apl ";
 
   //var_dump($sqlCmd);
 
@@ -340,8 +342,8 @@ FUNCTION SelectResumenCartera($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesd
         break;      
     }
     
-    $strClteInic      = str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT);
-    $strClteFinal     = str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT). str_pad($FilialHasta , 3, " ", STR_PAD_LEFT);
+    $strClteInic   = str_replace(' ','0',str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT));
+    $strClteFinal  = str_replace(' ','0',str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT). str_pad($FilialHasta , 3, " ", STR_PAD_LEFT));  
     $strCarteraDesde  = str_pad($CarteraDesde, 1, " ", STR_PAD_RIGHT);
     $strCarteraHasta  = str_pad($CarteraHasta, 1, " ", STR_PAD_RIGHT);
   
@@ -351,7 +353,8 @@ FUNCTION SelectResumenCartera($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesd
     $conn = DB::getConn();
   
     # Construyo dinamicamente la condicion WHERE
-    $where = "WHERE CONCAT(a.sc_num,a.sc_fil) >= :strClteInic AND CONCAT(a.sc_num,a.sc_fil) <= :strClteFinal 
+    $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
+    AND concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) <= :strClteFinal
     AND a.sc_tica >= :strCarteraDesde AND a.sc_tica <= :strCarteraHasta 
     AND a.sc_saldo<>0 AND SUBSTRING(b.t_param,2,1)='1' ";
   

@@ -17,3 +17,12 @@
  */
   const K_FILASPORPAGINA  = 25;
 
+/** 
+ * Códigos de respuesta al intentar autenticación
+ */
+  const K_AUTH_OK         = "Usuario Autenticado";
+  const K_AUTH_DATA_EMPTY = "Credenciales incompletas";
+  const K_AUTH_PASSW_FAIL = "Password incorrecto";
+  const K_AUTH_USER_INACT = "Usuario no esta Activo";
+  const K_AUTH_USER_NOREG = "Usuario no registrado";
+  

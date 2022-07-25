@@ -583,7 +583,8 @@ FUNCTION CreaDataCompuesta( $data )
     ]);
 
 
-    array_push($contenido, $arrAgentes);
+    //array_push($contenido, $arrAgentes);
+    $contenido = $arrAgentes;
 
   }
 
