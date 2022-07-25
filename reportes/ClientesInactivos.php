@@ -408,37 +408,37 @@ FUNCTION CreaDataCompuesta( $data )
           array_push($arrVencidos, [
             "TipoCarteraCodigo"   => "1",
             "TipoCarteraDescripc" => "CtaCorr_MN",
-            "TotalAgenteSaldoTipoCartera" => floatval($CtaCorrMNvenc)]);
+            "TotalAgenteVencidoTipoCartera" => floatval($CtaCorrMNvenc)]);
         }
         if($CtaCorrOROvenc <> 0){
           array_push($arrVencidos, [
             "TipoCarteraCodigo"   => "2",
             "TipoCarteraDescripc" => "CtaCorr_ORO",
-            "TotalAgenteSaldoTipoCartera" => floatval($CtaCorrOROvenc)]);  
+            "TotalAgenteVencidoTipoCartera" => floatval($CtaCorrOROvenc)]);  
         }
         if($CtaCorrDLLSvenc <> 0){
           array_push($arrVencidos, [
             "TipoCarteraCodigo"   => "3",
             "TipoCarteraDescripc" => "CtaCorr_DLLS",
-            "TotalAgenteSaldoTipoCartera" => floatval($CtaCorrDLLSvenc)]);
+            "TotalAgenteVencidoTipoCartera" => floatval($CtaCorrDLLSvenc)]);
         }
         if($CtaDocMNvenc <> 0){
           array_push($arrVencidos, [
             "TipoCarteraCodigo"   => "6",
             "TipoCarteraDescripc" => "CtaDoc_MN",
-            "TotalAgenteSaldoTipoCartera" => floatval($CtaDocMNvenc)]);
+            "TotalAgenteVencidoTipoCartera" => floatval($CtaDocMNvenc)]);
         }
         if($CtaDocOROvenc <> 0){
           array_push($arrVencidos, [
             "TipoCarteraCodigo"   => "7",
             "TipoCarteraDescripc" => "CtaDoc_ORO",
-            "TotalAgenteSaldoTipoCartera"  => floatval($CtaDocOROvenc)]);
+            "TotalAgenteVencidoTipoCartera"  => floatval($CtaDocOROvenc)]);
         }
         if($CtaDocDLLSvenc <> 0){
           array_push($arrVencidos, [
             "TipoCarteraCodigo"   => "8",
             "TipoCarteraDescripc" => "CtaDoc_USD",
-            "TotalAgenteSaldoTipoCartera"  => floatval($CtaDocDLLSvenc)]);
+            "TotalAgenteVencidoTipoCartera"  => floatval($CtaDocDLLSvenc)]);
         }
 
         array_push($arrClientes, [
@@ -529,37 +529,37 @@ FUNCTION CreaDataCompuesta( $data )
       array_push($arrVencidos, [
         "TipoCarteraCodigo"   => "1",
         "TipoCarteraDescripc" => "CtaCorr_MN",
-        "TotalAgenteSaldoTipoCartera" => floatval($CtaCorrMNvenc)]);
+        "TotalAgenteVencidoTipoCartera" => floatval($CtaCorrMNvenc)]);
     }
     if($CtaCorrOROvenc <> 0){
       array_push($arrVencidos, [
         "TipoCarteraCodigo"   => "2",
         "TipoCarteraDescripc" => "CtaCorr_ORO",
-        "TotalAgenteSaldoTipoCartera" => floatval($CtaCorrOROvenc)]);  
+        "TotalAgenteVencidoTipoCartera" => floatval($CtaCorrOROvenc)]);  
     }
     if($CtaCorrDLLSvenc <> 0){
       array_push($arrVencidos, [
         "TipoCarteraCodigo"   => "3",
         "TipoCarteraDescripc" => "CtaCorr_DLLS",
-        "TotalAgenteSaldoTipoCartera" => floatval($CtaCorrDLLSvenc)]);
+        "TotalAgenteVencidoTipoCartera" => floatval($CtaCorrDLLSvenc)]);
     }
     if($CtaDocMNvenc <> 0){
       array_push($arrVencidos, [
         "TipoCarteraCodigo"   => "6",
         "TipoCarteraDescripc" => "CtaDoc_MN",
-        "TotalAgenteSaldoTipoCartera" => floatval($CtaDocMNvenc)]);
+        "TotalAgenteVencidoTipoCartera" => floatval($CtaDocMNvenc)]);
     }
     if($CtaDocOROvenc <> 0){
       array_push($arrVencidos, [
         "TipoCarteraCodigo"   => "7",
         "TipoCarteraDescripc" => "CtaDoc_ORO",
-        "TotalAgenteSaldoTipoCartera"  => floatval($CtaDocOROvenc)]);
+        "TotalAgenteVencidoTipoCartera"  => floatval($CtaDocOROvenc)]);
     }
     if($CtaDocDLLSvenc <> 0){
       array_push($arrVencidos, [
         "TipoCarteraCodigo"   => "8",
         "TipoCarteraDescripc" => "CtaDoc_USD",
-        "TotalAgenteSaldoTipoCartera"  => floatval($CtaDocDLLSvenc)]);
+        "TotalAgenteVencidoTipoCartera"  => floatval($CtaDocDLLSvenc)]);
     }
 
     array_push($arrClientes, [

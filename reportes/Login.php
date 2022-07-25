@@ -130,10 +130,10 @@ try {
   // En vez de <exito> | <fracaso> se va a devolver el código http
   if($Autenticado == K_AUTH_OK){
     http_response_code(200);
-    $response = json_encode(["Codigo" => 0]);
+    $codigo = K_API_OK;
   } else {
     http_response_code(401);  // Código HTTP definido por JMaravilla 21/jul/2022    
-    $response = json_encode(["Codigo" => -1, "Mensaje" => $Autenticado]);
+    $codigo = -1;
   }
 
 } catch (Exception $e) {
@@ -142,6 +142,8 @@ try {
   echo json_encode($response);
   exit;
 }
+
+$response = json_encode(["Codigo" => $codigo, "Mensaje" => $Autenticado]);
 
 echo $response;
 
