@@ -184,6 +184,10 @@ FUNCTION SelectLineas($LineaCodigo)
     $where .= "AND a.t_gpo <> '  ' ";
   }
 
+  // dRendon 28-jul-2022
+  // Se agrega en codigo duro este filtro por indicaciones de JMARAVILLA
+  $where .= "AND t_gpo <> '00' AND t_gpo <> 'ZZ' AND t_descr <> 'DISPONIBLE' ";
+
   $sqlCmd = "SELECT trim(a.t_gpo) t_gpo,trim(a.t_descr) t_descr,trim(a.t_ref) t_ref
    FROM var020 a 
    $where 

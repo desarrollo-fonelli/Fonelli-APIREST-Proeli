@@ -300,11 +300,19 @@ $ParidadTipo, $ArticuloLinea, $ArticuloCodigo)
     LEFT JOIN var020 f ON (f.t_tica = '91' AND f.t_gpo = cc_ticte)
     LEFT JOIN var020 g ON (g.t_tica = '10' AND g.t_gpo = '93' AND g.t_clave = cc_tipoli)
     LEFT JOIN var020 h ON (h.t_tica = '10' AND h.t_gpo = '93' AND h.t_clave = cc_tipoli2)
-    WHERE a.cc_num = :strClienteCodigo AND a.cc_fil = :strClienteFilial";
+    WHERE a.cc_num = :strClienteCodigo AND a.cc_fil = :strClienteFilial ";
+
+    if($TipoUsuario == "A"){
+      // Solo aplica filtro cuando el usuario es un agente
+      $where .= "AND a.cc_age = :strUsuario ";
+    }
 
     $oSQL = $conn-> prepare($sqlCmd);
     $oSQL-> bindParam(":strClienteCodigo", $strClienteCodigo, PDO::PARAM_STR);
     $oSQL-> bindParam(":strClienteFilial", $strClienteFilial, PDO::PARAM_STR);
+    if($TipoUsuario == "A"){
+      $oSQL-> bindParam(":strUsuario", $strUsuario, PDO::PARAM_STR);
+    }
 
     $oSQL-> execute();
     $numRows = $oSQL->rowCount();    

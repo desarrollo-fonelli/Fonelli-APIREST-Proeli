@@ -208,7 +208,7 @@ FUNCTION SelectAgentes($AgenteCodigo, $Password, $Status)
     a.gc_status,trim(a.gc_passw) gc_passw,trim(a.gc_ofi) gc_ofi
    FROM var030 a 
    $where
-   ORDER BY a.gc_llave";
+   ORDER BY replace(a.gc_llave,' ','0')";
 
   //var_dump($sqlCmd);
 

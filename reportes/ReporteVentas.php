@@ -70,7 +70,7 @@ try {
     if(! in_array($TipoUsuario, ["C","A","G"])){
       throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
     }
-    if($TipoUsuario == "A" && !isset($AgenteCodigo)){
+    if($TipoUsuario == "A" && !isset($_GET["AgenteCodigo"])){
       throw new Exception("Debe indicar un valor para 'AgenteCodigo' cuando 'TipoUsuario' es 'A'");
     }
   }

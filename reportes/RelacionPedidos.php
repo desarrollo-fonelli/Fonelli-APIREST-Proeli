@@ -325,16 +325,16 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
   
   $OficinaDesde  = str_pad($OficinaDesde, 2, "0", STR_PAD_LEFT);
   $OficinaHasta  = str_pad($OficinaHasta, 2, "0", STR_PAD_LEFT);
-  $strClteInic   = str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT);
-  $strClteFinal  = str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT). str_pad($FilialHasta , 3, " ", STR_PAD_LEFT);
+  $strClteInic   = str_replace(' ','0',str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT));
+  $strClteFinal  = str_replace(' ','0',str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT). str_pad($FilialHasta , 3, " ", STR_PAD_LEFT));  
 
   # Se conecta a la base de datos
   require_once "../db/conexion.php";
 
   # Construyo dinamicamente la condicion WHERE
   $where = "WHERE a.pe_of >= :OficinaDesde AND a.pe_of <= :OficinaHasta
-  AND concat(a.pe_num,a.pe_fil) >= :strClteInic
-  AND concat(a.pe_num,a.pe_fil) <= :strClteFinal
+  AND concat(replace(a.pe_num,' ','0'),replace(a.pe_fil,' ','0')) >= :strClteInic
+  AND concat(replace(a.pe_num,' ','0'),replace(a.pe_fil,' ','0')) <= :strClteFinal 
   AND a.pe_fepe >= :FechaPedidoDesde AND a.pe_fepe <= :FechaPedidoHasta 
   AND a.pe_fecao >= :FechaCancelacDesde AND a.pe_fecao <= :FechaCancelacHasta ";
 
@@ -474,6 +474,7 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
     SUM(coalesce(a.pe_canpep,0)) AS pe_canpep,
     SUM(coalesce(a.pe_canpro,0)) AS pe_canpro,
     (SUM(coalesce(a.pe_canpep,0)) - SUM(coalesce(pe_canpro,0))) AS canp_dif
+    
     FROM pe_detalle a
     LEFT JOIN dirsdo ON a.pe_of=s_llave
     LEFT JOIN var020 ON CONCAT('1095',a.pe_tipope)=CONCAT(t_tica,t_gpo,t_clave)

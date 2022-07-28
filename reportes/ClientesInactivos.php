@@ -194,8 +194,10 @@ FUNCTION SelectData($AgenteDesde,$AgenteHasta,$Pagina)
       SUM(CASE WHEN sac.sc_tica='8' AND (sac.sc_feve::date < CURRENT_DATE) THEN sac.sc_saldo ELSE 0 END) as ctadocdllsvenc
       FROM edocta sac
       LEFT JOIN cli010 cli ON cli.cc_num=sac.sc_num AND cli.cc_fil=sac.sc_fil
+      LEFT JOIN var020 b ON t_tica='10' AND t_gpo='88' AND t_clave=sac.sc_tica
       WHERE sc_age>=lpad(:agenteInic,2,' ') AND sc_age<=lpad(:agenteFinal,2,' ')
         AND cc_status='I'
+        AND SUBSTRING(b.t_param,2,1) = '1' 
       GROUP BY sac.sc_age,sac.sc_num,sac.sc_fil 
       ORDER BY sc_age,dias";
 

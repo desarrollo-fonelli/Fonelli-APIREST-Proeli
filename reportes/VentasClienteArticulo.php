@@ -616,8 +616,14 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
     }
 
     $sqlCmd = "SELECT a.*, trim(c.cc_raso) cc_raso,
-    round(a.va_pza::numeric(12,2)/b.va_pza::numeric(12,2)*100,2) AS porc_pza, 
-    round(a.va_can/b.va_can*100,2) AS porc_can
+    CASE
+    WHEN b.va_pza <> 0 THEN round(a.va_pza::numeric(12,2)/b.va_pza::numeric(12,2)*100,2) 
+    ELSE 0
+    END porc_pza, 
+    CASE
+    WHEN b.va_can <> 0 THEN round(a.va_can/b.va_can*100,2) 
+    ELSE 0
+    END porc_can 
     FROM tmp2 a 
     LEFT JOIN tmp1 b ON a.va_num = b.va_num AND a.va_fil = b.va_fil 
           AND a.va_cat = b.va_cat AND a.va_scat = b.va_scat 

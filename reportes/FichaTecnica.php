@@ -791,7 +791,8 @@ $FilialDesde,$FilialHasta,$Fecha2Hasta)
     # ---------------------------------------------------
     $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
     AND concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) <= :strClteFinal
-    AND sc_feex <= :pFechaHasta ";
+    AND sc_feex <= :pFechaHasta 
+    AND SUBSTRING(b.t_param,2,1) = '1' ";
     if($TipoUsuario == "A"){
       // Solo aplica filtro cuando el usuario es un agente
       $where .= "AND sc_age = :strUsuario ";
@@ -800,6 +801,7 @@ $FilialDesde,$FilialHasta,$Fecha2Hasta)
     $sqlCmd="CREATE TEMPORARY TABLE curSaldo AS
     SELECT sc_num,sc_tica,sum(sc_imp+sc_iva) AS sum_saldo
     FROM cli020 
+    LEFT JOIN var020 b ON t_tica='10' AND t_gpo='88' AND t_clave=sc_tica
     $where    
     GROUP BY sc_num,sc_tica ";
 
@@ -818,7 +820,8 @@ $FilialDesde,$FilialHasta,$Fecha2Hasta)
     # ---------------------------------------------------
     $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
     AND concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) <= :strClteFinal
-    AND sc_feex <= :pFechaHasta ";
+    AND sc_feex <= :pFechaHasta 
+    AND SUBSTRING(b.t_param,2,1) = '1' ";
     if($TipoUsuario == "A"){
       // Solo aplica filtro cuando el usuario es un agente
       $where .= "AND sc_age = :strUsuario ";
@@ -829,6 +832,7 @@ $FilialDesde,$FilialHasta,$Fecha2Hasta)
     sum(sc_imp) as sum_imp,sum(sc_iva) as sum_iva,
     sum(sc_imp+sc_iva) as sum_saldo
     FROM cli020 
+    LEFT JOIN var020 b ON t_tica='10' AND t_gpo='88' AND t_clave=sc_tica 
     $where
     GROUP BY sc_num,sc_fil,sc_tica,sc_serie,sc_apl 
     HAVING sum(sc_imp+sc_iva) <> 0";
