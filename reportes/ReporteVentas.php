@@ -1811,18 +1811,18 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
         array_push($arrSubCat,[
           "SubcategoriaCodigo"  => $SubcategoriaCodigo,
           "SubcategoriaNombre"  => $SubcategoriaNombre,
-          "TotalPiezas1"        => $row["va_pza"],
-          "TotalGramos1"        => $row["va_can"],
-          "TotalImporte1"       => $row["e1_imp"],
-          "TotalPorcentajeImporte1" => $row["porc_imp"],
-          "TotalValorAgregado1" => $row["e1_va"],
-          "TotalPorcentajeValorAgregado1" => $row["porc_va"],
-          "TotalPiezas2"        => $row["va_pza2"],
-          "TotalGramos2"        => $row["va_can2"],
-          "TotalImporte2"       => $row["e1_imp2"],
-          "TotalPorcentajeImporte2" => $row["porc_imp2"],
-          "TotalValorAgregado2" => $row["e1_va2"],
-          "TotalPorcentajeValorAgregado2" => $row["porc_va2"]
+          "TotalPiezas1"        => intval($row["va_pza"]),
+          "TotalGramos1"        => floatval($row["va_can"]),
+          "TotalImporte1"       => floatval($row["e1_imp"]),
+          "TotalPorcentajeImporte1" => floatval($row["porc_imp"]),
+          "TotalValorAgregado1" => floatval($row["e1_va"]),
+          "TotalPorcentajeValorAgregado1" => floatval($row["porc_va"]),
+          "TotalPiezas2"        => intval($row["va_pza2"]),
+          "TotalGramos2"        => floatval($row["va_can2"]),
+          "TotalImporte2"       => floatval($row["e1_imp2"]),
+          "TotalPorcentajeImporte2" => floatval($row["porc_imp2"]),
+          "TotalValorAgregado2" => floatval($row["e1_va2"]),
+          "TotalPorcentajeValorAgregado2" => floatval($row["porc_va2"])
         ]);
 
       } // foreach($data as $row)
