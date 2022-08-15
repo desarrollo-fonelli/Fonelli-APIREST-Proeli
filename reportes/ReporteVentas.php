@@ -478,13 +478,12 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
       $where .= $filtroTipoie;
     }
 
+    # Obtiene total general (global) para importe y valor agregado
     $sqlCmd = "CREATE TEMPORARY TABLE tmp_tot1 AS 
       SELECT SUM(a.e1_imp) AS e1_imp, SUM(a.e1_va) AS e1_va
       FROM cli040 a 
       LEFT JOIN cli010 b ON a.e1_num = b.cc_num AND a.e1_fil = b.cc_fil
       $where ";
-
-    //var_dump($sqlCmd); exit;
 
     $oSQL = $conn-> prepare($sqlCmd);
     $oSQL-> bindParam(":tipoClienteDesde", $TipoClienteDesde, PDO::PARAM_STR);
@@ -950,12 +949,86 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     unset($oSQL);
     switch($OrdenReporte) {
       // Ordenado por Cliente
-      case 'C':
+      case "C":
         $sqlCmd = "SELECT * FROM tmp_repo";
         $oSQL = $conn->prepare($sqlCmd);
         $oSQL->execute();
         $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
         break;
+
+      // Ordenado por Importe de Ventas      
+      case "I":
+        # Tabla agrupada por num de cliente, ordenada por importe de venta,
+        # sin información adicional
+        $sqlCmd = "CREATE TEMPORARY TABLE tmp_repoimpo AS
+        SELECT va_num,SUM(e1_imp) AS e1_imp
+        FROM tmp_repo 
+        GROUP BY va_num 
+        ORDER BY e1_imp DESC";
+        $oSQL = $conn->prepare($sqlCmd);
+        $oSQL->execute();
+
+        $sqlCmd = "SELECT a.va_num,'  0' AS va_fil, MAX(a.e1_imp) AS totclte,
+        MAX(b.va_age) AS va_age,b.va_cat,MAX(b.categonombre) AS categonombre,
+        b.va_scat,MAX(b.subcategonombre) AS subcategonombre,
+        MAX(b.cc_raso) AS cc_raso,MAX(b.cc_suc) AS cc_suc,MAX(b.cc_status) AS cc_status,
+        MAX(b.cc_ticte) AS cc_ticte,MAX(b.cc_tipoli) AS cc_tipoli,
+        MAX(b.cc_tipoli2) AS cc_tipoli2,MAX(b.cc_tparid) AS cc_tparid,
+        SUM(va_pza) AS va_pza, SUM(va_can) AS va_can,
+        SUM(b.e1_imp) AS e1_imp, SUM(porc_imp) as porc_imp,
+        SUM(e1_va) AS e1_va, SUM(porc_va) AS porc_va,
+        SUM(va_pza2) AS va_pza2, SUM(va_can2) AS va_can2,
+        SUM(e1_imp2) AS e1_imp2, SUM(porc_imp2) as porc_imp2,
+        SUM(e1_va2) AS e1_va2, SUM(porc_va2) as porc_va2
+        FROM tmp_repoimpo a 
+        LEFT JOIN tmp_repo b ON a.va_num=b.va_num
+        GROUP BY a.va_num,b.va_cat,b.va_scat
+        ORDER BY totclte DESC,va_num,b.va_cat,b.va_scat";
+
+        $oSQL = $conn->prepare($sqlCmd);
+        $oSQL->execute();
+        
+        $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
+
+        //echo json_encode($arrData); exit;
+
+        break;
+
+      // Totales valor agregado por cliente, en Orden descendente
+      case 'V':
+        # Tabla agrupada por num de cliente, ordenada por valor agregado,
+        # sin información adicional
+        $sqlCmd = "CREATE TEMPORARY TABLE tmp_repoimpo AS
+        SELECT va_num,SUM(e1_va) AS e1_va
+        FROM tmp_repo 
+        GROUP BY va_num 
+        ORDER BY e1_va DESC";
+        $oSQL = $conn->prepare($sqlCmd);
+        $oSQL->execute();
+
+        $sqlCmd = "SELECT a.va_num,'  0' AS va_fil, MAX(a.e1_va) AS totclte,
+        MAX(b.va_age) AS va_age,b.va_cat,MAX(b.categonombre) AS categonombre,
+        va_scat,MAX(b.subcategonombre) AS subcategonombre,
+        MAX(b.cc_raso) AS cc_raso,MAX(b.cc_suc) AS cc_suc,MAX(b.cc_status) AS cc_status,
+        MAX(b.cc_ticte) AS cc_ticte,MAX(b.cc_tipoli) AS cc_tipoli,
+        MAX(b.cc_tipoli2) AS cc_tipoli2,MAX(b.cc_tparid) AS cc_tparid,
+        SUM(va_pza) AS va_pza, SUM(va_can) AS va_can,
+        SUM(b.e1_imp) AS e1_imp, SUM(porc_imp) as porc_imp,
+        SUM(b.e1_va) AS e1_va, SUM(porc_va) AS porc_va,
+        SUM(va_pza2) AS va_pza2, SUM(va_can2) AS va_can2,
+        SUM(e1_imp2) AS e1_imp2, SUM(porc_imp2) as porc_imp2,
+        SUM(e1_va2) AS e1_va2, SUM(porc_va2) as porc_va2
+        FROM tmp_repoimpo a 
+        LEFT JOIN tmp_repo b ON a.va_num=b.va_num
+        GROUP BY a.va_num,b.va_cat,va_scat
+        ORDER BY totclte DESC,va_num,b.va_cat,va_scat";
+
+        $oSQL = $conn->prepare($sqlCmd);
+        $oSQL->execute();
+
+        $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
+
+        break;        
       }
 
 
@@ -1888,8 +1961,7 @@ FUNCTION CreaDataCompuesta( $data, $dataCltesconVenta, $dataTotalCatego )
     $CategoCodigo  = $data[0]["va_cat"];
     $CategoNombre  = $data[0]["categonombre"];
     $SubcategoCodigo  = $data[0]["va_scat"];
-    $SubcategoNombre  = $data[0]["subcategonombre"];    
-
+    $SubcategoNombre  = (is_null($data[0]["subcategonombre"]) ? "" : $data[0]["subcategonombre"]); 
     $ClienteStatus  = $data[0]["cc_status"];
     $Lista1         = $data[0]["cc_tipoli"];
     $Lista2         = $data[0]["cc_tipoli2"];
@@ -1898,7 +1970,7 @@ FUNCTION CreaDataCompuesta( $data, $dataCltesconVenta, $dataTotalCatego )
     $AgenteCodigo   = $data[0]["va_age"];
 
     $CategoSubcatego  = $CategoCodigo. $SubcategoCodigo;
-    $CatScatDescripc  = $data[0]["catdescripc"];
+    //$CatScatDescripc  = $data[0]["catdescripc"];
   
     foreach($data as $row) {
   
@@ -1940,7 +2012,7 @@ FUNCTION CreaDataCompuesta( $data, $dataCltesconVenta, $dataTotalCatego )
         $CategoCodigo  = $row["va_cat"];
         $CategoNombre  = $row["categonombre"];
         $SubcategoCodigo = $row["va_scat"];
-        $SubcategoNombre = $row["subcategonombre"];
+        $SubcategoNombre = (is_null($row["subcategonombre"]) ? "" : $row["subcategonombre"]);
 
         $ClteFil       = $row["va_num"].$row["va_fil"];
         $ClteFilCatego = $row["va_num"].$row["va_fil"].$row["va_cat"];
@@ -1963,7 +2035,7 @@ FUNCTION CreaDataCompuesta( $data, $dataCltesconVenta, $dataTotalCatego )
         $CategoCodigo     = $row["va_cat"];
         $CategoNombre     = $row["categonombre"];       
         $SubcategoCodigo  = $row["va_scat"];
-        $SubcategoNombre  = $row["subcategonombre"];
+        $SubcategoNombre  = (is_null($row["subcategonombre"]) ? "" : $row["subcategonombre"]);
 
         $ClteFilCatego = $row["va_num"].$row["va_fil"].$row["va_cat"];
         $ClteFilCategoSubcatego = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"];
@@ -1974,7 +2046,7 @@ FUNCTION CreaDataCompuesta( $data, $dataCltesconVenta, $dataTotalCatego )
       // Cambio en SubCategoria
       if($ClteFilCategoSubcatego != $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"]){
         $SubcategoCodigo = $row["va_scat"];
-        $SubcategoNombre = $row["subcategonombre"];
+        $SubcategoNombre = (is_null($row["subcategonombre"]) ? "" : $row["subcategonombre"]);
 
         $ClteFilCategoSubcatego = $row["va_num"].$row["va_fil"].$row["va_cat"].$row["va_scat"];
       }
