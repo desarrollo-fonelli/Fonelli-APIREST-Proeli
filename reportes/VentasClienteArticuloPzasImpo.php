@@ -55,7 +55,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 if ($requestMethod != "GET") {
   http_response_code(405);
   $mensaje = "Esta API solo acepta verbos GET";   // quité K_SCRIPTNAME del mensaje
-  echo json_encode(["Code" => K_API_FAILVERB, "Mensaje" => $mensaje ]);
+  echo json_encode(["Code" => K_API_FAILVERB, "Mensaje" => $mensaje]);
   exit;
 }
 
@@ -66,8 +66,8 @@ try {
     throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");   // quité K_SCRIPTNAME del mensaje
   } else {
     $TipoUsuario = $_GET["TipoUsuario"];
-    if(! in_array($TipoUsuario, ["C","A","G"])){
-      throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
+    if (!in_array($TipoUsuario, ["C", "A", "G"])) {
+      throw new Exception("Valor '" . $TipoUsuario . "' NO permitido para 'TipoUsuario'");
     }
   }
 
@@ -87,8 +87,8 @@ try {
     throw new Exception("El parametro obligatorio 'FechaDesde' no fue definido.");
   } else {
     $FechaDesde = $_GET["FechaDesde"];
-    if(!ValidaFormatoFecha($FechaDesde)){
-      throw new Exception("El parametro 'FechaDesde' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");  
+    if (!ValidaFormatoFecha($FechaDesde)) {
+      throw new Exception("El parametro 'FechaDesde' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");
     }
   }
 
@@ -96,8 +96,8 @@ try {
     throw new Exception("El parametro obligatorio 'FechaHasta' no fue definido.");
   } else {
     $FechaHasta = $_GET["FechaHasta"];
-    if(!ValidaFormatoFecha($FechaHasta)){
-      throw new Exception("El parametro 'FechaHasta' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");  
+    if (!ValidaFormatoFecha($FechaHasta)) {
+      throw new Exception("El parametro 'FechaHasta' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");
     }
   }
 
@@ -110,7 +110,7 @@ try {
   if (!isset($_GET["FilialDesde"])) {
     throw new Exception("El parametro obligatorio 'FilialDesde' no fue definido.");
   } else {
-    $FilialDesde = $_GET["FilialDesde"] ;
+    $FilialDesde = $_GET["FilialDesde"];
   }
 
   if (!isset($_GET["ClienteHasta"])) {
@@ -122,76 +122,75 @@ try {
   if (!isset($_GET["FilialHasta"])) {
     throw new Exception("El parametro obligatorio 'FilialHasta' no fue definido.");
   } else {
-    $FilialHasta = $_GET["FilialHasta"] ;
+    $FilialHasta = $_GET["FilialHasta"];
   }
 
   if (!isset($_GET["LineaDesde"])) {
     throw new Exception("El parametro obligatorio 'LineaDesde' no fue definido.");
   } else {
-    $LineaDesde = $_GET["LineaDesde"] ;
+    $LineaDesde = $_GET["LineaDesde"];
   }
 
   if (!isset($_GET["LineaHasta"])) {
     throw new Exception("El parametro obligatorio 'LineaHasta' no fue definido.");
   } else {
-    $LineaHasta = $_GET["LineaHasta"] ;
+    $LineaHasta = $_GET["LineaHasta"];
   }
 
   if (!isset($_GET["ClaveDesde"])) {
     throw new Exception("El parametro obligatorio 'ClaveDesde' no fue definido.");
   } else {
-    $ClaveDesde = $_GET["ClaveDesde"] ;
+    $ClaveDesde = $_GET["ClaveDesde"];
   }
 
   if (!isset($_GET["ClaveHasta"])) {
     throw new Exception("El parametro obligatorio 'ClaveHasta' no fue definido.");
   } else {
-    $ClaveHasta = $_GET["ClaveHasta"] ;
+    $ClaveHasta = $_GET["ClaveHasta"];
   }
 
   if (!isset($_GET["CategoriaDesde"])) {
     throw new Exception("El parametro obligatorio 'CategoriaDesde' no fue definido.");
   } else {
-    $CategoriaDesde = $_GET["CategoriaDesde"] ;
+    $CategoriaDesde = $_GET["CategoriaDesde"];
   }
 
   if (!isset($_GET["SubcategoDesde"])) {
     throw new Exception("El parametro obligatorio 'SubcategoDesde' no fue definido.");
   } else {
-    $SubcategoDesde = $_GET["SubcategoDesde"] ;
+    $SubcategoDesde = $_GET["SubcategoDesde"];
   }
 
   if (!isset($_GET["CategoriaHasta"])) {
     throw new Exception("El parametro obligatorio 'CategoriaHasta' no fue definido.");
   } else {
-    $CategoriaHasta = $_GET["CategoriaHasta"] ;
+    $CategoriaHasta = $_GET["CategoriaHasta"];
   }
 
   if (!isset($_GET["SubcategoHasta"])) {
     throw new Exception("El parametro obligatorio 'SubcategoHasta' no fue definido.");
   } else {
-    $SubcategoHasta = $_GET["SubcategoHasta"] ;
+    $SubcategoHasta = $_GET["SubcategoHasta"];
   }
 
   if (!isset($_GET["OrdenReporte"])) {
     throw new Exception("El parametro obligatorio 'OrdenReporte' no fue definido.");
   } else {
-    $OrdenReporte = $_GET["OrdenReporte"] ;
-    if(! in_array($OrdenReporte, ["C","P","I"]) ){
-      throw new Exception("Valor '". $OrdenReporte. "' NO permitido para 'OrdenReporte'");
-    }  
+    $OrdenReporte = $_GET["OrdenReporte"];
+    if (!in_array($OrdenReporte, ["C", "P", "I"])) {
+      throw new Exception("Valor '" . $OrdenReporte . "' NO permitido para 'OrdenReporte'");
+    }
   }
 
   if (!isset($_GET["Presentacion"])) {
     throw new Exception("El parametro obligatorio 'Presentacion' no fue definido.");
   } else {
-    $Presentacion = $_GET["Presentacion"] ;
+    $Presentacion = $_GET["Presentacion"];
     //if(! in_array($Presentacion, ["D","R"]) )
-    if(! in_array($Presentacion, ["R"]) ){
-      throw new Exception("Valor '". $Presentacion. "' NO permitido para 'Presentacion'");
-    }  
+    if (!in_array($Presentacion, ["R"])) {
+      throw new Exception("Valor '" . $Presentacion . "' NO permitido para 'Presentacion'");
+    }
   }
-
 } catch (Exception $e) {
   http_response_code(400);
   echo json_encode(["Code" => K_API_FAILAUTH, "Mensaje" => $e->getMessage()]);
@@ -199,26 +198,28 @@ try {
 }
 
 # Lista de parámetros aceptados por este endpoint
-$arrPermitidos = array("TipoUsuario", "Usuario", "OficinaDesde", "OficinaHasta",
-"FechaDesde", "FechaHasta", "ClienteDesde", "FilialDesde", "ClienteHasta", "FilialHasta", 
-"LineaDesde", "LineaHasta", "ClaveDesde", "ClaveHasta", "CategoriaDesde", "SubcategoDesde",
-"CategoriaHasta", "SubcategoHasta", "TipoArticulo", "TipoOrigen", "OrdenReporte", 
-"Presentacion", "Pagina");
+$arrPermitidos = array(
+  "TipoUsuario", "Usuario", "OficinaDesde", "OficinaHasta",
+  "FechaDesde", "FechaHasta", "ClienteDesde", "FilialDesde", "ClienteHasta", "FilialHasta",
+  "LineaDesde", "LineaHasta", "ClaveDesde", "ClaveHasta", "CategoriaDesde", "SubcategoDesde",
+  "CategoriaHasta", "SubcategoHasta", "TipoArticulo", "TipoOrigen", "OrdenReporte",
+  "Presentacion", "Pagina"
+);
 
 # Obtiene todos los parametros pasados en la llamada y verifica que existan
 # en la lista de parámetros aceptados por el endpoint
 $mensaje = "";
 $arrParam = array_keys($_GET);
-foreach($arrParam as $param){
-  if(! in_array($param, $arrPermitidos)){
-    if(strlen($mensaje) > 1){
+foreach ($arrParam as $param) {
+  if (!in_array($param, $arrPermitidos)) {
+    if (strlen($mensaje) > 1) {
       $mensaje .= ", ";
     }
     $mensaje .= $param;
-  }  
+  }
 }
-if(strlen($mensaje) > 0){
-  $mensaje = "Parametros no reconocidos: ". $mensaje;   // quité K_SCRIPTNAME del mensaje
+if (strlen($mensaje) > 0) {
+  $mensaje = "Parametros no reconocidos: " . $mensaje;   // quité K_SCRIPTNAME del mensaje
   http_response_code(400);
   echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
   exit;
@@ -230,31 +231,31 @@ if(strlen($mensaje) > 0){
 if (isset($_GET["Usuario"])) {
   $Usuario = $_GET["Usuario"];
 } else {
-  if(in_array($TipoUsuario, ["A", "G"])){
+  if (in_array($TipoUsuario, ["A", "G"])) {
     $mensaje = "Debe indicar 'Usuario' cuando 'TipoUsuario' es 'A' o 'G'";    // quité K_SCRIPTNAME del mensaje
-    http_response_code(400);  
+    http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
+    exit;
   }
 }
 
 if (isset($_GET["TipoArticulo"])) {
   $TipoArticulo = $_GET["TipoArticulo"];
-  if(! in_array($TipoArticulo, ["L","E"]) ){
-    $mensaje = "Valor '". $TipoArticulo. "' NO permitido para 'TipoArticulo'";
-    http_response_code(400);  
+  if (!in_array($TipoArticulo, ["L", "E"])) {
+    $mensaje = "Valor '" . $TipoArticulo . "' NO permitido para 'TipoArticulo'";
+    http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
+    exit;
   }
 }
 
 if (isset($_GET["TipoOrigen"])) {
   $TipoOrigen = $_GET["TipoOrigen"];
-  if(! in_array($TipoOrigen, ["I", "E"]) ){
-    $mensaje = "Valor '". $TipoOrigen. "' NO permitido para 'TipoOrigen'";
-    http_response_code(400);  
+  if (!in_array($TipoOrigen, ["I", "E"])) {
+    $mensaje = "Valor '" . $TipoOrigen . "' NO permitido para 'TipoOrigen'";
+    http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
+    exit;
   }
 }
 
@@ -265,20 +266,40 @@ if (isset($_GET["Pagina"])) {
 # Ejecuta la consulta 
 try {
 
-  $data = SelectCltePzasImporte($TipoUsuario,$Usuario,$OficinaDesde, 
-  $OficinaHasta,$FechaDesde,$FechaHasta,$ClienteDesde,$FilialDesde, 
-  $ClienteHasta,$FilialHasta,$LineaDesde,$LineaHasta,$ClaveDesde, 
-  $ClaveHasta,$CategoriaDesde,$SubcategoDesde,$CategoriaHasta,$SubcategoHasta,
-  $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina);
+  $data = SelectCltePzasImporte(
+    $TipoUsuario,
+    $Usuario,
+    $OficinaDesde,
+    $OficinaHasta,
+    $FechaDesde,
+    $FechaHasta,
+    $ClienteDesde,
+    $FilialDesde,
+    $ClienteHasta,
+    $FilialHasta,
+    $LineaDesde,
+    $LineaHasta,
+    $ClaveDesde,
+    $ClaveHasta,
+    $CategoriaDesde,
+    $SubcategoDesde,
+    $CategoriaHasta,
+    $SubcategoHasta,
+    $TipoArticulo,
+    $TipoOrigen,
+    $OrdenReporte,
+    $Presentacion,
+    $Pagina
+  );
 
   # Asigna código de respuesta HTTP por default
   http_response_code(200);
 
   # Compone el objeto JSON que devuelve el endpoint
   $numFilas = count($data);
-  $totalPaginas = ceil($numFilas/K_FILASPORPAGINA);
+  $totalPaginas = ceil($numFilas / K_FILASPORPAGINA);
 
-  if($numFilas > 0){
+  if ($numFilas > 0) {
     $codigo = K_API_OK;
     $mensaje = "success";
   } else {
@@ -286,7 +307,7 @@ try {
     $mensaje = "data not found";
   }
 
-  $dataCompuesta = CreaDataCompuesta( $data );
+  $dataCompuesta = CreaDataCompuesta($data);
 
   $response = [
     "Codigo"      => $codigo,
@@ -294,16 +315,14 @@ try {
     "Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => $dataCompuesta
 
-  ];    
-
+  ];
 } catch (Exception $e) {
   $response = [
     "Codigo"      => K_API_ERRSQL,
     "Mensaje"     => $conn->get_last_error(),
     "Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => []
-  ];    
- 
+  ];
 }
 
 $response = json_encode($response);
@@ -341,46 +360,65 @@ return;
  * @param string $Pagina
  * @return array
  */
-FUNCTION SelectCltePzasImporte($TipoUsuario,$Usuario,$OficinaDesde, 
-$OficinaHasta,$FechaDesde,$FechaHasta,$ClienteDesde,$FilialDesde, 
-$ClienteHasta,$FilialHasta,$LineaDesde,$LineaHasta,$ClaveDesde, 
-$ClaveHasta,$CategoriaDesde,$SubcategoDesde,$CategoriaHasta,$SubcategoHasta,
-$TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina) 
-{
+function SelectCltePzasImporte(
+  $TipoUsuario,
+  $Usuario,
+  $OficinaDesde,
+  $OficinaHasta,
+  $FechaDesde,
+  $FechaHasta,
+  $ClienteDesde,
+  $FilialDesde,
+  $ClienteHasta,
+  $FilialHasta,
+  $LineaDesde,
+  $LineaHasta,
+  $ClaveDesde,
+  $ClaveHasta,
+  $CategoriaDesde,
+  $SubcategoDesde,
+  $CategoriaHasta,
+  $SubcategoHasta,
+  $TipoArticulo,
+  $TipoOrigen,
+  $OrdenReporte,
+  $Presentacion,
+  $Pagina
+) {
   // Doy un plazo de hasta Cinco minutos para completar la consulta...
   set_time_limit(300);
 
   $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
 
   # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
-  switch($TipoUsuario){
-    // Cliente 
-    /*
+  switch ($TipoUsuario) {
+      // Cliente 
+      /*
     case "C":     <-- cuando el tipo es "Cliente", no se requiere "Usuario"
       $strUsuario = str_pad($Usuario, 6," ",STR_PAD_LEFT);
       break;
       */
 
-    // Agente
+      // Agente
     case "A":
-      $strUsuario = str_pad($Usuario, 2," ",STR_PAD_LEFT);
+      $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
       break;
-    // Gerente
+      // Gerente
     case "G":
-      $strUsuario = str_pad($Usuario, 2," ",STR_PAD_LEFT);
-      break;      
+      $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
+      break;
   }
 
   $OficinaDesde  = str_pad($OficinaDesde, 2, "0", STR_PAD_LEFT);
   $OficinaHasta  = str_pad($OficinaHasta, 2, "0", STR_PAD_LEFT);
-  $strClteInic   = str_replace(' ','0',str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT));
-  $strClteFinal  = str_replace(' ','0',str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT). str_pad($FilialHasta , 3, " ", STR_PAD_LEFT));
+  $strClteInic   = str_replace(' ', '0', str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT) . str_pad($FilialDesde, 3, " ", STR_PAD_LEFT));
+  $strClteFinal  = str_replace(' ', '0', str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT) . str_pad($FilialHasta, 3, " ", STR_PAD_LEFT));
 
-  $strLinClaveDesde = $LineaDesde. $ClaveDesde;
-  $strLinClaveHasta = $LineaHasta. $ClaveHasta;
+  $strLinClaveDesde = $LineaDesde . $ClaveDesde;
+  $strLinClaveHasta = $LineaHasta . $ClaveHasta;
 
-  $strCategoDesde   = $CategoriaDesde. $SubcategoDesde;
-  $strCategoHasta   = $CategoriaHasta. $SubcategoHasta;
+  $strCategoDesde   = $CategoriaDesde . $SubcategoDesde;
+  $strCategoHasta   = $CategoriaHasta . $SubcategoHasta;
 
   # Se conecta a la base de datos
   // require_once "../db/conexion.php";
@@ -397,13 +435,13 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
   AND concat(a.va_cat,a.va_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego) ";
 
   // Solo aplica filtro cuando el usuario es un agente
-  if(in_array($TipoUsuario, ["A"])){
+  if (in_array($TipoUsuario, ["A"])) {
     $where .= "AND a.va_age = :strUsuario ";
   }
 
   $filtroLineaEspec = "";
-  if(isset($TipoArticulo)){
-    switch ($TipoArticulo){
+  if (isset($TipoArticulo)) {
+    switch ($TipoArticulo) {
       case "L":
         $filtroLineaEspec = " AND c.c_tipole = '01' ";
         break;
@@ -415,22 +453,22 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
   }
 
   $filtroTipoie = "";
-  if(isset($TipoOrigen)){
-    switch ($TipoOrigen){
+  if (isset($TipoOrigen)) {
+    switch ($TipoOrigen) {
       case "I":
         $filtroTipoie = " AND SUBSTR(b.t_param,20,1) = 'I' ";
         break;
       case "E":
         $filtroTipoie = " AND SUBSTR(b.t_param,20,1) = 'E' ";
         break;
-    }    
+    }
     $where .= $filtroTipoie;
   }
-  
+
   try {
 
     # Se conecta a la base de datos
-    require_once "../db/conexion.php";  
+    require_once "../db/conexion.php";
 
 
     # Handler para la conexión a la base de datos
@@ -438,33 +476,33 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
 
     # Hay que definir dinamicamente el schema <---------------------------------
     $sqlCmd = "SET SEARCH_PATH TO dateli;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     # Borra tablas temporales en caso de que existan
     $sqlCmd = "DROP TABLE IF EXISTS catego;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     $sqlCmd = "DROP TABLE IF EXISTS subcatego;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     $sqlCmd = "DROP TABLE IF EXISTS tmp1;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     $sqlCmd = "DROP TABLE IF EXISTS tmp2;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     # Crea tablas temporales normalizadas para categorias y subcategorias
     $sqlCmd = "CREATE TEMPORARY TABLE catego AS 
     SELECT trim(t_gpo) as idcatego, t_descr AS descripc 
       FROM var020 WHERE t_tica = '02' AND SUBSTR(t_param,1,1) = '1' 
-      ORDER BY T_GPO"; 
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+      ORDER BY T_GPO";
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     $sqlCmd = "CREATE TEMPORARY TABLE subcatego AS
     SELECT a.idcatego, a.descripc AS namecatego,
@@ -474,8 +512,8 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
       WHERE b.t_clave <> '  ' AND SUBSTR(b.T_PARAM,1,1) <> '1'
       ORDER BY a.idcatego,b.t_clave";
 
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     # Crea tabla temporal resumida por cliente y categoria/subcategoria
     $sqlCmd = "CREATE TEMPORARY TABLE tmp1 AS 
@@ -490,48 +528,47 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
 
     $oSQL = $conn->prepare($sqlCmd);
 
-    $oSQL-> bindParam(":OficinaDesde", $OficinaDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":FechaDesde", $FechaDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":FechaHasta", $FechaHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strClteInic", $strClteInic, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strLinClaveDesde", $strLinClaveDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strLinClaveHasta", $strLinClaveHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":OficinaDesde", $OficinaDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":FechaDesde", $FechaDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":FechaHasta", $FechaHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":strClteInic", $strClteInic, PDO::PARAM_STR);
+    $oSQL->bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
+    $oSQL->bindParam(":strLinClaveDesde", $strLinClaveDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":strLinClaveHasta", $strLinClaveHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A"){
-      $oSQL-> bindParam(":strUsuario", $strUsuario, PDO::PARAM_STR);
+    if ($TipoUsuario == "A") {
+      $oSQL->bindParam(":strUsuario", $strUsuario, PDO::PARAM_STR);
     }
 
-    $oSQL-> execute();
-    $numRows = $oSQL->rowCount();    
+    $oSQL->execute();
+    $numRows = $oSQL->rowCount();
 
     // Si no hay registros con los criterios indicados, devuelve un array vacío
-    if($numRows < 1){
+    if ($numRows < 1) {
 
       $sqlCmd = "DROP TABLE IF EXISTS catego;";
-      $oSQL = $conn-> prepare($sqlCmd);
-      $oSQL-> execute();   
-  
+      $oSQL = $conn->prepare($sqlCmd);
+      $oSQL->execute();
+
       $sqlCmd = "DROP TABLE IF EXISTS subcatego;";
-      $oSQL = $conn-> prepare($sqlCmd);
-      $oSQL-> execute();   
-  
+      $oSQL = $conn->prepare($sqlCmd);
+      $oSQL->execute();
+
       $sqlCmd = "DROP TABLE IF EXISTS tmp1;";
-      $oSQL = $conn-> prepare($sqlCmd);
-      $oSQL-> execute();   
-  
+      $oSQL = $conn->prepare($sqlCmd);
+      $oSQL->execute();
+
       $sqlCmd = "DROP TABLE IF EXISTS tmp2;";
-      $oSQL = $conn-> prepare($sqlCmd);
-      $oSQL-> execute();   
+      $oSQL = $conn->prepare($sqlCmd);
+      $oSQL->execute();
 
       $conn = null;   // Cierra la conexión 
       return [];
-
     }
-    
+
     # Crea tabla con detalle del reporte agrupado por cliente, categoria y linea de producto
     # Utilizo la función agregada MAX para no incluir en la clausula GROUP BY todas las columnas
     unset($oSQL);
@@ -557,52 +594,52 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
       -> segun yo, con que se aplique en la primera consulta es suficiente
     */
 
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> bindParam(":OficinaDesde", $OficinaDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":FechaDesde", $FechaDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":FechaHasta", $FechaHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strClteInic", $strClteInic, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strLinClaveDesde", $strLinClaveDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strLinClaveHasta", $strLinClaveHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->bindParam(":OficinaDesde", $OficinaDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":FechaDesde", $FechaDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":FechaHasta", $FechaHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":strClteInic", $strClteInic, PDO::PARAM_STR);
+    $oSQL->bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
+    $oSQL->bindParam(":strLinClaveDesde", $strLinClaveDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":strLinClaveHasta", $strLinClaveHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A"){
-      $oSQL-> bindParam(":strUsuario", $strUsuario, PDO::PARAM_STR);
+    if ($TipoUsuario == "A") {
+      $oSQL->bindParam(":strUsuario", $strUsuario, PDO::PARAM_STR);
     }
 
-    $oSQL-> execute();   
-    $numRows = $oSQL->rowCount(); 
+    $oSQL->execute();
+    $numRows = $oSQL->rowCount();
 
     // Si no hay registros con los criterios indicados, devuelve un array vacío
-    if($numRows < 1){
+    if ($numRows < 1) {
       $sqlCmd = "DROP TABLE IF EXISTS catego;";
-      $oSQL = $conn-> prepare($sqlCmd);
-      $oSQL-> execute();   
-  
+      $oSQL = $conn->prepare($sqlCmd);
+      $oSQL->execute();
+
       $sqlCmd = "DROP TABLE IF EXISTS subcatego;";
-      $oSQL = $conn-> prepare($sqlCmd);
-      $oSQL-> execute();   
-  
+      $oSQL = $conn->prepare($sqlCmd);
+      $oSQL->execute();
+
       $sqlCmd = "DROP TABLE IF EXISTS tmp1;";
-      $oSQL = $conn-> prepare($sqlCmd);
-      $oSQL-> execute();   
-  
+      $oSQL = $conn->prepare($sqlCmd);
+      $oSQL->execute();
+
       $sqlCmd = "DROP TABLE IF EXISTS tmp2;";
-      $oSQL = $conn-> prepare($sqlCmd);
-      $oSQL-> execute();   
+      $oSQL = $conn->prepare($sqlCmd);
+      $oSQL->execute();
 
       $conn = null;   // Cierra la conexión 
       return [];
     }
 
     $orderby = '';
-    if($OrdenReporte == "P"){
+    if ($OrdenReporte == "P") {
       // Piezas
       $orderby = "ORDER BY a.va_cat,va_scat,a.va_pza DESC,replace(a.va_num,' ','0') DESC,replace(a.va_fil,' ','0') DESC,a.va_lin DESC,a.va_clave DESC";
-    } elseif($OrdenReporte == "I") {
+    } elseif ($OrdenReporte == "I") {
       // Importe
       $orderby = "ORDER BY a.va_cat,va_scat,a.va_venta DESC,replace(a.va_num,' ','0') DESC,replace(a.va_fil,' ','0') DESC,a.va_lin DESC,a.va_clave DESC";
     }
@@ -613,36 +650,41 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
     unset($arrData);
 
     $sqlCmd = "SELECT a.*, 
-    round(a.va_pza::numeric(12,2)/b.va_pza::numeric(12,2)*100,2) AS porc_pza, 
-    round(a.va_can/b.va_can*100,2) AS porc_can
+    CASE 
+    WHEN b.va_pza <> 0 THEN round(a.va_pza::numeric(12,2)/b.va_pza::numeric(12,2)*100,2) 
+    ELSE 0
+    END porc_pza,
+    CASE
+    WHEN b.va_can <> 0 THEN round(a.va_can/b.va_can*100,2)
+    ELSE 0
+    END porc_can 
     FROM tmp2 a LEFT JOIN tmp1 b 
       ON a.va_num = b.va_num AND a.va_fil = b.va_fil 
      AND a.va_cat = b.va_cat AND a.va_scat = b.va_scat 
      $orderby ";
 
     $oSQL = $conn->prepare($sqlCmd);
-    $oSQL-> execute();
+    $oSQL->execute();
 
     $numrows = $oSQL->rowCount();
     $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
 
     // Borra tablas temporales
     $sqlCmd = "DROP TABLE IF EXISTS catego;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     $sqlCmd = "DROP TABLE IF EXISTS subcatego;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     $sqlCmd = "DROP TABLE IF EXISTS tmp1;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     $sqlCmd = "DROP TABLE IF EXISTS tmp2;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
-
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
   } catch (Exception $e) {
     http_response_code(503);  // Service Unavailable
     $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => $e->getMessage(), "Contenido" => []];
@@ -651,11 +693,10 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
   }
 
   // Cierra la conexión 
-  $conn = null;   
+  $conn = null;
 
   # Falta tener en cuenta la paginacion
-  return $arrData; 
-
+  return $arrData;
 }
 
 /**
@@ -665,7 +706,7 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
  * @param array data 
  * @return object
  */
-FUNCTION CreaDataCompuesta( $data )
+function CreaDataCompuesta($data)
 {
 
   $contenido     = array();
@@ -674,21 +715,22 @@ FUNCTION CreaDataCompuesta( $data )
   $arrDetalle    = array();
 
   // Organiza Reporte por Cliente
-  if(count($data)>0){
+  if (count($data) > 0) {
     $CategoCodigo    = $data[0]["va_cat"];
     $CategoNombre    = $data[0]["namecatego"];
     $SubcategoCodigo = $data[0]["va_scat"];
     $SubcategoNombre = $data[0]["namesubcatego"];
-    $CategoSubcatego = $data[0]["va_cat"]. $data[0]["va_scat"];
+    $CategoSubcatego = $data[0]["va_cat"] . $data[0]["va_scat"];
 
-    foreach($data as $row) {
+    foreach ($data as $row) {
       // Cambio de categoria 
-      if($row["va_cat"] != $CategoCodigo){
+      if ($row["va_cat"] != $CategoCodigo) {
 
         array_push($arrSubcatego, [
           "SubcategoriaCodigo"  => $SubcategoCodigo,
           "SubcategoriaNombre"  => $SubcategoNombre,
-          "Detalle"             => $arrDetalle]);
+          "Detalle"             => $arrDetalle
+        ]);
 
         //array_push($arrCategorias, [
         array_push($contenido, [
@@ -701,22 +743,23 @@ FUNCTION CreaDataCompuesta( $data )
         $SubcategoNombre = $row["namesubcatego"];
         $CategoCodigo    = $row["va_cat"];
         $CategoNombre    = $row["namecatego"];
-        $CategoSubcatego = $row["va_cat"]. $row["va_scat"];
+        $CategoSubcatego = $row["va_cat"] . $row["va_scat"];
 
         $arrDetalle   = array();
         $arrSubcatego = array();
       }
 
       // Cambio de categoría + subcategoria
-      if($row["va_cat"]. $row["va_scat"] != $CategoSubcatego){
+      if ($row["va_cat"] . $row["va_scat"] != $CategoSubcatego) {
         array_push($arrSubcatego, [
           "SubcategoriaCodigo"  => $SubcategoCodigo,
           "SubcategoriaNombre"  => $SubcategoNombre,
-          "Detalle"             => $arrDetalle]);
+          "Detalle"             => $arrDetalle
+        ]);
 
         $SubcategoCodigo = $row["va_scat"];
         $SubcategoNombre = $row["namesubcatego"];
-        $CategoSubcatego = $row["va_cat"]. $row["va_scat"];
+        $CategoSubcatego = $row["va_cat"] . $row["va_scat"];
 
         $arrDetalle = array();
       }
@@ -734,7 +777,6 @@ FUNCTION CreaDataCompuesta( $data )
         "GramosPorcentaje"  => floatval($row["porc_can"]),
         "ImporteVenta"      => floatval($row["va_venta"])
       ]);
-
     } // foreach($data as $row)
 
     // Ultimo registro
@@ -742,7 +784,8 @@ FUNCTION CreaDataCompuesta( $data )
     array_push($arrSubcatego, [
       "SubcategoriaCodigo"  => $SubcategoCodigo,
       "SubcategoriaNombre"  => $SubcategoNombre,
-      "Detalle"             => $arrDetalle]);
+      "Detalle"             => $arrDetalle
+    ]);
 
     //array_push($arrCategorias, [
     array_push($contenido, [
@@ -755,5 +798,5 @@ FUNCTION CreaDataCompuesta( $data )
 
   } // count($data)>0
 
-  return $contenido; 
+  return $contenido;
 }

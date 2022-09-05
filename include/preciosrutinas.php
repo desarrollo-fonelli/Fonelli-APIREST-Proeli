@@ -737,7 +737,7 @@ function CalcNormalNulis2MNtipoF2()
 function seekCompoTipoF1($CO_LIN, $CO_CLAVE)
 {
   $con = DB::getConn();
-  unset($rowCOM); 
+  unset($rowCOM);
 
   $sqlCmd = "SELECT * FROM compon WHERE co_lin = :lin AND trim(co_clave)= trim(:clave) AND co_grupo <> '0' ";
   $oCOM = $con->prepare($sqlCmd);
@@ -779,7 +779,7 @@ function seekCompoTipoGpo2y3($lin, $clave)
   $con = DB::getConn();
 
   $sqlCmd = "SELECT * FROM compon WHERE co_lin = :lin AND trim(co_clave) = :clave 
-    AND ( co_grupo = '2' || co_grupo = '3' ) ";
+    AND ( co_grupo = '2' OR co_grupo = '3' ) ";
   $oCOM = $con->prepare($sqlCmd);
   $oCOM->bindParam(":lin", $lin, PDO::PARAM_STR);
   $oCOM->bindParam(":clave", $clave, PDO::PARAM_STR);
@@ -800,7 +800,7 @@ function seekCompoGpo1Gpo2Gpo3($lin, $clave)
   $con = DB::getConn();
 
   $sqlCmd = "SELECT * FROM compon WHERE co_lin = :lin AND trim(co_clave) = :clave 
-      AND ( co_grupo = '1' || co_grupo = '2' || co_grupo = '3' ) ";
+      AND ( co_grupo = '1' OR co_grupo = '2' OR co_grupo = '3' ) ";
   $oCOM = $con->prepare($sqlCmd);
   $oCOM->bindParam(":lin", $lin, PDO::PARAM_STR);
   $oCOM->bindParam(":clave", $clave, PDO::PARAM_STR);
@@ -851,7 +851,6 @@ function calcPesoPiedra()
 
         #ACUERDATE QUE EN PHP EL INDICE INICIAL EN SUBSTR() ES "CERO",
         #MIENTRAS QUE FOXPRO EMPIEZA CON "UNO"...
-
         if (substr($W_PARAML, 8, 1) == "1" && $W_FACSER == 1) {
           #PESO PIEDRA:
           $W_TCANIM = $W_TCANIM + ($C_CA1 * $rowCOM["co_peso"]);

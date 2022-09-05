@@ -34,7 +34,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 if ($requestMethod != "GET") {
   http_response_code(405);
   $mensaje = "Esta API solo acepta verbos GET";   // quité K_SCRIPTNAME del mensaje
-  echo json_encode(["Code" => K_API_FAILVERB, "Mensaje" => $mensaje ]);
+  echo json_encode(["Code" => K_API_FAILVERB, "Mensaje" => $mensaje]);
   exit;
 }
 
@@ -62,16 +62,16 @@ $arrPermitidos = array("Usuario", "OficinaCodigo", "Pagina");
 # en la lista de parámetros aceptados por el endpoint
 $mensaje = "";
 $arrParam = array_keys($_GET);
-foreach($arrParam as $param){
-  if(! in_array($param, $arrPermitidos)){
-    if(strlen($mensaje) > 1){
+foreach ($arrParam as $param) {
+  if (!in_array($param, $arrPermitidos)) {
+    if (strlen($mensaje) > 1) {
       $mensaje .= ", ";
     }
     $mensaje .= $param;
-  }  
+  }
 }
-if(strlen($mensaje) > 0){
-  $mensaje = "Parametros no reconocidos: ". $mensaje;   // quité K_SCRIPTNAME del mensaje
+if (strlen($mensaje) > 0) {
+  $mensaje = "Parametros no reconocidos: " . $mensaje;   // quité K_SCRIPTNAME del mensaje
   http_response_code(400);
   echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
   exit;
@@ -97,9 +97,9 @@ try {
 
   # Compone el objeto JSON que devuelve el endpoint
   $numFilas = count($data);
-  $totalPaginas = ceil($numFilas/K_FILASPORPAGINA);
+  $totalPaginas = ceil($numFilas / K_FILASPORPAGINA);
 
-  if($numFilas > 0){
+  if ($numFilas > 0) {
     $codigo = K_API_OK;
     $mensaje = "success";
   } else {
@@ -107,15 +107,14 @@ try {
     $mensaje = "data not found";
   }
 
-  $dataCompuesta = CreaDataCompuesta( $data );
+  $dataCompuesta = CreaDataCompuesta($data);
 
   $response = [
     "Codigo"      => $codigo,
     "Mensaje"     => $mensaje,
     "Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => $dataCompuesta
-  ];    
-
+  ];
 } catch (Exception $e) {
   /*
   $result_array = [
@@ -129,8 +128,7 @@ try {
     "Mensaje"     => $conn->get_last_error(),
     "Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => []
-  ];    
- 
+  ];
 }
 
 $response = json_encode($response);
@@ -146,13 +144,13 @@ return;
  * @param string $OficinaCodigo
  * @return array
  */
-FUNCTION SelectOficinas($OficinaCodigo)
+function SelectOficinas($OficinaCodigo)
 {
   $where = "";
 
   # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
-  if(isset($OficinaCodigo)){
-    $strOficinaCodigo = str_pad($OficinaCodigo, 2,"0",STR_PAD_LEFT);
+  if (isset($OficinaCodigo)) {
+    $strOficinaCodigo = str_pad($OficinaCodigo, 2, "0", STR_PAD_LEFT);
   }
 
   //var_dump($strLineaCodigo);
@@ -162,14 +160,20 @@ FUNCTION SelectOficinas($OficinaCodigo)
 
   # Hay que definir dinamicamente el schema <---------------------------------
   $sqlCmd = "SET SEARCH_PATH TO dateli;";
-  $oSQL = $conn-> prepare($sqlCmd);
-  $oSQL-> execute();
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->execute();
 
   # Construyo dinamicamente la condicion WHERE
   $where = "WHERE a.s_dopv = '1' ";
-  if(isset($OficinaCodigo)){
+  if (isset($OficinaCodigo)) {
     $where .= "AND a.s_llave = :strOficinaCodigo ";
   }
+
+  # dRendon 30.08.2022
+  # Por indicaciones del Gerente de Ventas (Matias Said) se
+  # incluyen solamente las oficinas que están activas actualmente
+  $where .= "AND s_llave IN('01','02','11','12') ";
+
 
   $sqlCmd = "SELECT trim(a.s_llave) s_llave,trim(a.s_nomsuc) s_nomsuc
    FROM dirsdo a 
@@ -178,23 +182,21 @@ FUNCTION SelectOficinas($OficinaCodigo)
 
   //var_dump($sqlCmd);
   try {
-    $oSQL = $conn-> prepare($sqlCmd);
+    $oSQL = $conn->prepare($sqlCmd);
 
-    if(isset($OficinaCodigo)){
-      $oSQL-> bindParam(":strOficinaCodigo", $strOficinaCodigo, PDO::PARAM_STR);
+    if (isset($OficinaCodigo)) {
+      $oSQL->bindParam(":strOficinaCodigo", $strOficinaCodigo, PDO::PARAM_STR);
     }
     //$oSQL-> bindParam(":provocaerror", "",PDO::PARAM_STR);  usado para pruebas de control de errores
 
-    $oSQL-> execute();
-    $numRows = $oSQL->rowCount();    
+    $oSQL->execute();
+    $numRows = $oSQL->rowCount();
     $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
-
   } catch (Exception $e) {
     http_response_code(503);  // Service Unavailable
     $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => $e->getMessage(), "Contenido" => []];
     echo json_encode($response);
     exit;
-
   }
 
   $conn = null;   // Cierra conexión
@@ -202,7 +204,6 @@ FUNCTION SelectOficinas($OficinaCodigo)
   # Falta tener en cuenta la paginacion
 
   return $arrData;
-
 }
 
 /**
@@ -212,25 +213,23 @@ FUNCTION SelectOficinas($OficinaCodigo)
  * @param array data 
  * @return object
  */
-FUNCTION CreaDataCompuesta( $data )
+function CreaDataCompuesta($data)
 {
 
   $contenido = array();
   $oFila = array();
 
-  foreach($data as $row){
+  foreach ($data as $row) {
 
     // Se crea un array con los nodos requeridos
     $oFila = [
       "OficinaCodigo" => $row["s_llave"],
       "OficinaNombre" => $row["s_nomsuc"]
-    ];  
+    ];
 
     // Se agrega el array a la seccion "contenido"
     array_push($contenido, $oFila);
-
   } // foreach($data as $row)
 
-  return $contenido; 
-
+  return $contenido;
 }
