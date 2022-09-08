@@ -875,7 +875,7 @@ function SelectCartera(
     $sqlCmd = "CREATE TEMPORARY TABLE curVenc AS
     SELECT sc_tica, sum(sum_saldo) as sum_saldovenc 
     FROM curSaldoDoc 
-    WHERE sc_feve < :pFechaHasta
+    WHERE sc_feve <= :pFechaHasta
     GROUP BY sc_tica ";
 
     $oSQL = $conn->prepare($sqlCmd);

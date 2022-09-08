@@ -1992,7 +1992,7 @@ FUNCTION CreaDataCompuesta( $data, $dataCltesconVenta, $dataTotalCatego )
           "Lista2"        => $Lista2,
           "TipoParidad"   => $TipoParidad,
           "TipoCliente"   => $TipoCliente,
-          "AgentCodigo"   => $AgenteCodigo,
+          "AgenteCodigo"  => $AgenteCodigo,
           "Categorias"    => $arrCategorias
         ];
 
@@ -2087,7 +2087,7 @@ FUNCTION CreaDataCompuesta( $data, $dataCltesconVenta, $dataTotalCatego )
       "Lista2"        => $Lista2,
       "TipoParidad"   => $TipoParidad,
       "TipoCliente"   => $TipoCliente,
-      "AgentCodigo"   => $AgenteCodigo,
+      "AgenteCodigo"  => $AgenteCodigo,
       "Categorias"    => $arrCategorias
     ];
 

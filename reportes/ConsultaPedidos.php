@@ -292,12 +292,12 @@ FUNCTION CreaDataCompuesta( $data )
           "PedidoLetra" => $row["pe_letra"],
           "PedidoFolio" => $row["pe_ped"],
           "OficinaFonelliCodigo" => $row["pe_of"],
-          "Status" => $row["pe_status"],
-          "FechaPedido" => $row["pe_fepe"],
+          "Status"            => $row["pe_status"],
+          "FechaPedido"       => $row["pe_fepe"],
           "FechaCancelacion"  => $row["pe_fecao"],
-          "FechaSurtido" => $row["pe_fecs"],
-          "CantidadPedida"  => intval($row["pe_canpe"]),
-          "CantidadSurtida" => intval($row["pe_cansu"]),
+          "FechaSurtido"      => (is_null($row["pe_fecs"]) ? "" : $row["pe_fecs"]),
+          "CantidadPedida"    => intval($row["pe_canpe"]),
+          "CantidadSurtida"   => intval($row["pe_cansu"]),
           "DiferenciaPedidosSurtido" => intval($row["pe_difcia"])
         ]
       ;

@@ -212,6 +212,14 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
 {
   $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
 
+  # Para que el reporte coincida con la ficha técnica cuando se indica una "fecha hasta" 
+  # igual al día anterior, en este reporte se van a incluir movimientos hasta un día
+  # antes de hoy, porque se supone que los datos de Proeli se suben con un día de atraso.
+  $fechaHoy   = date("Y-m-d");
+  $fechaCorte = strtotime("-1 day", strtotime($fechaHoy));
+  $fechaCorte = date("Y-m-d", $fechaCorte);
+
+
   # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
   switch($TipoUsuario){
     // Cliente 
@@ -244,6 +252,7 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
   $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
   AND concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) <= :strClteFinal
   AND a.sc_tica >= :strCarteraDesde AND a.sc_tica <= :strCarteraHasta 
+  AND a.sc_feex <= :fechaCorte     
   AND SUBSTRING(b.t_param,2,1) = '1' ";
   
   if(in_array($TipoUsuario, ["A"])){
@@ -278,6 +287,7 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
     $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCarteraDesde", $strCarteraDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCarteraHasta", $strCarteraHasta, PDO::PARAM_STR);
+    $oSQL-> bindParam(":fechaCorte", $fechaCorte, PDO::PARAM_STR);
 
     if($TipoUsuario == "A"){
       $oSQL-> bindParam(":strUsuario" , $strUsuario, PDO::PARAM_STR);
@@ -322,6 +332,14 @@ FUNCTION SelectResumenCartera($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesd
 
   {
     $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
+
+    # Para que el reporte coincida con la ficha técnica cuando se indica una "fecha hasta" 
+    # igual al día anterior, en este reporte se van a incluir movimientos hasta un día
+    # antes de hoy, porque se supone que los datos de Proeli se suben con un día de atraso.
+    $fechaHoy   = date("Y-m-d");
+    $fechaCorte = strtotime("-1 day", strtotime($fechaHoy));
+    $fechaCorte = date("Y-m-d", $fechaCorte);
+
   
     # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
     switch($TipoUsuario){
@@ -356,7 +374,8 @@ FUNCTION SelectResumenCartera($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesd
     $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
     AND concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) <= :strClteFinal
     AND a.sc_tica >= :strCarteraDesde AND a.sc_tica <= :strCarteraHasta 
-    AND a.sc_saldo<>0 AND SUBSTRING(b.t_param,2,1)='1' ";
+    AND a.sc_saldo<>0 AND SUBSTRING(b.t_param,2,1)='1' 
+    AND a.sc_feex <= :fechaCorte ";
   
     if(in_array($TipoUsuario, ["A"])){
       // Solo aplica filtro cuando el usuario es un agente
@@ -377,7 +396,7 @@ FUNCTION SelectResumenCartera($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesd
       LEFT JOIN cli010 c ON c.cc_num = a.sc_num AND c.cc_fil = a.sc_fil 
       $where GROUP BY a.sc_tica,t_descr ";
   
-    //var_dump($sqlCmd);
+    //var_dump($sqlCmd, $fechaCorte);
   
     try {
       $oSQL = $conn-> prepare($sqlCmd);
@@ -385,6 +404,7 @@ FUNCTION SelectResumenCartera($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesd
       $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
       $oSQL-> bindParam(":strCarteraDesde", $strCarteraDesde, PDO::PARAM_STR);
       $oSQL-> bindParam(":strCarteraHasta", $strCarteraHasta, PDO::PARAM_STR);
+      $oSQL-> bindParam(":fechaCorte", $fechaCorte, PDO::PARAM_STR);
   
       if($TipoUsuario == "A"){
         $oSQL-> bindParam(":strUsuario" , $strUsuario, PDO::PARAM_STR);
