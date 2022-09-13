@@ -455,14 +455,9 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     AND concat(a.e1_cat,a.e1_scat) <= :strCategoHasta
     AND concat(a.e1_cat,a.e1_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego) ";
 
-    // Solo aplica filtro cuando el tipo de usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.e1_age = :strAgenteCodigo ";
+    // Solo aplica filtro cuando se pasa el codigo del agente
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.e1_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -495,7 +490,7 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A" AND isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -536,7 +531,7 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -565,13 +560,8 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     AND concat(a.va_cat,a.va_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego) ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.va_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.va_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -612,7 +602,7 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -631,13 +621,8 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     AND concat(a.e1_cat,a.e1_scat) IN (SELECT concat(idCatego,idSubcatego) as llave FROM subcatego) ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.e1_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.e1_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -673,7 +658,7 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -740,13 +725,8 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     AND concat(va_cat,va_scat) IN (SELECT concat(idCatego,idSubcatego) as llave FROM subcatego) ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.va_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.va_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -784,7 +764,7 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
   
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
   
@@ -801,13 +781,8 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     AND concat(a.e1_cat,a.e1_scat) IN (SELECT concat(idCatego,idSubcatego) as llave FROM subcatego) ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.e1_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.e1_age = :strAgenteCodigo ";
     }
     
     $filtroTipoie = "";
@@ -844,7 +819,7 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
   
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
   
@@ -1031,8 +1006,6 @@ $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
         break;        
       }
 
-
-
     //var_dump($numRows); return [];
 
   } catch (Exception $e) {
@@ -1088,7 +1061,7 @@ $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClien
   $strCategoDesde   = $CategoriaDesde. $SubcategoDesde;
   $strCategoHasta   = $CategoriaHasta. $SubcategoHasta; 
 
-  if($TipoUsuario == "A" && isset($AgenteCodigo)){
+  if(isset($AgenteCodigo)){
     $strAgenteCodigo = str_pad($AgenteCodigo, 2," ",STR_PAD_LEFT);
   }
 
@@ -1117,13 +1090,8 @@ $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClien
       AND concat(e1_cat,e1_scat) <= :strCategoHasta ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.e1_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.e1_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -1162,7 +1130,7 @@ $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClien
     $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1196,7 +1164,7 @@ $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClien
     $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1228,20 +1196,15 @@ $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClien
     $where = "WHERE cc_alta <= :fechaHasta ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "cc_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND cc_age = :strAgenteCodigo ";
     }
 
     unset($oSQL);
     $sqlCmd = "SELECT cc_num FROM cli010 $where ";    
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL-> bindParam(":fechaHasta", $Fecha1Hasta, PDO::PARAM_STR);
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1255,14 +1218,9 @@ $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClien
 
     $where = "WHERE cc_alta <= :fechaHasta ";
 
-    // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "cc_age = :strAgenteCodigo ";
+    // Solo aplica filtro cuando se recibio el codigo de un agente
+    if(isset($AgenteCodigo)){
+      $where .= "AND cc_age = :strAgenteCodigo ";
     }
 
     unset($oSQL);
@@ -1270,7 +1228,7 @@ $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClien
     
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL-> bindParam(":fechaHasta", $Fecha2Hasta, PDO::PARAM_STR);
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1392,13 +1350,8 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     AND concat(a.e1_cat,a.e1_scat) <= :strCategoHasta
     AND concat(a.e1_cat,a.e1_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego) ";
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.e1_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.e1_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -1431,7 +1384,7 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1464,7 +1417,7 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1491,13 +1444,8 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     AND concat(a.va_cat,a.va_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego) ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.va_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.va_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -1534,7 +1482,7 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1552,13 +1500,8 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     AND concat(a.e1_cat,a.e1_scat) IN (SELECT concat(idCatego,idSubcatego) as llave FROM subcatego) ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.e1_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.e1_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -1595,7 +1538,7 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1656,13 +1599,8 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     AND concat(a.va_cat,a.va_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego) ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.va_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.va_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -1699,7 +1637,7 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 
@@ -1717,13 +1655,8 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     AND concat(a.e1_cat,a.e1_scat) IN (SELECT concat(idCatego,idSubcatego) as llave FROM subcatego) ";
 
     // Solo aplica filtro cuando el usuario es un agente
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
-      if($where == ""){
-        $where = "WHERE ";
-      } else {
-        $where .= "AND ";
-      }
-      $where .= "a.e1_age = :strAgenteCodigo ";
+    if(isset($AgenteCodigo)){
+      $where .= "AND a.e1_age = :strAgenteCodigo ";
     }
 
     $filtroTipoie = "";
@@ -1761,7 +1694,7 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
 
-    if($TipoUsuario == "A" && isset($AgenteCodigo)){
+    if(isset($AgenteCodigo)){
       $oSQL-> bindParam(":strAgenteCodigo", $strAgenteCodigo, PDO::PARAM_STR);
     }
 

@@ -730,7 +730,7 @@ FUNCTION CreaDataCompuesta( $data )
         
         array_push($arrCategorias, [
           "CategoriaCodigo" => $CategoCodigo,
-          "CategoNombre"    => $CategoNombre,
+          "CategoriaNombre"    => $CategoNombre,
           "Subcategorias"   => $arrSubcatego
         ]);
 
@@ -787,7 +787,7 @@ FUNCTION CreaDataCompuesta( $data )
 
         array_push($arrCategorias, [
           "CategoriaCodigo" => $CategoCodigo,
-          "CategoNombre"    => $CategoNombre,
+          "CategoriaNombre" => $CategoNombre,
           "Subcategorias"   => $arrSubcatego
         ]);
 
@@ -890,7 +890,7 @@ FUNCTION CreaDataCompuesta( $data )
 
     array_push($arrCategorias, [
       "CategoriaCodigo" => $CategoCodigo,
-      "CategoNombre"    => $CategoNombre,
+      "CategoriaNombre" => $CategoNombre,
       "Subcategorias"   => $arrSubcatego
     ]);
     
