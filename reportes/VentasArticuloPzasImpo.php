@@ -379,11 +379,16 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte)
     # Construyo dinamicamente la condicion WHERE
     $where = "WHERE a.va_of >= :OficinaDesde AND a.va_of <= :OficinaHasta
     AND a.va_fecha >= :FechaDesde AND a.va_fecha <= :FechaHasta 
-    AND concat(a.va_lin,a.va_clave) >= :strLinClaveDesde
-    AND concat(a.va_lin,a.va_clave) <= :strLinClaveHasta
+    AND a.va_lin >= :LineaDesde
+    AND a.va_lin <= :LineaHasta
+    AND a.va_clave >= :ClaveDesde
+    AND a.va_clave <= :ClaveHasta
     AND concat(a.va_cat,a.va_scat) >= :strCategoDesde
     AND concat(a.va_cat,a.va_scat) <= :strCategoHasta
     AND concat(a.va_cat,a.va_scat) IN (SELECT concat(idcatego,idsubcatego) as llave FROM subcatego) ";
+
+    //AND concat(a.va_lin,a.va_clave) >= :strLinClaveDesde
+    //AND concat(a.va_lin,a.va_clave) <= :strLinClaveHasta
 
     $filtroLineaEspec = "";
     if(isset($TipoArticulo)){
@@ -427,10 +432,15 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte)
     $oSQL-> bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
     $oSQL-> bindParam(":FechaDesde", $FechaDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":FechaHasta", $FechaHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strLinClaveDesde", $strLinClaveDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strLinClaveHasta", $strLinClaveHasta, PDO::PARAM_STR);
+    $oSQL-> bindParam(":LineaDesde", $LineaDesde, PDO::PARAM_STR);
+    $oSQL-> bindParam(":LineaHasta", $LineaHasta, PDO::PARAM_STR);
+    $oSQL-> bindParam(":ClaveDesde", $ClaveDesde, PDO::PARAM_STR);
+    $oSQL-> bindParam(":ClaveHasta", $ClaveHasta, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
+
+    //$oSQL-> bindParam(":strLinClaveDesde", $strLinClaveDesde, PDO::PARAM_STR);
+    //$oSQL-> bindParam(":strLinClaveHasta", $strLinClaveHasta, PDO::PARAM_STR);
 
     $oSQL-> execute();
     $numRows = $oSQL->rowCount();    
@@ -483,10 +493,15 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte)
     $oSQL-> bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
     $oSQL-> bindParam(":FechaDesde", $FechaDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":FechaHasta", $FechaHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strLinClaveDesde", $strLinClaveDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strLinClaveHasta", $strLinClaveHasta, PDO::PARAM_STR);
+    $oSQL-> bindParam(":LineaDesde", $LineaDesde, PDO::PARAM_STR);
+    $oSQL-> bindParam(":LineaHasta", $LineaHasta, PDO::PARAM_STR);
+    $oSQL-> bindParam(":ClaveDesde", $ClaveDesde, PDO::PARAM_STR);
+    $oSQL-> bindParam(":ClaveHasta", $ClaveHasta, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoDesde", $strCategoDesde, PDO::PARAM_STR);
     $oSQL-> bindParam(":strCategoHasta", $strCategoHasta, PDO::PARAM_STR);
+
+    //$oSQL-> bindParam(":strLinClaveDesde", $strLinClaveDesde, PDO::PARAM_STR);
+    //$oSQL-> bindParam(":strLinClaveHasta", $strLinClaveHasta, PDO::PARAM_STR);
 
     $oSQL-> execute();   
     $numRows = $oSQL->rowCount(); 
