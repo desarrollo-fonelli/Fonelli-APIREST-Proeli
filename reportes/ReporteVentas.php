@@ -377,7 +377,7 @@ $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClien
 $OrdenReporte,$DesglosaCliente,$DesglosaCategoria,$TipoOrigen,$Pagina)
 {
   // Doy un plazo de hasta Cinco minutos para completar la consulta...
-  set_time_limit(0);
+  set_time_limit(300);
 
   $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
 
@@ -1028,7 +1028,7 @@ $FilialDesde,$ClienteHasta,$FilialHasta,$CategoriaDesde,$SubcategoDesde,$Categor
 $Fecha1Desde,$Fecha1Hasta,$Fecha2Desde,$Fecha2Hasta,$TipoClienteDesde,$TipoClienteHasta,$TipoOrigen)
 {
   // Doy un plazo de hasta Cinco minutos para completar la consulta...
-  set_time_limit(0);
+  set_time_limit(300);
 
   $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
 
@@ -1272,7 +1272,7 @@ FUNCTION SelectTotalCatego($TipoUsuario,$Usuario,$AgenteCodigo,$ClienteDesde,$Fi
 {
 
   // Doy un plazo de hasta Cinco minutos para completar la consulta...
-  set_time_limit(0);
+  set_time_limit(300);
 
   $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
 
