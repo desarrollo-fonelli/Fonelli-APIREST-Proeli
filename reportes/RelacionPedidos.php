@@ -415,8 +415,8 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
     CASE WHEN a.pe_tipoie='I' THEN coalesce(b.pe_canpro,0) ELSE coalesce(c.pe_canpro,0) END AS pe_canpro,
     a.pe_ticos,a.pe_penep, a.pe_penes,a.pe_grape,a.pe_grasu 
     FROM ped100 a 
-    LEFT JOIN ped150 b ON concat(a.pe_letra,a.pe_ped,a.pe_lin,a.pe_clave) = concat(b.pe_letra,b.pe_ped,b.pe_lin,b.pe_clave) 
-    LEFT JOIN ped160 c ON concat(a.pe_letra,a.pe_ped,a.pe_lin,a.pe_clave) = concat(c.pe_letra,c.pe_ped,c.pe_lin,c.pe_clave) 
+    LEFT JOIN ped150 b ON concat(a.pe_letra,a.pe_ped,a.pe_lin,a.pe_clave,a.pe_rengl) = concat(b.pe_letra,b.pe_ped,b.pe_lin,b.pe_clave,b.pe_rengl) 
+    LEFT JOIN ped160 c ON concat(a.pe_letra,a.pe_ped,a.pe_lin,a.pe_clave,a.pe_rengl) = concat(c.pe_letra,c.pe_ped,c.pe_lin,c.pe_clave,c.pe_rengl) 
     $where $filtroStatus $filtroTipope $filtroTipoie $filtroSoloatrasados ";
     $sqlCmd .= "ORDER BY a.pe_of,a.pe_letra,a.pe_ped,a.pe_tipope;";
   

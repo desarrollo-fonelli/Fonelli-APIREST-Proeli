@@ -238,7 +238,7 @@ function SelectPedidos($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFilial, $
     FROM ped100 a 
     LEFT JOIN inv010 b ON b.c_lin=a.pe_lin AND b.c_clave=a.pe_clave 
 		LEFT JOIN ped150 c ON c.pe_letra=a.pe_letra AND c.pe_ped=a.pe_ped
-					AND c.pe_lin=a.pe_lin AND c.pe_clave=a.pe_clave
+					AND c.pe_lin=a.pe_lin AND c.pe_clave=a.pe_clave AND c.pe_rengl=a.pe_rengl
     $where 
     ORDER BY a.pe_rengl";
 
