@@ -6,12 +6,18 @@ date_default_timezone_set('America/Mexico_City');
 /**
  * Lista del Catalogo de Gerentes de Venta
  * --------------------------------------------------------------------------
+ * dRendon 05.05.2023 
+ *  El parámetro "Usuario" ahora es obligatorio
+ *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
  */
 
 # En el script 'constantes.php' se definen:
 # - los codigos de respuesta de la API
 # - el numero de filas por pagina
 require_once "../include/constantes.php";
+
+# Funciones genericas de uso comun
+require_once "../include/funciones.php";
 
 # Constantes locales
 const K_SCRIPTNAME  = "listagerentes.php";
@@ -25,7 +31,9 @@ $response = null;   // JSON devuelto por el endpoint conteniendo todos los nodos
 $sqlCmd   = "";     // comando SQL que se envía al engine de datos
 
 # Variables asociadas a los parámetros recibidos
+$TipoUsuario    = null;   // Tipo de usuario
 $Usuario        = null;   // Id del usuario (cliente, agente, gerente)
+$Token          = null;   // Token obtenido por el usuario al autenticarse
 $GerenteCodigo  = null;   // Id del gerente
 $Password       = null;   // Contraseña asignada al gerente
 $Status         = null;   // Status del gerente
@@ -42,23 +50,47 @@ if ($requestMethod != "GET") {
 
 # Hay que comprobar que se pasen los parametros obligatorios
 # OJO: Los nombres de parametro son sensibles a mayusculas/minusculas
-
-/*
-    19.may.2022 dRendon: Por ahora el Usuario va a ser un parámetro OPCIONAL
-
 try {
+  if (!isset($_GET["TipoUsuario"])) {
+    throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");
+  } else {
+    $TipoUsuario = $_GET["TipoUsuario"];
+    if(! in_array($TipoUsuario, ["C","A","G"])){
+      throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
+    }
+  }
+
   if (!isset($_GET["Usuario"])) {
     throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+  } else {
+    $Usuario = $_GET["Usuario"];
   }
+
+  # Se conecta a la base de datos
+  require_once "../db/conexion.php";
+
+  # dRendon 04.05.2023 ********************
+  # Ahora se va a verificar la identidad del usuario por medio del Token
+  # recibido en el Header con Key "Auth" (PHP lo interpreta como "HTTP_AUTH")
+  if (!isset($_SERVER["HTTP_AUTH"])) {
+    throw new Exception("No se recibio el Token de autenticacion");
+  } else {
+    $Token = $_SERVER["HTTP_AUTH"];
+  }
+  // ValidaToken está en ./include/funciones.php
+  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {
+    throw new Exception("Error de autenticacion.");
+  }
+  # Fin dRendon 04.05.2023 ****************
+  
 } catch (Exception $e) {
   http_response_code(401);
   echo json_encode(["Code" => K_API_FAILAUTH, "Mensaje" => $e->getMessage()]);
   exit;
 }
-*/
 
 # Lista de parámetros aceptados por este endpoint
-$arrPermitidos = array("Usuario", "GerenteCodigo", "Password", "Status","Pagina");
+$arrPermitidos = array("TipoUsuario", "Usuario", "GerenteCodigo", "Password", "Status","Pagina");
 
 # Obtiene todos los parametros pasados en la llamada y verifica que existan
 # en la lista de parámetros aceptados por el endpoint
@@ -95,6 +127,16 @@ if (isset($_GET["Password"])) {
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
     exit;
   }  
+}
+
+if($TipoUsuario == "G"){
+  if(!isset($GerenteCodigo) OR 
+     TRIM($GerenteCodigo) != $Usuario){
+      $mensaje = "Error de autenticación";
+      http_response_code(400);
+      echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
+      exit;  
+  }
 }
 
 if (isset($_GET["Status"])) {
@@ -152,6 +194,8 @@ try {
 
 $response = json_encode($response);
 
+$conn = null;   // Cierra conexión
+
 echo $response;
 
 return;
@@ -175,7 +219,8 @@ FUNCTION SelectGerentes($GerenteCodigo, $Password, $Status)
   }
 
   # Se conecta a la base de datos
-  require_once "../db/conexion.php";
+  // require_once "../db/conexion.php";   <-- el script se leyó previamente
+  $conn = DB::getConn();
 
   # Hay que definir dinamicamente el schema <---------------------------------
   $sqlCmd = "SET SEARCH_PATH TO dateli;";
@@ -262,7 +307,7 @@ FUNCTION CreaDataCompuesta( $data )
     $oFila = [
       "GerenteCodigo" => $row["gc_llave"],
       "GerenteNombre" => $row["gc_nom"],
-      "Password"      => $row["gc_passw"],
+      //"Password"    => $row["gc_passw"],
       "Status"        => $row["gc_status"]
 
     ];  

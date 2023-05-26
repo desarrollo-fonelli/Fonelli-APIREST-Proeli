@@ -9,6 +9,10 @@ date_default_timezone_set('America/Mexico_City');
  * Este servicio maneja el caso en que el reporte se ordena por Categoría.
  * Cuando el reportes se ordena por Piezas o Importe se escribió el servicio
  * VentasClienteArticuloPzasImpo.php
+ * --------------------------------------------------------------------------
+ * dRendon 05.05.2023 
+ *  El parámetro "Usuario" ahora es obligatorio
+ *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
  */
 
 # En el script 'constantes.php' se definen:
@@ -33,6 +37,7 @@ $sqlCmd   = "";     // comando SQL que se envía al engine de datos
 # Variables asociadas a los parámetros recibidos
 $TipoUsuario  = null;     // Tipo de usuario
 $Usuario      = null;     // Id del usuario (cliente, agente o gerente)
+$Token        = null;     // Token obtenido por el usuario al autenticarse
 $OficinaDesde = null;     // Código Oficina en que se registra el pedido 
 $OficinaHasta = null;     // Código Oficina en que se registra el pedido
 $FechaDesde   = null;     // Fecha de registro inicial
@@ -71,6 +76,29 @@ try {
       throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
     }
   }
+
+  if (!isset($_GET["Usuario"])) {
+    throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+  } else {
+    $Usuario = $_GET["Usuario"];
+  }
+
+  # Se conecta a la base de datos
+  require_once "../db/conexion.php";
+
+  # dRendon 05.05.2023 ********************
+  # Ahora se va a verificar la identidad del usuario por medio del Token
+  # recibido en el Header con Key "Auth" (PHP lo interpreta como "HTTP_AUTH")
+  if(!isset($_SERVER["HTTP_AUTH"])) {
+    throw new Exception("No se recibio el Token de autenticacion");
+  } else {
+    $Token = $_SERVER["HTTP_AUTH"];
+  }
+  // ValidaToken está en ./include/funciones.php
+  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {    
+    throw new Exception("Error de autenticacion.");
+  }
+  # Fin dRendon 05.05.2023 ****************
 
   if (!isset($_GET["OficinaDesde"])) {
     throw new Exception("El parametro obligatorio 'OficinaDesde' no fue definido.");
@@ -125,6 +153,17 @@ try {
   } else {
     $FilialHasta = $_GET["FilialHasta"] ;
   }
+
+  # dRendon 05.05.2023 ********************
+  # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
+  # Verificando en este nivel ya no es necesario cambiar el código restante
+  if ($TipoUsuario == "C") {
+    if ((TRIM($ClienteDesde). "-". TRIM($FilialDesde)) != $Usuario OR 
+        (TRIM($ClienteHasta). "-". TRIM($FilialHasta)) != $Usuario) {
+      throw new Exception("Error de autenticación");
+    }
+  }
+  # Fin dRendon 05.05.2023 ****************
 
   if (!isset($_GET["LineaDesde"])) {
     throw new Exception("El parametro obligatorio 'LineaDesde' no fue definido.");
@@ -228,17 +267,6 @@ if(strlen($mensaje) > 0){
 # Hay que inicializarverificar parametros opcionales y en caso 
 # que estos no se indiquen, asignar valores por omisión.
 # (dichos valores se definieron al inicio del script, al declarar las variables)
-if (isset($_GET["Usuario"])) {
-  $Usuario = $_GET["Usuario"];
-} else {
-  if(in_array($TipoUsuario, ["A", "G"])){
-    $mensaje = "Debe indicar 'Usuario' cuando 'TipoUsuario' es 'A' o 'G'";    // quité K_SCRIPTNAME del mensaje
-    http_response_code(400);  
-    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
-  }
-}
-
 if (isset($_GET["TipoArticulo"])) {
   $TipoArticulo = $_GET["TipoArticulo"];
   if(! in_array($TipoArticulo, ["L","E"]) ){
@@ -308,6 +336,8 @@ try {
 }
 
 $response = json_encode($response);
+
+$conn = null;   // Cierra conexión
 
 echo $response;
 
@@ -440,10 +470,8 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
   try {
 
     # Se conecta a la base de datos
-    require_once "../db/conexion.php";  
-
-    # Handler para la conexión a la base de datos
-    //$conn = DB::getConn();
+    // require_once "../db/conexion.php";  <-- el script se leyó previamente
+    $conn = DB::getConn();
 
     # Hay que definir dinamicamente el schema <---------------------------------
     $sqlCmd = "SET SEARCH_PATH TO dateli;";
@@ -542,9 +570,6 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
       $oSQL = $conn-> prepare($sqlCmd);
       $oSQL-> execute();   
 
-      $conn = null;   // Cierra la conexión 
-      return [];
-
     }
 
     # Crea tabla con detalle del reporte agrupado por cliente, categoria y linea de producto
@@ -612,8 +637,6 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
       $oSQL = $conn-> prepare($sqlCmd);
       $oSQL-> execute();   
 
-      $conn = null;   // Cierra la conexión 
-      return [];
     }
 
     // Une la tabla detallada con la de totales para presentar
@@ -680,9 +703,6 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte,$Presentacion,$Pagina)
     var_dump($oSQL-> fetchAll(PDO::FETCH_ASSOC));
     exit;
   */
-
-  // Cierra la conexión 
-  $conn = null;   
 
   # Falta tener en cuenta la paginacion
   return $arrData;

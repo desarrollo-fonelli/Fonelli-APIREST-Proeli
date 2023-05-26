@@ -13,12 +13,19 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 /**
  * Lista del Catalogo de Clientes 
  * --------------------------------------------------------------------------
+ * dRendon 05.05.2023 
+ *  El parámetro "Usuario" ahora es obligatorio
+ *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
+ * --------------------------------------------------------------------------
  */
 
 # En el script 'constantes.php' se definen:
 # - los codigos de respuesta de la API
 # - el numero de filas por pagina
 require_once "../include/constantes.php";
+
+# Funciones genericas de uso comun
+require_once "../include/funciones.php";
 
 # Constantes locales
 const K_SCRIPTNAME  = "catalogoclientes.php";
@@ -34,6 +41,7 @@ $sqlCmd   = "";     // comando SQL que se envía al engine de datos
 # Variables asociadas a los parámetros recibidos
 $TipoUsuario    = null;     // Tipo de usuario
 $Usuario        = null;     // Id del usuario (cliente, agente o gerente)
+$Token          = null;     // Token obtenido por el usuario al autenticarse
 $ClienteCodigo  = null;     // Id del cliente
 $ClienteFilial  = null;     // Filial del cliente
 $Password       = null;     // Contraseña asignada al cliente
@@ -52,7 +60,6 @@ if ($requestMethod != "GET") {
 
 # Hay que comprobar que se pasen los parametros obligatorios
 # OJO: Los nombres de parametro son sensibles a mayusculas/minusculas
-/*
 try {
   if (!isset($_GET["TipoUsuario"])) {
     throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");
@@ -61,32 +68,36 @@ try {
     if(! in_array($TipoUsuario, ["C","A","G"])){
       throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
     }
-    if($TipoUsuario == 'C'){
-      if (!isset($_GET["ClienteCodigo"])) {
-        throw new Exception("El parametro 'ClienteCodigo' no fue definido.");
-      } else {
-        $ClienteCodigo = $_GET["ClienteCodigo"];
-      }    
-      if (!isset($_GET["ClienteFilial"])) {
-        throw new Exception("El parametro 'ClienteFilial' no fue definido.");
-      } else {
-        $ClienteFilial = $_GET["ClienteFilial"] ;
-      }    
-    }
-    if($TipoUsuario == "A" || $TipoUsuario == "G"){
-      if (!isset($_GET["Usuario"])) {
-        throw new Exception("El parametro 'Usuario' no fue definido.");
-      } else {
-        $Usuario = $_GET["Usuario"];
-      }
-    }
   }
+
+  if (!isset($_GET["Usuario"])) {
+    throw new Exception("El parametro 'Usuario' no fue definido.");
+  } else {
+    $Usuario = $_GET["Usuario"];
+  }
+
+  # Se conecta a la base de datos
+  require_once "../db/conexion.php";
+
+  # dRendon 04.05.2023 ********************
+  # Ahora se va a verificar la identidad del usuario por medio del Token
+  # recibido en el Header con Key "Auth" (PHP lo interpreta como "HTTP_AUTH")
+  if (!isset($_SERVER["HTTP_AUTH"])) {
+    throw new Exception("No se recibio el Token de autenticacion");
+  } else {
+    $Token = $_SERVER["HTTP_AUTH"];
+  }
+  // ValidaToken está en ./include/funciones.php
+  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {
+    throw new Exception("Error de autenticacion.");
+  }
+  # Fin dRendon 04.05.2023 ****************
+
 } catch (Exception $e) {
   http_response_code(400);
   echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $e->getMessage()]);
   exit;
 }
-*/
 
 # Lista de parámetros aceptados por este endpoint
 $arrPermitidos = array("TipoUsuario", "Usuario", "ClienteCodigo", "ClienteFilial", 
@@ -111,44 +122,31 @@ if(strlen($mensaje) > 0){
   exit;
 }
 
-# Hay que inicializarverificar parametros opcionales y en caso 
-# que estos no se indiquen, asignar valores por omisión.
-# (dichos valores se definieron al inicio del script, al declarar las variables)
-if(isset($_GET["TipoUsuario"])){
-  $TipoUsuario = $_GET["TipoUsuario"];
-}
-
-// Primero este parámetro porque puede cambiar después
-if (isset($_GET["AgenteCodigo"])) {
-  $AgenteCodigo = $_GET["AgenteCodigo"];
-  if(isset($TipoUsuario) && $TipoUsuario == "A"){
-    if(isset($_GET["Usuario"]) && $AgenteCodigo != $_GET["Usuario"]){
-      $mensaje = "'Usuario' y 'AgenteCodigo' deben ser iguales para 'TipoUsuario' = 'A'";
-      http_response_code(400);  
-      echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-      exit; 
+/*
+  // Primero este parámetro porque puede cambiar después
+  if (isset($_GET["AgenteCodigo"])) {
+    $AgenteCodigo = $_GET["AgenteCodigo"];
+    if(isset($TipoUsuario) && $TipoUsuario == "A"){
+      if(isset($_GET["Usuario"]) && $AgenteCodigo != $_GET["Usuario"]){
+        $mensaje = "'Usuario' y 'AgenteCodigo' deben ser iguales para 'TipoUsuario' = 'A'";
+        http_response_code(400);  
+        echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
+        exit; 
+      }
     }
   }
+*/
+if (isset($_GET["AgenteCodigo"])) {
+  $AgenteCodigo = $_GET["AgenteCodigo"];
 }
 
-if (isset($_GET["Usuario"])) {
-  if(!isset($_GET["TipoUsuario"])){
-    $mensaje = "Debe indicar 'TipoUsuario' cuando indica valor para 'Usuario'";
-    http_response_code(400);  
+if($TipoUsuario == "A"){
+  if(!isset($_GET["AgenteCodigo"]) OR 
+    $AgenteCodigo != $Usuario) {
+    $mensaje = "Error de autenticación";
+    http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit; 
-  }
-  
-  $Usuario = $_GET["Usuario"];
-  if($TipoUsuario == "A"){
-    $AgenteCodigo = $Usuario;
-  }
-} else {
-  if($TipoUsuario == "A"){
-    $mensaje = "Debe indicar 'Usuario' cuando 'TipoUsuario' es 'A'";
-    http_response_code(400);  
-    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
+    exit;
   }
 }
 
@@ -165,6 +163,16 @@ if (isset($_GET["ClienteFilial"])) {
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
     exit;
   }    
+}
+
+if($TipoUsuario == "C"){
+  if(!isset($ClienteCodigo) OR 
+    (TRIM($ClienteCodigo). "-". TRIM($ClienteFilial) != $Usuario)){
+      $mensaje = "Error de autenticación";
+      http_response_code(400);
+      echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
+      exit;  
+  }
 }
 
 if (isset($_GET["Password"])) {
@@ -234,6 +242,8 @@ try {
 
 $response = json_encode($response);
 
+$conn = null;   // Cierra conexión
+
 echo $response;
 
 return;
@@ -272,7 +282,8 @@ $Password, $Status, $AgenteCodigo)
   }
 
   # Se conecta a la base de datos
-  require_once "../db/conexion.php";
+  // require_once "../db/conexion.php";   <-- el script se leyó previamente
+  $conn = DB::getConn();
 
   # Hay que definir dinamicamente el schema <---------------------------------
   $sqlCmd = "SET SEARCH_PATH TO dateli;";
@@ -386,8 +397,6 @@ $Password, $Status, $AgenteCodigo)
     exit;
   }
 
-  $conn = null;   // Cierra conexión
-
   # Falta tener en cuenta la paginacion
 
   return $arrData;
@@ -414,7 +423,7 @@ FUNCTION CreaDataCompuesta( $data )
       "ClienteCodigo" => $row["cc_num"],
       "ClienteFilial" => $row["cc_fil"] ,
       "RazonSocial"   => $row["cc_raso"],
-      "Password"      => $row["cc_passw"],
+      //"Password"      => $row["cc_passw"],
 
       "DatosGenerales" => [
         "Sucursal" => $row["cc_suc"],

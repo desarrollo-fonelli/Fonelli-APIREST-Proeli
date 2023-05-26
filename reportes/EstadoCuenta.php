@@ -6,12 +6,19 @@ date_default_timezone_set('America/Mexico_City');
 /**
  * Estado de Cuenta de Clientes
  * --------------------------------------------------------------------------
+ * dRendon 05.05.2023 
+ *  El parámetro "Usuario" ahora es obligatorio
+ *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
+ * --------------------------------------------------------------------------
  */
 
 # En el script 'constantes.php' se definen:
 # - los codigos de respuesta de la API
 # - el numero de filas por pagina
 require_once "../include/constantes.php";
+
+# Funciones genericas de uso comun
+require_once "../include/funciones.php";
 
 # Constantes locales
 const K_SCRIPTNAME  = "EstadoCuenta.php";
@@ -28,6 +35,7 @@ $sqlCmd   = "";     // comando SQL que se envía al engine de datos
 # Variables asociadas a los parámetros recibidos
 $TipoUsuario  = null;     // Tipo de usuario
 $Usuario      = null;     // Id del usuario (cliente, agente o gerente)
+$Token        = null;     // Token obtenido por el usuario al autenticarse
 $ClienteDesde = null;     // Id del cliente inicial
 $FilialDesde  = null;     // Filial del cliente inicial
 $ClienteHasta = null;     // Id del cliente final
@@ -48,6 +56,7 @@ if ($requestMethod != "GET") {
 # Hay que comprobar que se pasen los parametros obligatorios
 # OJO: Los nombres de parametro son sensibles a mayusculas/minusculas
 try {
+    
   if (!isset($_GET["TipoUsuario"])) {
     throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");   // quité K_SCRIPTNAME del mensaje
   } else {
@@ -56,6 +65,29 @@ try {
       throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
     }
   }
+
+  if (!isset($_GET["Usuario"])) {
+    throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+  } else {
+    $Usuario = $_GET["Usuario"];
+  }
+
+  # Se conecta a la base de datos
+  require_once "../db/conexion.php";
+
+  # dRendon 05.05.2023 ********************
+  # Ahora se va a verificar la identidad del usuario por medio del Token
+  # recibido en el Header con Key "Auth" (PHP lo interpreta como "HTTP_AUTH")
+  if(!isset($_SERVER["HTTP_AUTH"])) {
+    throw new Exception("No se recibio el Token de autenticacion");
+  } else {
+    $Token = $_SERVER["HTTP_AUTH"];
+  }
+  // ValidaToken está en ./include/funciones.php
+  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {    
+    throw new Exception("Error de autenticacion.");
+  }
+  # Fin dRendon 05.05.2023 ****************
 
   if (!isset($_GET["ClienteDesde"])) {
     throw new Exception("El parametro obligatorio 'ClienteDesde' no fue definido.");
@@ -80,6 +112,17 @@ try {
   } else {
     $FilialHasta = $_GET["FilialHasta"] ;
   }
+
+  # dRendon 05.05.2023 ********************
+  # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
+  # Verificando en este nivel ya no es necesario cambiar el código restante
+  if ($TipoUsuario == "C") {
+    if ((TRIM($ClienteDesde). "-". TRIM($FilialDesde)) != $Usuario OR 
+        (TRIM($ClienteHasta). "-". TRIM($FilialHasta)) != $Usuario) {
+      throw new Exception("Error de autenticación");
+    }
+  }
+  # Fin dRendon 05.05.2023 ****************
 
   if (!isset($_GET["CarteraDesde"])) {
     throw new Exception("El parametro obligatorio 'CarteraDesde' no fue definido.");
@@ -126,16 +169,6 @@ if(strlen($mensaje) > 0){
 # Hay que inicializarverificar parametros opcionales y en caso 
 # que estos no se indiquen, asignar valores por omisión.
 # (dichos valores se definieron al inicio del script, al declarar las variables)
-if (isset($_GET["Usuario"])) {
-  $Usuario = $_GET["Usuario"];
-} else {
-  if(in_array($TipoUsuario, ["A", "G"])){
-    $mensaje = "Debe indicar 'Usuario' cuando 'TipoUsuario' es 'A' o 'G'";    // quité K_SCRIPTNAME del mensaje
-    http_response_code(400);  
-    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
-  }
-}
 
 if (isset($_GET["Pagina"])) {
   $Pagina = $_GET["Pagina"];
@@ -190,6 +223,8 @@ try {
 
 $response = json_encode($response);
 
+$conn = null;   // Cierra conexión
+  
 echo $response;
 
 return;
@@ -246,7 +281,8 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
 
   //var_dump($strClienteDesde,$strFilialDesde,$strClienteHasta,$strFilialHasta,$strCarteraDesde,$strCarteraHasta);
   # Se conecta a la base de datos
-  require_once "../db/conexion.php";
+  //require_once "../db/conexion.php";  <-- el script se leyó previamente
+  $conn = DB::getConn();
 
   # Construyo dinamicamente la condicion WHERE
   $where = "WHERE concat(replace(sc_num,' ','0'),replace(sc_fil,' ','0')) >= :strClteInic
@@ -423,8 +459,6 @@ FUNCTION SelectResumenCartera($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesd
   
     }
   
-    $conn = null;   // Cierra conexión
-  
     # Falta tener en cuenta la paginacion
     return $arrData;
   
@@ -516,8 +550,6 @@ FUNCTION SelectResumenStatusClte($TipoUsuario, $Usuario)
   
     }
   
-    $conn = null;   // Cierra conexión
-  
     # Falta tener en cuenta la paginacion
     return $arrData;
   
@@ -606,8 +638,6 @@ FUNCTION SelectResumenTipoClte($TipoUsuario, $Usuario)
       echo json_encode($response);
   
     }
-  
-    $conn = null;   // Cierra conexión
   
     # Falta tener en cuenta la paginacion
     return $arrData;

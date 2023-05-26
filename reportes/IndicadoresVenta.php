@@ -6,6 +6,10 @@ date_default_timezone_set('America/Mexico_City');
 /**
  * Indicadores de Venta
  * --------------------------------------------------------------------------
+  * dRendon 04.05.2023 
+ *  El parámetro "Usuario" ahora es obligatorio
+ *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
+ * --------------------------------------------------------------------------
  */
 
 # En el script 'constantes.php' se definen:
@@ -29,6 +33,7 @@ $sqlCmd   = "";     // comando SQL que se envía al engine de datos
 # Variables asociadas a los parámetros recibidos
 $TipoUsuario  = null;     // Tipo de usuario
 $Usuario      = null;     // Id del usuario (cliente, agente o gerente)
+$Token        = null;     // Token obtenido por el usuario al autenticarse
 $AgenteDesde  = null;     // Id del agente inicial
 $AgenteHasta  = null;     // Id del agente final
 $FechaCorte   = null;     // Fecha de corte para considerar datos de venta
@@ -46,6 +51,39 @@ if ($requestMethod != "GET") {
 # Hay que comprobar que se pasen los parametros obligatorios
 # OJO: Los nombres de parametro son sensibles a mayusculas/minusculas
 try {
+
+  if (!isset($_GET["TipoUsuario"])) {
+    throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");   // quité K_SCRIPTNAME del mensaje
+  } else {
+    $TipoUsuario = $_GET["TipoUsuario"];
+    if(! in_array($TipoUsuario, ["A","G"])){
+      throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
+    }
+  }
+
+  if (!isset($_GET["Usuario"])) {
+    throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+  } else {
+    $Usuario = $_GET["Usuario"];
+  }
+
+  # Se conecta a la base de datos
+  require_once "../db/conexion.php";
+
+  # dRendon 04.05.2023 ********************
+  # Ahora se va a verificar la identidad del usuario por medio del Token
+  # recibido en el Header con Key "Auth" (PHP lo interpreta como "HTTP_AUTH")
+  if(!isset($_SERVER["HTTP_AUTH"])) {
+    throw new Exception("No se recibio el Token de autenticacion");
+  } else {
+    $Token = $_SERVER["HTTP_AUTH"];
+  }
+  // ValidaToken está en ./include/funciones.php
+  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {
+    throw new Exception("Error de autenticacion.");
+  }
+  # Fin dRendon 04.05.2023 ****************
+
   if (!isset($_GET["AgenteDesde"])) {
     throw new Exception("El parametro obligatorio 'AgenteDesde' no fue definido.");
   } else {
@@ -57,6 +95,17 @@ try {
   } else {
     $AgenteHasta = $_GET["AgenteHasta"];
   }
+
+  # dRendon 04.05.2023 ********************
+  # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
+  # Verificando en este nivel ya no es necesario cambiar el código restante
+  if ($TipoUsuario == "A") {
+    if (TRIM($AgenteDesde) != $Usuario OR 
+        TRIM($AgenteHasta) != $Usuario) {
+      throw new Exception("Error de autenticación");
+    }
+  }
+  # Fin dRendon 04.05.2023 ****************
 
   if (!isset($_GET["FechaCorte"])) {
     throw new Exception("El parametro obligatorio 'FechaCorte' no fue definido.");
@@ -74,7 +123,7 @@ try {
 }
 
 # Lista de parámetros aceptados por este endpoint
-$arrPermitidos = array("AgenteDesde", "AgenteHasta", "FechaCorte", "Pagina");
+$arrPermitidos = array("TipoUsuario", "Usuario", "AgenteDesde", "AgenteHasta", "FechaCorte", "Pagina");
 
 # Obtiene todos los parametros pasados en la llamada y verifica que existan
 # en la lista de parámetros aceptados por el endpoint
@@ -180,7 +229,8 @@ FUNCTION SelectIndicadores($AgenteDesde,$AgenteHasta,$FechaCorte)
   set_time_limit(300);
 
   # Se conecta a la base de datos
-  require_once "../db/conexion.php";
+  //require_once "../db/conexion.php";
+  $conn = DB::getConn();
 
   try {
 

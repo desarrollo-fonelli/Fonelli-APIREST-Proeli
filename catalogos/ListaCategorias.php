@@ -193,7 +193,9 @@ function SelectCategorias($CategoriaCodigo, $Subcategoria)
       // dRendon 30.08.2022
       // A solicitud del cliente, se van a descartar las categorías 
       // y subcategorías de la "K" en adelante
-      $where .= "AND  a.t_gpo < 'K' ";
+      // dRendon 08.05.2023
+      // Ahora se descartan de la "L" en adelante
+      $where .= "AND  a.t_gpo < 'L' ";
 
 
       if (isset($Subcategoria)) {
@@ -225,7 +227,9 @@ function SelectCategorias($CategoriaCodigo, $Subcategoria)
     // dRendon 30.08.2022
     // A solicitud del cliente, se van a descartar las categorías 
     // y subcategorías de la "K" en adelante
-    $where .= "AND  a.t_gpo < 'K' ";
+    // dRendon 08.05.2023
+    // Ahora se descartan de la "L" en adelante
+    $where .= "AND  a.t_gpo < 'L' ";
   }
 
   $sqlCmd = "SELECT trim(a.t_gpo) t_gpo,trim(a.t_clave) t_clave,trim(a.t_descr) t_descr

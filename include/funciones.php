@@ -48,3 +48,45 @@
   }
 
  }
+
+ /**
+  * Valiida el Token del usuario que hace la peticion
+  * dRendon 04.05.2023
+  */
+FUNCTION ValidaToken($conn, $TipoUsuario, $Usuario, $Token) {
+ 
+  $sqlCmd = null;
+  $oSQL = null;
+  $numRows = null;
+  $row = null;
+
+//  require_once "../db/conexion.php";
+
+  // Hay que definir dinamicamente el schema <---------------------------------
+  $sqlCmd = "SET SEARCH_PATH TO dateli;";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->execute();
+
+  // Busca usuario en tabla "tokens" y obtiene la cadena registrada al loggearse
+  $sqlCmd = "SELECT usr_tipo,usr_code,usr_token FROM tokens 
+  WHERE usr_tipo = :usr_tipo AND usr_code = :usr_code";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->bindParam(":usr_tipo", $TipoUsuario, PDO::PARAM_STR);
+  $oSQL->bindParam(":usr_code", $Usuario, PDO::PARAM_STR);
+  $oSQL->execute();
+  $numRows = $oSQL->rowCount();
+
+  if ($numRows > 0){
+    $row = $oSQL->fetch(PDO::FETCH_ASSOC);
+    $usr_token = TRIM($row["usr_token"]);
+    
+    if ($Token == $usr_token) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+
+}

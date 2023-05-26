@@ -10,6 +10,11 @@ date_default_timezone_set('America/Mexico_City');
  * Cuando el reportes se ordena por Categoría se escribió el servicio VentasArticulo.php
  *    IMPORTANTE:
  *    En Estadisticas por Articulo se incluyen todos los clientes, NO se aplica filtro por agente.
+ * --------------------------------------------------------------------------
+ * dRendon 05.05.2023 
+ *  El parámetro "Usuario" ahora es obligatorio
+ *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
+ * --------------------------------------------------------------------------
  */
 
 # En el script 'constantes.php' se definen:
@@ -34,6 +39,7 @@ $sqlCmd   = "";     // comando SQL que se envía al engine de datos
 # Variables asociadas a los parámetros recibidos
 $TipoUsuario  = null;     // Tipo de usuario
 $Usuario      = null;     // Id del usuario (cliente, agente o gerente)
+$Token        = null;     // Token obtenido por el usuario al autenticarse
 $OficinaDesde = null;     // Código Oficina en que se registra el pedido 
 $OficinaHasta = null;     // Código Oficina en que se registra el pedido
 $FechaDesde   = null;     // Fecha de registro inicial
@@ -71,6 +77,29 @@ try {
       throw new Exception("Servicio no disponible cuando 'TipoUsuario' es  '". $TipoUsuario ."'");
     }
   }
+
+  if (!isset($_GET["Usuario"])) {
+    throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+  } else {
+    $Usuario = $_GET["Usuario"];
+  }
+
+  # Se conecta a la base de datos
+  require_once "../db/conexion.php";
+
+  # dRendon 05.05.2023 ********************
+  # Ahora se va a verificar la identidad del usuario por medio del Token
+  # recibido en el Header con Key "Auth" (PHP lo interpreta como "HTTP_AUTH")
+  if(!isset($_SERVER["HTTP_AUTH"])) {
+    throw new Exception("No se recibio el Token de autenticacion");
+  } else {
+    $Token = $_SERVER["HTTP_AUTH"];
+  }
+  // ValidaToken está en ./include/funciones.php
+  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {    
+    throw new Exception("Error de autenticacion.");
+  }
+  # Fin dRendon 05.05.2023 ****************
 
   if (!isset($_GET["OficinaDesde"])) {
     throw new Exception("El parametro obligatorio 'OficinaDesde' no fue definido.");
@@ -274,6 +303,8 @@ try {
 
 $response = json_encode($response);
 
+$conn = null;   // Cierra conexión
+
 echo $response;
 
 return;
@@ -327,7 +358,8 @@ $TipoArticulo,$TipoOrigen,$OrdenReporte)
   try {
 
     # Se conecta a la base de datos
-    require_once "../db/conexion.php";  
+    // require_once "../db/conexion.php";  <-- el script se leyó previamente
+    $conn = DB::getConn();
 
     # Handler para la conexión a la base de datos
     //$conn = DB::getConn();
