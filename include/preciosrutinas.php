@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * --------------------------------------------------------------------------
+ * dRendon 05.05.2023 
+ * Creación del script
+ * --------------------------------------------------------------------------
+ * dRendon 29.05.2023
+ * Se agrega paridad PREMIUM al cálculo de Precios
+ */
+
+/*****************************************
+* Normal por Componente Formulacion 1
+*/
 function CalcNormalNulis2MNtipoF1()
 {
   # dRendon 03/may/2022 Se agrega la linea de componentes en busquedas
@@ -193,6 +205,9 @@ function CalcNormalNulis2MNtipoF1()
   }
 }
 
+/*****************************************
+* Especial por Componente Formulacion 1
+*/
 function CalcEspecNulis2MNtipoF1()
 {
   # dRendon 03/may/2022 Se agrega la linea de componentes en busquedas
@@ -381,6 +396,202 @@ function CalcEspecNulis2MNtipoF1()
   }
 }
 
+/*****************************************
+ * Premium MN Por Componente Formulacion 1
+ */
+function CalcPremiumNulis2MNtipoF1() 
+{
+  # dRendon 03/may/2022 Se agrega la linea de componentes en busquedas
+
+  global $NormalEquivalente, $TipoParidad;
+  #$W_CATA="E" significa que va a acumular variables relacionadas con el Codigo Equivalente
+  global $C_LCO1, $C_LCO2, $C_LCO3, $C_LCO4, $C_LCO5, $C_LCO6, $C_LCO7, $C_LCO8, $C_LCO9;
+  global $C_CO1, $C_CO2, $C_CO3, $C_CO4, $C_CO5, $C_CO6, $C_CO7, $C_CO8, $C_CO9;
+  global $C_CA1, $C_CA2, $C_CA3, $C_CA4, $C_CA5, $C_CA6, $C_CA7, $C_CA8, $C_CA9;
+  global $C_GR1, $C_GR2, $C_GR3, $C_GR4, $C_GR5, $C_GR6, $C_GR7, $C_GR8, $C_GR9;
+  global $C_CA1E, $C_CA2E, $C_CA3E, $C_CA4E, $C_CA5E, $C_CA6E, $C_CA7E, $C_CA8E, $C_CA9E;
+  global $C_GR1E, $C_GR2E, $C_GR3E, $C_GR4E, $C_GR5E, $C_GR6E, $C_GR7E, $C_GR8E, $C_GR9E;
+  global $TPRE, $TPG, $TPREE, $TPGE;
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO1) <> "") {
+    $rowCOM = seekCompoTipoF1($C_LCO1, $C_CO1);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA1);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR1);
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO2) <> "") {
+    $rowCOM = seekCompoTipoF1($C_LCO2, $C_CO2);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA2);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR2);
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO3) <> "") {
+    $rowCOM = seekCompoTipoF1($C_LCO3, $C_CO3);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA3);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR3);
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO4) <> "") {
+    $rowCOM = seekCompoTipoF1($C_LCO4, $C_CO4);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA4);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR4);
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO5) <> "") {
+    $rowCOM = seekCompoTipoF1($C_LCO5, $C_CO5);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA5);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR5);
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO6) <> "") {
+    seekCompoTipoF1($C_LCO6, $C_CO6);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA6);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR6);
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO7) <> "") {
+    seekCompoTipoF1($C_LCO7, $C_CO7);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA7);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR7);
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO8) <> "") {
+    seekCompoTipoF1($C_LCO8, $C_CO8);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA8);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR8);
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  unset($rowCOM);
+  if (trim($C_CO9) <> "") {
+    seekCompoTipoF1($C_LCO9, $C_CO9);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_grupo"] <> "0") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA9);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR9);
+      }
+    }
+  }
+}
+
 function sumaInsumosGpo1()
 {
   # dRendon 03/may/2022 Se agrega la linea de componentes en busquedas
@@ -407,22 +618,32 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA1);
-          $TPG = $TPG + ($rowCOM["co_l1"] * $C_GR1);
-        } else {
+
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA1);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR1);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA1);
-          $TPG = $TPG + ($rowCOM["co_l1e"] * $C_GR1);
+          $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR1);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA1);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR1);
         }
+        
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA1);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR1);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA1);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR1);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA1);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR1);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR1);
+          } else {
+            // Paridad Normal queda por default
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA1);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR1);
           }
         }
       }
@@ -441,22 +662,31 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA2);
-          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR2);
-        } else {
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA2);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR2);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA2);
           $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR2);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA2);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR2);
         }
+
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA2);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR2);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA2);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR2);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA2);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR2);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR2);
+          } else {
+            // Paridad Normal queda por default
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA2);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR2);
           }
         }
       }
@@ -475,22 +705,31 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA3);
-          $TPG = $TPG + ($rowCOM["co_l1"] * $C_GR3);
-        } else {
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA3);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR3);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA3);
-          $TPG = $TPG + ($rowCOM["co_l1e"] * $C_GR3);
+          $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR3);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA3);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR3);
         }
+
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA3);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR3);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA3);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR3);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA3);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR3);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR3);
+          } else {
+            // Paridad Normal queda por default
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA3);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR3);
           }
         }
       }
@@ -509,22 +748,31 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA4);
-          $TPG = $TPG + ($rowCOM["co_l1"] * $C_GR4);
-        } else {
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA4);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR4);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA4);
-          $TPG = $TPG + ($rowCOM["co_l1e"] * $C_GR4);
+          $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR4);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA4);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR4);
         }
+
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA4);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR4);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA4);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR4);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA4);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR4);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR4);
+          } else {
+            // Paridad Normal queda por default
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA4);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR4);
           }
         }
       }
@@ -543,22 +791,30 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA5);
-          $TPG = $TPG + ($rowCOM["co_l1"] * $C_GR5);
-        } else {
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA5);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR5);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA5);
-          $TPG = $TPG + ($rowCOM["co_l1e"] * $C_GR5);
+          $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR5);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA5);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR5);
         }
+
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA5);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR5);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA5);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR5);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA5);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR5);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR5);
+          } else {
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA5);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR5);
           }
         }
       }
@@ -577,22 +833,31 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA6);
-          $TPG = $TPG + ($rowCOM["co_l1"] * $C_GR6);
-        } else {
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA6);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR6);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA6);
-          $TPG = $TPG + ($rowCOM["co_l1e"] * $C_GR6);
+          $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR6);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA6);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR6);
         }
+
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA6);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR6);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA6);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR6);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA6);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR6);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR6);
+          } else {
+            // Paridad Normal queda por default
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA6);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR6);
           }
         }
       }
@@ -611,22 +876,31 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA7);
-          $TPG = $TPG + ($rowCOM["co_l1"] * $C_GR7);
-        } else {
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA7);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR7);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA7);
-          $TPG = $TPG + ($rowCOM["co_l1e"] * $C_GR7);
+          $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR7);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA7);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR7);
         }
+
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA7);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR7);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA7);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR7);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA7);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR7);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR7);
+          } else {
+            // Paridad Normal queda por default
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA7);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR7);
           }
         }
       }
@@ -645,22 +919,31 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA8);
-          $TPG = $TPG + ($rowCOM["co_l1"] * $C_GR8);
-        } else {
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA8);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR8);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA8);
-          $TPG = $TPG + ($rowCOM["co_l1e"] * $C_GR8);
+          $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR8);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA8);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR8);
         }
+
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA8);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR8);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA8);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR8);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA8);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR8);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR8);
+          } else {
+            // Paridad Normal queda por default
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA8);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR8);
           }
         }
       }
@@ -679,22 +962,31 @@ function sumaInsumosGpo1()
         if ($rowCOM["co_facmaq"] <> 0) {
           $W_FACMAQ = $rowCOM["co_facmaq"];
         }
-        if ($TipoParidad == "N") {
-          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA9);
-          $TPG = $TPG + ($rowCOM["co_l1"] * $C_GR9);
-        } else {
+        if ($TipoParidad == "P") {
+          $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA9);
+          $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR9);
+        } elseif ($TipoParidad == "E") {
           $TPRE = $TPRE + ($rowCOM["co_l1e"] * $C_CA9);
-          $TPG = $TPG + ($rowCOM["co_l1e"] * $C_GR9);
+          $TPG  = $TPG  + ($rowCOM["co_l1e"] * $C_GR9);
+        } else {
+          // Paridad Normal queda por default
+          $TPRE = $TPRE + ($rowCOM["co_l1"] * $C_CA9);
+          $TPG  = $TPG  + ($rowCOM["co_l1"] * $C_GR9);
         }
+
         if ($NormalEquivalente == "E") {
           #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1e ni C_GR1e
           #como es de esperarse
-          if ($TipoParidad == "N") {
-            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA9);
-            $TPGE = $TPGE + ($rowCOM["co_l1"] * $C_GR9);
-          } else {
+          if ($TipoParidad == "P") {
+            $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA9);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1p"] * $C_GR9);
+          } elseif ($TipoParidad == "E") {
             $TPREE = $TPREE + ($rowCOM["co_l1e"] * $C_CA9);
-            $TPGE = $TPGE + ($rowCOM["co_l1e"] * $C_GR9);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1e"] * $C_GR9);
+          } else {
+            // Paridad Normal queda por default
+            $TPREE = $TPREE + ($rowCOM["co_l1"] * $C_CA9);
+            $TPGE  = $TPGE  + ($rowCOM["co_l1"] * $C_GR9);
           }
         }
       }
@@ -2377,20 +2669,28 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA1);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR1);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA1);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR1);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA1);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR1);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA1);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR1);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA1);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR1);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA1);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR1);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA1);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR1);
+        } else {
+          // El default es la paridad Normal
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA1);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR1);
         }
       }
 
@@ -2429,39 +2729,55 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA2);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR2);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA2);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR2);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA2);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR2);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA2);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR2);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA2);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR2);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA2);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR2);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA2);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR2);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA2);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR2);
         }
       }
 
       if ($W_CATA == "E") {
         if ($rowCOM["CO_GRUPO"] == "2") {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA2);
-            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR2);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_VENTAP"] * $C_CA2);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTAP"] * $C_GR2);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_VENTAE"] * $C_CA2);
             $TPGE  = $TPGE + ($rowCOM["CO_VENTAE"] * $C_GR2);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA2);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR2);
           }
         } else {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA2);
-            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR2);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_L1P"] * $C_CA2);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1P"] * $C_GR2);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_L1E"] * $C_CA2);
             $TPGE  = $TPGE + ($rowCOM["CO_L1E"] * $C_GR2);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA2);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR2);
           }
         }
       }
@@ -2481,39 +2797,55 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA3);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR3);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA3);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR3);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA3);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR3);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA3);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR3);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA3);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR3);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA3);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR3);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA3);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR3);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA3);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR3);
         }
       }
 
       if ($W_CATA == "E") {
         if ($rowCOM["CO_GRUPO"] == "2") {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA3);
-            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR3);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_VENTAP"] * $C_CA3);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTAP"] * $C_GR3);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_VENTAE"] * $C_CA3);
             $TPGE  = $TPGE + ($rowCOM["CO_VENTAE"] * $C_GR3);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA3);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR3);
           }
         } else {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA3);
-            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR3);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_L1P"] * $C_CA3);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1P"] * $C_GR3);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_L1E"] * $C_CA3);
             $TPGE  = $TPGE + ($rowCOM["CO_L1E"] * $C_GR3);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA3);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR3);
           }
         }
       }
@@ -2533,39 +2865,55 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA4);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR4);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA4);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR4);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA4);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR4);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA4);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR4);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA4);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR4);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA4);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR4);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA4);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR4);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA4);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR4);
         }
       }
 
       if ($W_CATA == "E") {
         if ($rowCOM["CO_GRUPO"] == "2") {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA4);
-            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR4);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_VENTAP"] * $C_CA4);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTAP"] * $C_GR4);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_VENTAE"] * $C_CA4);
             $TPGE  = $TPGE + ($rowCOM["CO_VENTAE"] * $C_GR4);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA4);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR4);
           }
         } else {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA4);
-            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR4);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_L1P"] * $C_CA4);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1P"] * $C_GR4);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_L1E"] * $C_CA4);
             $TPGE  = $TPGE + ($rowCOM["CO_L1E"] * $C_GR4);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA4);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR4);
           }
         }
       }
@@ -2585,39 +2933,55 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA5);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR5);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA5);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR5);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA5);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR5);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA5);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR5);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA5);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR5);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA5);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR5);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA5);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR5);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA5);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR5);
         }
       }
 
       if ($W_CATA == "E") {
         if ($rowCOM["CO_GRUPO"] == "2") {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA5);
-            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR5);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_VENTAP"] * $C_CA5);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTAP"] * $C_GR5);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_VENTAE"] * $C_CA5);
             $TPGE  = $TPGE + ($rowCOM["CO_VENTAE"] * $C_GR5);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA5);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR5);
           }
         } else {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA5);
-            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR5);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_L1P"] * $C_CA5);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1P"] * $C_GR5);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_L1E"] * $C_CA5);
             $TPGE  = $TPGE + ($rowCOM["CO_L1E"] * $C_GR5);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA5);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR5);
           }
         }
       }
@@ -2637,39 +3001,56 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA6);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR6);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA6);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR6);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA6);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR6);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA6);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR6);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA6);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR6);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA6);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR6);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA6);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR6);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA6);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR6);
         }
       }
 
       if ($W_CATA == "E") {
         if ($rowCOM["CO_GRUPO"] == "2") {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA6);
-            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR6);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_VENTAP"] * $C_CA6);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTAP"] * $C_GR6);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_VENTAE"] * $C_CA6);
             $TPGE  = $TPGE + ($rowCOM["CO_VENTAE"] * $C_GR6);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA6);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR6);
           }
         } else {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA6);
-            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR6);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_L1P"] * $C_CA6);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1P"] * $C_GR6);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_L1E"] * $C_CA6);
             $TPGE  = $TPGE + ($rowCOM["CO_L1E"] * $C_GR6);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA6);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR6);
+
           }
         }
       }
@@ -2689,39 +3070,55 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA7);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR7);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA7);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR7);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA7);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR7);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA7);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR7);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA7);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR7);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA7);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR7);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA7);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR7);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA7);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR7);
         }
       }
 
       if ($W_CATA == "E") {
         if ($rowCOM["CO_GRUPO"] == "2") {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA7);
-            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR7);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_VENTAP"] * $C_CA7);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTAP"] * $C_GR7);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_VENTAE"] * $C_CA7);
             $TPGE  = $TPGE + ($rowCOM["CO_VENTAE"] * $C_GR7);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA7);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR7);
           }
         } else {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA7);
-            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR7);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_L1P"] * $C_CA7);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1P"] * $C_GR7);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_L1E"] * $C_CA7);
             $TPGE  = $TPGE + ($rowCOM["CO_L1E"] * $C_GR7);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA7);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR7);
           }
         }
       }
@@ -2741,39 +3138,55 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA8);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR8);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA8);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR8);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA8);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR8);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA8);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR8);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA8);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR8);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA8);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR8);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA8);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR8);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA8);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR8);
         }
       }
 
       if ($W_CATA == "E") {
         if ($rowCOM["CO_GRUPO"] == "2") {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA8);
-            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR8);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_VENTAP"] * $C_CA8);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTAP"] * $C_GR8);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_VENTAE"] * $C_CA8);
             $TPGE  = $TPGE + ($rowCOM["CO_VENTAE"] * $C_GR8);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA8);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR8);
           }
         } else {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA8);
-            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR8);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_L1P"] * $C_CA8);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1P"] * $C_GR8);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_L1E"] * $C_CA8);
             $TPGE  = $TPGE + ($rowCOM["CO_L1E"] * $C_GR8);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA8);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR8);
           }
         }
       }
@@ -2793,40 +3206,731 @@ function sumaInsumosGpo1Gpo2PrecVtaGpo3()
       }
 
       if ($rowCOM["CO_GRUPO"] == "2") {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA9);
-          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR9);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_VENTAP"] * $C_CA9);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTAP"] * $C_GR9);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_VENTAE"] * $C_CA9);
           $TPG  = $TPG  + ($rowCOM["CO_VENTAE"] * $C_GR9);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_VENTA"] * $C_CA9);
+          $TPG  = $TPG  + ($rowCOM["CO_VENTA"] * $C_GR9);
         }
       } else {
-        if ($W_TPARID == "N") {
-          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA9);
-          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR9);
-        } else {
+        if ($W_TPARID == "P") {
+          $TPRE = $TPRE + ($rowCOM["CO_L1P"] * $C_CA9);
+          $TPG  = $TPG  + ($rowCOM["CO_L1P"] * $C_GR9);
+        } elseif ($W_TPARID == "E") {
           $TPRE = $TPRE + ($rowCOM["CO_L1E"] * $C_CA9);
           $TPG  = $TPG  + ($rowCOM["CO_L1E"] * $C_GR9);
+        } else {
+          // La paridad Normal es el default
+          $TPRE = $TPRE + ($rowCOM["CO_L1"] * $C_CA9);
+          $TPG  = $TPG  + ($rowCOM["CO_L1"] * $C_GR9);
         }
       }
 
       if ($W_CATA == "E") {
         if ($rowCOM["CO_GRUPO"] == "2") {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA9);
-            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR9);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_VENTAP"] * $C_CA9);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTAP"] * $C_GR9);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_VENTAE"] * $C_CA9);
             $TPGE  = $TPGE + ($rowCOM["CO_VENTAE"] * $C_GR9);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_VENTA"] * $C_CA9);
+            $TPGE  = $TPGE + ($rowCOM["CO_VENTA"] * $C_GR9);
           }
         } else {
-          if ($W_TPARID == "N") {
-            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA9);
-            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR9);
-          } else {
+          if ($W_TPARID == "P") {
+            $TPREE = $TPREE + ($rowCOM["CO_L1P"] * $C_CA9);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1P"] * $C_GR9);
+          } elseif ($W_TPARID == "E") {
             $TPREE = $TPREE + ($rowCOM["CO_L1E"] * $C_CA9);
             $TPGE  = $TPGE + ($rowCOM["CO_L1E"] * $C_GR9);
+          } else {
+            // La paridad Normal es el default
+            $TPREE = $TPREE + ($rowCOM["CO_L1"] * $C_CA9);
+            $TPGE  = $TPGE + ($rowCOM["CO_L1"] * $C_GR9);
           }
+        }
+      }
+    }
+  }
+}
+
+function sumaInsumosGpo1MasValorAgregadoPremium()
+{
+  # dRendon 03/may/2022 Se agrega la linea de componentes en busquedas
+
+  #$W_TCANIM <- peso piedra
+  #$W_CATA="E" significa que va a acumular variables relacionadas con el Codigo Equivalente
+  global $NormalEquivalente, $TipoParidad;
+  global $W_TCANIM, $W_NOAUMENTO;
+  global $rowListaPrecLinea;
+  global $C_LCO1, $C_LCO2, $C_LCO3, $C_LCO4, $C_LCO5, $C_LCO6, $C_LCO7, $C_LCO8, $C_LCO9;
+  global $C_CO1, $C_CO2, $C_CO3, $C_CO4, $C_CO5, $C_CO6, $C_CO7, $C_CO8, $C_CO9;
+  global $C_CA1, $C_CA2, $C_CA3, $C_CA4, $C_CA5, $C_CA6, $C_CA7, $C_CA8, $C_CA9;
+  global $C_GR1, $C_GR2, $C_GR3, $C_GR4, $C_GR5, $C_GR6, $C_GR7, $C_GR8, $C_GR9;
+  global $C_CA1E, $C_CA2E, $C_CA3E, $C_CA4E, $C_CA5E, $C_CA6E, $C_CA7E, $C_CA8E, $C_CA9E;
+  global $C_GR1E, $C_GR2E, $C_GR3E, $C_GR4E, $C_GR5E, $C_GR6E, $C_GR7E, $C_GR8E, $C_GR9E;
+  global $TPRE, $TPG, $TPREE, $TPGE;
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO1 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO1, $C_CO1);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA1 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR1 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA1 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR1 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO2 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO2, $C_CO2);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA2 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR2 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA2 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR2 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO3 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO3, $C_CO3);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA3 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR3 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA3 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR3 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO4 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO4, $C_CO4);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA4 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR4 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA4 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR4 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO5 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO5, $C_CO5);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA5 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR5 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA5 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR5 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO6 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO6, $C_CO6);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA6 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR6 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA6 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR6 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO7 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO7, $C_CO7);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA7 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR7 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA7 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR7 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO8 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO8, $C_CO8);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA8 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR8 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA8 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR8 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO9 <> 0) {
+    $rowCOM = seekCompoTipoGpo1($C_LCO9, $C_CO9);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+      if ($W_FACTOR <> 0) {
+        $TPRE = $TPRE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA9 - $W_TCANIM));
+        $TPG  = $TPG + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR9 - $W_TCANIM));
+        $W_NOAUMENTO = 1;
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_facoro"] <> 0) {
+          $W_FACORO = $rowCOM["co_facoro"];
+        }
+        if ($rowCOM["co_facmaq"] <> 0) {
+          $W_FACMAQ = $rowCOM["co_facmaq"];
+        }
+
+        $W_FACTOR = $rowListaPrecLinea["r_facimp"];
+        if ($W_FACTOR <> 0) {
+          #En Proeli se utiliza C_CA1 y C_GR1, np C_CA1E ni C_GR1E
+          #como es de esperarse
+          $TPREE = $TPREE + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_CA9 - $W_TCANIM));
+          $TPGE  = $TPGE  + (($rowCOM["co_l1p"] + $W_FACTOR) * ($C_GR9 - $W_TCANIM));
+          $W_NOAUMENTO = 1;
+        }
+      }
+    }
+  }
+}
+
+function sumaInsumosGpo2ConPrecioVentayGrupo3Premium()
+{
+  # dRendon 03/may/2022 Se agrega la linea de componentes en busquedas
+
+  #$W_CATA="E" significa que va a acumular variables relacionadas con el Codigo Equivalente
+  #$W_TCANIM <- peso piedra
+  global $NormalEquivalente, $TipoParidad;
+  global $W_TCANIM, $W_NOAUMENTO;
+  global $rowListaPrecLinea;
+  global $C_LCO1, $C_LCO2, $C_LCO3, $C_LCO4, $C_LCO5, $C_LCO6, $C_LCO7, $C_LCO8, $C_LCO9;
+  global $C_CO1, $C_CO2, $C_CO3, $C_CO4, $C_CO5, $C_CO6, $C_CO7, $C_CO8, $C_CO9;
+  global $C_CA1, $C_CA2, $C_CA3, $C_CA4, $C_CA5, $C_CA6, $C_CA7, $C_CA8, $C_CA9;
+  global $C_GR1, $C_GR2, $C_GR3, $C_GR4, $C_GR5, $C_GR6, $C_GR7, $C_GR8, $C_GR9;
+  global $C_CA1E, $C_CA2E, $C_CA3E, $C_CA4E, $C_CA5E, $C_CA6E, $C_CA7E, $C_CA8E, $C_CA9E;
+  global $C_GR1E, $C_GR2E, $C_GR3E, $C_GR4E, $C_GR5E, $C_GR6E, $C_GR7E, $C_GR8E, $C_GR9E;
+  global $TPRE, $TPG, $TPREE, $TPGE;
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO1 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO1, $C_CO1);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA1);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR1);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA1);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR1);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA1);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR1);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA1);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR1);
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO2 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO2, $C_CO2);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA2);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR2);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA2);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR2);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA2);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR2);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA2);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR2);
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO3 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO3, $C_CO3);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA3);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR3);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA3);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR3);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA3);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR3);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA3);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR3);
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO4 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO4, $C_CO4);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA4);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR4);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA4);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR4);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA4);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR4);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA4);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR4);
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO5 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO5, $C_CO5);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA5);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR5);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA5);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR5);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA5);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR5);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA5);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR5);
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO6 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO6, $C_CO6);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA6);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR6);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA6);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR6);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA6);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR6);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA6);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR6);
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO7 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO7, $C_CO7);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA7);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR7);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA7);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR7);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA7);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR7);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA7);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR7);
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO8 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO8, $C_CO8);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA8);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR8);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA8);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR8);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA8);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR8);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA8);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR8);
+        }
+      }
+    }
+  }
+
+  $W_FACORO = 0;
+  $W_FACMAQ = 0;
+  if ($C_CO9 <> 0) {
+    $rowCOM = seekCompoTipoGpo2y3($C_LCO9, $C_CO9);
+    if (isset($rowCOM)) {
+      if ($rowCOM["co_facoro"] <> 0) {
+        $W_FACORO = $rowCOM["co_facoro"];
+      }
+      if ($rowCOM["co_facmaq"] <> 0) {
+        $W_FACMAQ = $rowCOM["co_facmaq"];
+      }
+
+      if ($rowCOM["co_grupo"] == "2") {
+        $TPRE = $TPRE + ($rowCOM["co_ventap"] * $C_CA9);
+        $TPG  = $TPG  + ($rowCOM["co_ventap"] * $C_GR9);
+      } else {
+        $TPRE = $TPRE + ($rowCOM["co_l1p"] * $C_CA9);
+        $TPG  = $TPG  + ($rowCOM["co_l1p"] * $C_GR9);
+      }
+
+      if ($NormalEquivalente == "E") {
+        if ($rowCOM["co_grupo"] == "2") {
+          $TPREE = $TPREE + ($rowCOM["co_ventap"] * $C_CA9);
+          $TPGE  = $TPGE + ($rowCOM["co_ventap"] * $C_GR9);
+        } else {
+          $TPREE = $TPREE + ($rowCOM["co_l1p"] * $C_CA9);
+          $TPGE  = $TPGE + ($rowCOM["co_l1p"] * $C_GR9);
         }
       }
     }

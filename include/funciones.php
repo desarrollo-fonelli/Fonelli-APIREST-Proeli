@@ -60,7 +60,7 @@ FUNCTION ValidaToken($conn, $TipoUsuario, $Usuario, $Token) {
   $numRows = null;
   $row = null;
 
-//  require_once "../db/conexion.php";
+  //  require_once "../db/conexion.php";
 
   // Hay que definir dinamicamente el schema <---------------------------------
   $sqlCmd = "SET SEARCH_PATH TO dateli;";
