@@ -871,19 +871,116 @@ function SelectPrecio(
         # MONEDA USD
         } else {
 
-          #MONEDA USD                         <------------------
           switch ($Formulacion) {
+            #COSTEO PIEZA ( > Insumos Grupo 1 e Insumos Grupo 2 e Insumos Grupo 3) * Factor
             case "1":
-              #COSTEO PIEZA ( > Insumos Grupo 1 e Insumos Grupo 2 e Insumos Grupo 3) * Factor
+
+              $W_COSTO = 0;   // dRendon 23/jul/2019
+              $W_VENTA = 0;   // dRendon 23/jul/2019
+
+              #Suma todos los insumos Grupo 1, Grupo 2 y Grupo 3
+              $TPRE = 0;
+              $TPG  = 0;
+              $TPREE = 0;
+              $TPGE = 0;
+              #preciosrutinas.php
+              CalcNormalNulis2USDtipoF1();
+
+              // $W_FACTOR = $rowAGR["R_FACIMP"];   <----- se obtuvo anteriormente
+              #MULTIPLICA POR FACTOR
+              if ($W_FACTOR <> 0) {
+                $TPRE = $TPRE * (1 + $W_FACTOR / 100);
+                $TPG  = $TPG  * (1 + $W_FACTOR / 100);
+                $W_NOAUMENTO = 1;
+              }
+              if ($NormalEquivalente  == "E" and trim($W_CODE) <> "") {
+                $W_COSTOE = 0;
+                $W_VENTAE = 0;
+                $TPGE = 0;
+                $TPREE = 0;
+                #Suma Todos los Insumos Grupo, Grupo 2 y Grupo 3
+                $TPRE = 0;
+                $TPGE = 0;
+
+                #preciosrutnas.php
+                CalcNormalNulis2USDtipoF1();
+                // EN REALIDAD SE DEBE CREAR LA RUTINA PARA "EQUIVALENTE":
+                // CalcNormalNulis2MNtipoF1Equivalente();
+
+                // $W_FACTOR = $rowAGR["R_FACIMP"];    <---- se obtuvo anteriormente
+                #MULTIPLICA POR FACTOR
+                if ($W_FACTOR <> 0) {
+                  $TPREE = $TPREE * (1 + $W_FACTOR / 100);
+                  $TPGE  = $TPGE  * (1 + $W_FACTOR / 100);
+                  $W_NOAUMENTO = 1;
+                }
+              }
+
+              $ValorAgregado = $W_FACTOR;
+              $Precio = $TPRE;
+              $PrecioEquivalente = $TPREE;
+
               break;
+            #COSTEO GRAMO ( > Insumos Grupo 1 ) + Valor Agregado
             case "2":
-              #COSTEO GRAMO ( > Insumos Grupo 1 ) + Valor Agregado
+              $TPRE  = 0;
+              $TPG   = 0;
+              $TPREE = 0;
+              $TPGE  = 0;
+
+              #Suma todos los insumos Grupo 1
+              #preciosrutinas.php
+              sumaInsumosGpo1USD();
+
+              // $W_FACTOR = $rowAGR["R_FACIMP"];    <---- se obtuvo anteriormente
+              #Suma valor agregado
+              if ($W_FACTOR <> 0) {
+                $TPRE = $TPRE + $W_FACTOR;
+                $TPG  = $TPG  + $W_FACTOR;
+                $W_NOAUMENTO = 1;
+              }
+
+              if ($NormalEquivalente == "E" && trim($W_CODE) <> "") {
+                #preciosrutinas.php
+                #sumaInsumosGpo1();     <-- la suma se hizo en la primera pasada
+
+                // $W_FACTOR = $rowAGR["R_FACIMP"];    <---- se obtuvo anteriormente
+                #Suma Valor Agregado
+                if ($W_FACTOR <> 0) {
+                  $TPREE = $TPREE + $W_FACTOR;
+                  $TPGE  = $TPGE  + $W_FACTOR;
+                  $W_NOAUMENTO = 1;
+                }
+              }
+
+              $ValorAgregado = $W_FACTOR;
+              $Precio = $TPG;
+              $PrecioEquivalente = $TPGE;
+
               break;
+
+            #COSTEO GRAMO ( > Insumos Grupo 1 + Insumos Grupo 2 a Precio Venta + Insumos Grupo 3) + Valor Agregado
             case "3":
-              #COSTEO GRAMO ( > Insumos Grupo 1 + Insumos Grupo 2 a Precio Venta + Insumos Grupo 3) + Valor Agregado
               break;
+            #COSTEO GRAMO   > (Insumos Grupo 1  + Valor Agregado) +  > Insumos Grupo 2 a Precio de Venta e Insumos Grupo 3
             case "4":
-              #COSTEO GRAMO   > (Insumos Grupo 1  + Valor Agregado) +  > Insumos Grupo 2 a Precio de Venta e Insumos Grupo 3
+              #Calcula peso piedra para restarlo al peso del articulo
+              #------------------------------------------------------
+              $W_TCANIM = 0;
+              //dRendon 02.06.2023      inhibo este calculo para coincidir con Proeli
+              //calcPesoPiedra();       #preciosrutinas.php
+
+              #Suma todos los insumos Grupo1 + Valor Agregado, PARIDAD NORMAL
+              sumaInsumosGpo1MasValorAgregadoNormalUSD();
+
+              #Suma Todos los Insumos Grupo 2 a Precio de Venta e Grupo 3
+              #(segun ATNCT020.prg)
+              sumaInsumosGpo2ConPrecioVentayGrupo3NormalUSD();
+
+              $ValorAgregado = $W_FACTOR;
+              $Precio = $TPRE;
+              $PrecioEquivalente = $TPREE;
+
               break;
           }
         }
@@ -1105,6 +1202,33 @@ function SelectPrecio(
 
               break;
           }
+        
+        # MONEDA USD
+        } else {
+
+          switch ($Formulacion) {
+          #COSTEO PIEZA ( > Insumos Grupo 1 e Insumos Grupo 2 e Insumos Grupo 3) * Factor
+          case "1":
+            break;            
+          #COSTEO GRAMO ( > Insumos Grupo 1 ) + Valor Agregado
+          case "2":
+            break;
+          #COSTEO GRAMO ( > Insumos Grupo 1 + Insumos Grupo 2 a Precio Venta + Insumos Grupo 3) + Valor Agregado
+          case "3":
+            break;
+          #COSTEO GRAMO   > (Insumos Grupo 1  + Valor Agregado) +  > Insumos Grupo 2 a Precio de Venta e Insumos Grupo 3
+          case "4":
+            break;
+          # COSTEO PIEZA [ Costo=Costo Compra * Paridad del Día (C_COSCOM*Paridad Normal del Día) 
+          #    Venta=Costo * Factor de Incremento (de la Tabla de Valores Agregados de acuerdo a la Lista de Precios, imagen 2) ]
+          case "5":
+            break;
+          }
+
+
+          # dRendon 24/jun/2022 Se agrega esta nueva fornmulacion
+            # COSTEO PIEZA [ Costo=Costo Compra * Paridad del Día (C_COSCOM*Paridad Normal del Día) 
+            #    Venta=Costo * Factor de Incremento (de la Tabla de Valores Agregados de acuerdo a la Lista de Precios, imagen 2) ]
         }
       }
     }
@@ -1356,15 +1480,115 @@ function SelectPrecio(
           switch ($Formulacion) {
             #COSTEO PIEZA ( > Insumos Grupo 1 e Insumos Grupo 2 e Insumos Grupo 3) * Factor
             case "1":
+              $W_COSTO = 0;   // dRendon 23/jul/2019
+              $W_VENTA = 0;   // dRendon 23/jul/2019
+
+              #Suma todos los insumos Grupo 1, Grupo 2 y Grupo 3
+              $TPRE = 0;
+              $TPG  = 0;
+              $TPREE = 0;
+              $TPGE = 0;
+              #preciosrutinas.php
+              CalcPremiumNulis2USDtipoF1();
+
+              // $W_FACTOR = $rowAGR["R_FACIMP"];   <----- se obtuvo anteriormente
+              #MULTIPLICA POR FACTOR
+              if ($W_FACTOR <> 0) {
+                $TPRE = $TPRE * (1 + $W_FACTOR / 100);
+                $TPG  = $TPG  * (1 + $W_FACTOR / 100);
+                $W_NOAUMENTO = 1;
+              }
+              if ($NormalEquivalente  == "E" and trim($W_CODE) <> "") {
+                $W_COSTOE = 0;
+                $W_VENTAE = 0;
+                $TPGE = 0;
+                $TPREE = 0;
+                #Suma Todos los Insumos Grupo, Grupo 2 y Grupo 3
+                $TPRE = 0;
+                $TPGE = 0;
+
+                #preciosrutnas.php
+                CalcPremiumNulis2USDtipoF1();
+                // EN REALIDAD SE DEBE CREAR LA RUTINA PARA "EQUIVALENTE":
+                // CalcPremiumNulis2MNtipoF1Equivalente()
+
+                // $W_FACTOR = $rowAGR["R_FACIMP"];    <---- se obtuvo anteriormente
+                #MULTIPLICA POR FACTOR
+                if ($W_FACTOR <> 0) {
+                  $TPREE = $TPREE * (1 + $W_FACTOR / 100);
+                  $TPGE  = $TPGE  * (1 + $W_FACTOR / 100);
+                  $W_NOAUMENTO = 1;
+                }
+              }
+
+              $ValorAgregado = $W_FACTOR;
+              $Precio = $TPRE;
+              $PrecioEquivalente = $TPREE;
+
+              break;
+
               break;
             #COSTEO GRAMO ( > Insumos Grupo 1 ) + Valor Agregado
             case "2":
+              $TPRE  = 0;
+              $TPG   = 0;
+              $TPREE = 0;
+              $TPGE  = 0;
+
+              #Suma todos los insumos Grupo 1
+              #preciosrutinas.php
+              #Esta rutina ya distingue $TipoParidad == N,E,P
+              sumaInsumosGpo1USD();
+
+              // $W_FACTOR = $rowAGR["R_FACIMP"];    <---- se obtuvo anteriormente
+              #Suma valor agregado
+              if ($W_FACTOR <> 0) {
+                $TPRE = $TPRE + $W_FACTOR;
+                $TPG  = $TPG  + $W_FACTOR;
+                $W_NOAUMENTO = 1;
+              }
+
+              if ($NormalEquivalente == "E" && trim($W_CODE) <> "") {
+                #preciosrutinas.php
+                #sumaInsumosGpo1();     <-- la suma se hizo en la primera pasada
+
+                // $W_FACTOR = $rowAGR["R_FACIMP"];    <---- se obtuvo anteriormente
+                #Suma Valor Agregado
+                if ($W_FACTOR <> 0) {
+                  $TPREE = $TPREE + $W_FACTOR;
+                  $TPGE  = $TPGE  + $W_FACTOR;
+                  $W_NOAUMENTO = 1;
+                }
+              }
+
+              $ValorAgregado = $W_FACTOR;
+              $Precio = $TPG;
+              $PrecioEquivalente = $TPGE;              
+
               break;
             #COSTEO GRAMO ( > Insumos Grupo 1 + Insumos Grupo 2 a Precio Venta + Insumos Grupo 3) + Valor Agregado
             case "3":
               break;
             #COSTEO GRAMO   > (Insumos Grupo 1  + Valor Agregado) +  > Insumos Grupo 2 a Precio de Venta e Insumos Grupo 3
             case "4":
+
+              #Calcula peso piedra para restarlo al peso del articulo
+              #------------------------------------------------------
+              $W_TCANIM = 0;
+              //dRendon 02.06.2023      inhibo este calculo para coincidir con Proeli
+              //calcPesoPiedra();       #preciosrutinas.php
+
+              #Suma Todos los Insumos Grupo 1 + Valor Agregado, PARIDAD ESPECIAL
+              sumaInsumosGpo1MasValorAgregadoPremiumUSD();
+
+              #Suma Todos los Insumos Grupo 2 con Precio de Venta y Grupo 3
+              #(segun ATNCT020.prg)
+              sumaInsumosGpo2ConPrecioVentayGrupo3PremiumUSD();
+
+              $ValorAgregado = $W_FACTOR;
+              $Precio = $TPRE;
+              $PrecioEquivalente = $TPREE;
+
               break;
           }          
         }

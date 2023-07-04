@@ -101,32 +101,36 @@ foreach ($keysDatosArray as $campo) {
     $errorCamposNoReconoc .= $campo;
   }
 }
-if (strlen($errorCamposNoReconoc) > 0) {
-  $errorCamposNoReconoc = "Datos no reconocidos: " . $errorCamposNoReconoc;
-  http_response_code(400);
-  echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $errorCamposNoReconoc]);
-  exit;
+
+if(in_array("usuario",$keysDatosArray)){
+
+  $usr_tipo = "S";
+  $usr_code = $DatosArray["usuario"];
+  $usr_password = $DatosArray["password"];
+
+} else {
+
+  if (!in_array("usr_code", $keysDatosArray)) {
+    http_response_code(400);
+    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => "Falta elemento 'usr_code'"]);
+    exit;
+  }
+  if (!in_array("usr_password", $keysDatosArray)) {
+    http_response_code(400);
+    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => "Falta elemento 'usr_password'"]);
+    exit;
+  }
+  if (!in_array("usr_tipo", $keysDatosArray)) {
+    http_response_code(400);
+    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => "Falta elemento 'usr_tipo'"]);
+    exit;
+  }  
+
+  $usr_tipo  = trim($DatosArray["usr_tipo"]);
+  $usr_code  = trim($DatosArray["usr_code"]);
+  $usr_password = trim($DatosArray["usr_password"]);  
 }
 
-if (!in_array("usr_tipo", $keysDatosArray)) {
-  http_response_code(400);
-  echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => "Falta elemento 'usr_tipo'"]);
-  exit;
-}
-if (!in_array("usr_code", $keysDatosArray)) {
-  http_response_code(400);
-  echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => "Falta elemento 'usr_code'"]);
-  exit;
-}
-if (!in_array("usr_password", $keysDatosArray)) {
-  http_response_code(400);
-  echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => "Falta elemento 'usr_password'"]);
-  exit;
-}
-
-$usr_tipo  = trim($DatosArray["usr_tipo"]);
-$usr_code  = trim($DatosArray["usr_code"]);
-$usr_password = trim($DatosArray["usr_password"]);
 
 # Controla el Proceso de Autenticación
 try {
@@ -206,6 +210,14 @@ function ValidaCredenciales($usr_tipo, $usr_code, $usr_password)
       case "C":
         $sqlCmd = "SELECT cc_raso AS nombre, cc_status AS estado, cc_passw AS passw FROM cli010 
           WHERE CONCAT(TRIM(cc_num),'-',TRIM(cc_fil)) = :usr_code";
+        $oSQL = $conn->prepare($sqlCmd);
+        $oSQL->bindParam("usr_code", $usr_code, PDO::PARAM_STR);
+        $oSQL->execute();
+        $numRows = $oSQL->rowCount();
+        break;
+      case "S":
+        $sqlCmd = "SELECT usuario AS nombre, estado AS estado, password AS passw FROM usuarios
+        WHERE usuario = :usr_code";
         $oSQL = $conn->prepare($sqlCmd);
         $oSQL->bindParam("usr_code", $usr_code, PDO::PARAM_STR);
         $oSQL->execute();

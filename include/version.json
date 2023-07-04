@@ -1,6 +1,6 @@
 {
-  "version": "2.1.1",
-  "fecha": "30/may/2023",
-  "titulo": "Se agrega paridad PREMIUM en calculo de Precios",
-  "descripcion": "Se inicia control de versiones y se agrega paridad premium en calculo de precios."
+  "version": "2.1.2",
+  "fecha": "04/jul/2023",
+  "titulo": "Acceso a Panel de Administacion",
+  "descripcion": "Se modifica rutina para que el usuario que sube contenido tenga acceso. Se modifican detalles para el calculo de precios."
 }
