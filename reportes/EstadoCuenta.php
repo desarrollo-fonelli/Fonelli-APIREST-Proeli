@@ -10,6 +10,10 @@ date_default_timezone_set('America/Mexico_City');
  *  El parámetro "Usuario" ahora es obligatorio
  *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
  * --------------------------------------------------------------------------
+ * dRendon 31.10.2023
+ *  Una factura con pagos programados va a mostrar como documentos de cargo las
+ *  diferentes programaciones, en vez de mostrar solamente la factura con los
+ *  totales. Cada división debe mostrar sus cargos y abonos.
  */
 
 # En el script 'constantes.php' se definen:
@@ -290,6 +294,8 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
   AND a.sc_tica >= :strCarteraDesde AND a.sc_tica <= :strCarteraHasta 
   AND a.sc_feex <= :fechaCorte     
   AND SUBSTRING(b.t_param,2,1) = '1' ";
+  # b.t_param se refiere a los tipos de cartera, la posicion 2 define si la cartera se muestra en el reporte
+  # (carteras judiciales no aparecen en el reporte)
   
   if(in_array($TipoUsuario, ["A"])){
     // Solo aplica filtro cuando el usuario es un agente
@@ -313,7 +319,7 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
     LEFT JOIN var020 b ON t_tica='10' AND t_gpo='88' AND t_clave=sc_tica
     LEFT JOIN cli010 c ON c.cc_num = a.sc_num AND c.cc_fil = a.sc_fil 
     $where 
-    ORDER BY replace(a.sc_num,' ','0'),replace(a.sc_fil,' ','0'),a.sc_tica,a.sc_of,a.sc_serie,a.sc_apl ";
+    ORDER BY replace(a.sc_num,' ','0'),replace(a.sc_fil,' ','0'),a.sc_tica,a.sc_of,a.sc_serie,a.sc_apl,a.sc_feve ";
 
   //var_dump($sqlCmd);
 
@@ -331,7 +337,7 @@ FUNCTION SelectEdoCta($TipoUsuario, $Usuario, $ClienteDesde, $FilialDesde, $Clie
     //$oSQL-> bindParam(":provocaerror", "",PDO::PARAM_STR);  usado para pruebas de control de errores
 
     $oSQL-> execute();
-    $numRows = $oSQL->rowCount();    
+    $numRows = $oSQL->rowCount();
 
     $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
 

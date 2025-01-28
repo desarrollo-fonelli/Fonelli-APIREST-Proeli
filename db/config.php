@@ -12,8 +12,9 @@
 return array(
   //"host"      => "localhost",
   //"usuario"   => "postgres",
-  //"passw"     => "P0stgr3SQL",
+  //"passw"     => "1234",   //"P0stgr3SQL",
   //"dbname"    => "test",
+
   "driver"  => "pgsql",
   "host"    => "35.165.224.218",
   "puerto"  => "5432",

@@ -1,6 +1,6 @@
 {
-  "version": "2.1.2",
-  "fecha": "04/jul/2023",
-  "titulo": "Acceso a Panel de Administacion",
-  "descripcion": "Se modifica rutina para que el usuario que sube contenido tenga acceso. Se modifican detalles para el calculo de precios."
+  "version": "2.1.3",
+  "fecha": "31/10/2023",
+  "titulo": "Corrección Edo. de Cuenta",
+  "descripcion": "Se corrige agrupación facturas para mostrar como documentos separados los documentos programados"
 }
