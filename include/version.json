@@ -1,6 +1,6 @@
 {
-  "version": "2.1.3",
-  "fecha": "31/10/2023",
-  "titulo": "Corrección Edo. de Cuenta",
-  "descripcion": "Se corrige agrupación facturas para mostrar como documentos separados los documentos programados"
+  "version": "2.2.0",
+  "fecha": "30/01/2025",
+  "titulo": "Consulta de Guias: Paquetes y Ordenes de Retorno",
+  "descripcion": "Se agregan las consultas para presentar Paquetes Enviados y Ordenes de Retorno"
 }
