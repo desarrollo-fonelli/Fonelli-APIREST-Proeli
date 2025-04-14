@@ -6,3 +6,7 @@ Este proyecto incluye los servicios (endpoints) que se consumen por la aplicaci√
 ## v2.2.0 | Consulta de Guias: Paquetes y Ordenes de Retorno
 **30/ene/2025**
 Se agregan las consultas para presentar Paquetes Enviados y Ordenes de Retorno
+
+## v2.3.0 | ListaCFDIS: fac010
+**11/abr/2025**
+Se agrega servicio para obtener una lista con los CFDIs de clientes, consultando la tabla fac010 (consolidada todas las oficinas)

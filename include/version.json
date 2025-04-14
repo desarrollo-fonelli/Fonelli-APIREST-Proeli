@@ -1,6 +1,14 @@
-{
-  "version": "2.2.0",
-  "fecha": "30/01/2025",
-  "titulo": "Consulta de Guias: Paquetes y Ordenes de Retorno",
-  "descripcion": "Se agregan las consultas para presentar Paquetes Enviados y Ordenes de Retorno"
-}
+[
+  {
+    "version": "2.2.0",
+    "fecha": "30/01/2024",
+    "titulo": "Consulta de Guias: Paquetes y Ordenes de Retorno",
+    "descripcion": "Se agregan las consultas para presentar Paquetes Enviados y Ordenes de Retorno"
+  },
+  {
+    "version": "2.3.0",
+    "fecha": "11/04/2025",
+    "titulo": "ListaCFDIS: fac010",
+    "descripcion": "Se agrega servicio para obtener una lista con los CFDIs de clientes, consultando la tabla fac010 (consolidada todas las oficinas)"
+  }
+]
