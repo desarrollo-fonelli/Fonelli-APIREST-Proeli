@@ -6,10 +6,13 @@ date_default_timezone_set('America/Mexico_City');
 /**
  * Lista de CFDIs de clientes
  * --------------------------------------------------------------------------
- * dRendon 11.04.2025 
+ * dRendon 16.04.2025 
  *  El parámetro "Usuario" ahora es obligatorio
  *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
  * --------------------------------------------------------------------------
+ * En esta versión:
+ * El nombre del archivo que se va a descargar se compone del RFC de Fonelli, 
+ * el RFC del cliente, la serie y folio del documento
  */
 
 # En el script 'constantes.php' se definen:
@@ -20,8 +23,11 @@ require_once "../include/constantes.php";
 # Funciones genericas de uso comun
 require_once "../include/funciones.php";
 
+# Configuraciones a nivel aplicación
+$arrAppConfig = require_once "../include/appconfig.php";
+
 # Constantes locales
-const K_SCRIPTNAME  = "listacfdis.php";
+const K_SCRIPTNAME  = "descargarcfdi.php";
 
 # Declara variables generales
 $codigo   = null;   // codigo devuelto en el json de respuesta
@@ -37,10 +43,19 @@ $Usuario        = null;     // Id del usuario (cliente, agente o gerente)
 $Token          = null;     // Token obtenido por el usuario al autenticarse
 $ClienteCodigo  = null;     // Id del cliente
 $ClienteFilial  = null;     // Filial del cliente
-$FechaInic      = null;     // Fecha Inicial para buscar documentos
-$Pedido         = null;     // Pedido asociado a una o varias facturas
-$TipoDoc        = null;     // Filtra por tipo de documento: Facturas | NCredito | Todos
+$ClienteRfc     = null;     // RFC del cliente
+// OjO: los datos del cliente los voy a usar 
+// para evitar que el usuario pueda obtener un CFDI que
+// no le corresponde
+$year            = null;     // Ej: "2025" - carpeta padre se alojan los comprobantes
+$mes            = null;     // Ej: "04" - carpeta hija donde se alojan los comprobantes
+$fileName       = null;     // Nombre del archivo: [rfc del cliente] + serieDoc + folioDoc
 $Pagina         = 1;        // Pagina devuelta del conjunto de datos obtenido
+
+# Variables usadas en la rutina
+$rfcFonelli     = $arrAppConfig["rfcFonelli"];
+$rutaBase       = $arrAppConfig["rutaBaseCfdi"];
+
 
 # Comprueba Request Method
 $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -108,12 +123,32 @@ try {
   }
   # Fin dRendon 04.05.2023 ****************
 
-  if (!isset($_GET["FechaInic"])) {
-    throw new Exception("El parametro obligatorio 'FechaInic' no fue definido.");
+  if (!isset($_GET["ClienteRfc"])) {
+    throw new Exception("El parametro obligatorio 'ClienteRfc' no fue definido.");
   } else {
-    $FechaInic = $_GET["FechaInic"];
-    if (!ValidaFormatoFecha($FechaInic)) {
-      throw new Exception("El parametro 'FechaInic' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");
+    $ClienteRfc = $_GET["ClienteRfc"];
+  }
+
+  if (!isset($_GET["year"])) {
+    throw new Exception("El parametro obligatorio 'year' no fue definido.");
+  } else {
+    $year = $_GET["year"];
+  }
+
+  if (!isset($_GET["mes"])) {
+    throw new Exception("El parametro obligatorio 'mes' no fue definido.");
+  } else {
+    $mes = $_GET["mes"];
+  }
+
+  if (!isset($_GET["fileName"])) {
+    throw new Exception("El parámetro obligatorio 'fileName' no fue definido");
+  } else {
+    $fileName = $_GET["fileName"];
+
+    // Validar que el nombre del archivo sea seguro (evitar inyección de rutas)
+    if (!$fileName || preg_match('/[^a-zA-Z0-9._-]/', $fileName)) {
+      throw new Exception('Nombre de archivo inválido.');
     }
   }
 } catch (Exception $e) {
@@ -128,9 +163,10 @@ $arrPermitidos = array(
   "Usuario",
   "ClienteCodigo",
   "ClienteFilial",
-  "Pedido",
-  "FechaInic",
-  "TipoDoc",
+  "ClienteRfc",
+  "year",
+  "mes",
+  "fileName",
   "Pagina"
 );
 
@@ -153,21 +189,13 @@ if (strlen($mensaje) > 0) {
   exit;
 }
 
+/*
 if (isset($_GET["Pedido"])) {
   if ($_GET["Pedido"] > 0) {
     $Pedido = $_GET["Pedido"];
   }
 }
-
-if (isset($_GET["TipoDoc"])) {
-  if (! in_array($_GET["TipoDoc"], ["FAC", "NCR"])) {
-    $mensaje = "Valor '" . $TipoDoc . "' NO permitido para 'TipoDoc'";
-    http_response_code(400);
-    echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;
-  }
-  $TipoDoc = $_GET["TipoDoc"];
-}
+  */
 
 if (isset($_GET["Pagina"])) {
   $Pagina = $_GET["Pagina"];
@@ -175,14 +203,18 @@ if (isset($_GET["Pagina"])) {
 
 # Ejecuta la consulta 
 try {
+
   $data = SelectCFDIS(
     $TipoUsuario,
     $Usuario,
     $ClienteCodigo,
     $ClienteFilial,
-    $FechaInic,
-    $Pedido,
-    $TipoDoc
+    $ClienteRfc,
+    $rutaBase,
+    $rfcFonelli,
+    $year,
+    $mes,
+    $fileName
   );
 
   # Asigna código de respuesta HTTP 
@@ -231,11 +263,14 @@ return;
  * 
  * @param string $TipoUsuario
  * @param int $Usuario
- * @param int $ClienteCodigo
+ * @param string $ClienteCodigo
  * @param int $ClienteFilial
- * @param string $FechaInic
- * @param string $Pedido
- * @param string $TipoDoc
+ * @param string $ClienteRfc
+ * @param string $rutaBase
+ * @param string $rfcFonelli
+ * @param int $year
+ * @param string $mes
+ * @param string $fileName
  * @return array
  */
 function SelectCFDIS(
@@ -243,9 +278,12 @@ function SelectCFDIS(
   $Usuario,
   $ClienteCodigo,
   $ClienteFilial,
-  $FechaInic,
-  $Pedido,
-  $TipoDoc
+  $ClienteRfc,
+  $rutaBase,
+  $rfcFonelli,
+  $year,
+  $mes,
+  $fileName
 ) {
   $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
 
@@ -271,76 +309,63 @@ function SelectCFDIS(
   $strClienteCodigo = str_pad($ClienteCodigo, 6, " ", STR_PAD_LEFT);
   $strClienteFilial = str_pad($ClienteFilial, 3, " ", STR_PAD_LEFT);
 
+  // se asume que el cliente envia el year y mes en el formato correcto, por ejemplo:
+  // "2025", "04"
+  $cfdiName = $rutaBase . $year . "/" . $mes . "/" . $rfcFonelli . "_" . $fileName . ".PDF";
+
+
+  /**
+   * 
+   * En esta sección se debe verificar que el RFC del cliente sea el que viene en el "fileName"
+   * Es necesario hacer una consulta SQL para obtener el RFC guardado en la base de datos.
+   * 
+   */
+
+
   // Doy un plazo de hasta Cinco minutos para completar cada consulta...
   set_time_limit(300);
 
-  # Se conecta a la base de datos
-  //require_once "../db/conexion.php";  <-- el script se leyó previamente
-  $conn = DB::getConn();
+  $arrData = array();
 
-  # Construyo dinamicamente la condicion WHERE
-  $where = "WHERE COALESCE(a.f1_uuid, '') != '' ";
-  $where .= "AND a.f1_num = :strClienteCodigo AND a.f1_fil = :strClienteFilial ";
+  // Verificar que el archivo exista
+  clearstatcache();
 
-  if (in_array($TipoUsuario, ["A"])) {
-    // Solo aplica filtro cuando el usuario es un agente
-    $where .= "AND a.f1_age = :strUsuario ";
+  //  die($cfdiName . " - Inicia file_exist");
+  if (!file_exists($cfdiName)) {
+    //http_response_code(404);      <-- provoca error fatal, NO generes una excepcion
+    $response = [
+      "Codigo" => K_API_NODATA,
+      "Mensaje" => 'Archivo no encontrado: ' . $cfdiName,
+      "Contenido" => []
+    ];
+    echo json_encode($response);
+    exit;
   }
 
-  if (isset($FechaInic)) {
-    $where .= "AND a.f1_feex >= :FechaInic ";
-  }
-
-  if (isset($Pedido)) {
-    $where .= "AND c.pe_ped = LPAD(:Pedido,6,' ') ";
-  }
-
-  /*    if (isset($TipoDoc)) {
-          $where .= "AND a.TipoDoc = :TipoDoc ";
-        }
-  */
-
-  # Hay que definir dinamicamente el schema <---------------------------------
-  $sqlCmd = "SET SEARCH_PATH TO dateli;";
-  $oSQL = $conn->prepare($sqlCmd);
-  $oSQL->execute();
-
-  # Instrucción SELECT
-  $sqlCmd = "SELECT f1_num,f1_fil,max(b.t_descr) t_descr,f1_serie,f1_apl,
-    f1_feex,max(f1_imp+f1_iva) total,c.pe_ped,
-    max(d.cc_raso) cc_raso,max(d.cc_suc) cc_suc, max(d.cc_rfc) cc_rfc  
-    FROM fac010 a
-    LEFT JOIN var020 b ON b.t_tica='10' AND b.t_gpo='80' AND b.t_clave = a.f1_mov
-    LEFT JOIN ped100 c ON c.pe_serie=f1_serie AND c.pe_nufact=f1_apl
-    LEFT JOIN cli010 d ON d.cc_num=f1_num AND d.cc_fil=f1_fil 
-    $where 
-    GROUP BY f1_num,f1_fil,f1_serie,f1_apl,f1_feex,pe_ped ORDER BY f1_feex";
-
-  //var_dump($sqlCmd);
 
   try {
-    $oSQL = $conn->prepare($sqlCmd);
 
-    $oSQL->bindParam(":strClienteCodigo", $strClienteCodigo, PDO::PARAM_STR);
-    $oSQL->bindParam(":strClienteFilial", $strClienteFilial, PDO::PARAM_STR);
-    $oSQL->bindParam(":FechaInic", $FechaInic, PDO::PARAM_STR);
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="' . basename($cfdiName) . '"');
+    //header('Content-Disposition: inline; filename="' . filename($cfdiName) . '"');
+    header('Content-Length: ' . filesize($cfdiName));
+    header('Cache-Control: must-revalidate');
+    header('Content-Transfer-Encoding: binary');
 
-    if (isset($Pedido)) {
-      $oSQL->bindParam(":Pedido", $Pedido, PDO::PARAM_STR);
-    }
+    ob_clean();   // limpia buffer de salida
+    flush();
+    readfile($cfdiName);    // Lee el archivo
 
-    #    if (isset($TipoDoc)) {
-    #     $oSQL->bindParam(":TipoDoc", $TipoDoc, PDO::PARAM_STR);
-    #    }
-
-    if ($TipoUsuario == "A") {
-      $oSQL->bindParam(":strUsuario", $strUsuario, PDO::PARAM_STR);
-    }
-    //$oSQL-> bindParam(":provocaerror", "",PDO::PARAM_STR);  usado para pruebas de control de errores
-
-    $oSQL->execute();
-    $numRows = $oSQL->rowCount();
-    $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
+    array_push(
+      $arrData,
+      [
+        "ClienteCodigo" => $strClienteCodigo,
+        "ClienteFilial" => $strClienteFilial,
+        "ClienteRfc"    => $ClienteRfc,
+        "CfdiName" => $cfdiName
+      ]
+    );
   } catch (Exception $e) {
     http_response_code(503);  // Service Unavailable
     $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => $e->getMessage(), "Contenido" => []];
@@ -363,34 +388,27 @@ function SelectCFDIS(
 function CreaDataCompuesta($data)
 {
 
-  $contenido = array();
-  $cfdis     = array();
+  $cfdisarray = array();
+  $cfdisrow   = array();
 
   if (count($data) > 0) {
 
     foreach ($data as $row) {
 
       // Se crea un array con los nodos requeridos
-      $cfdis = [
-        "Documento" => $row["t_descr"],
-        "Serie"     => $row["f1_serie"],
-        "Folio"     => $row["f1_apl"],
-        "Fecha"     => $row["f1_feex"],
-        "Total"     => floatval($row["total"]),
-        "Pedido"    => $row["pe_ped"]
+      $cfdisrow = [
+        "CfdiName" => $row["CfdiName"]
       ];
 
       // Se agrega el array a la seccion "contenido"
-      array_push($contenido, $cfdis);
+      array_push($cfdisarray, $cfdisrow);
     }   // foreach($data as $row)
 
     $contenido = [
-      "ClienteCodigo" => $data[0]["f1_num"],
-      "ClienteFilial" => $data[0]["f1_fil"],
-      "ClienteNombre" => $data[0]["cc_raso"],
-      "Sucursal"      => $data[0]["cc_suc"],
-      "ClienteRfc"    => $data[0]["cc_rfc"],
-      "Cfdis"         => $contenido
+      "ClienteCodigo" => $data[0]["ClienteCodigo"],
+      "ClienteFilial" => $data[0]["ClienteFilial"],
+      "ClienteRfc"    => $data[0]["ClienteRfc"],
+      "Cfdis" => $cfdisarray
     ];
   } // count($data)>0
 
