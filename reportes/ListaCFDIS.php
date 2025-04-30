@@ -279,7 +279,13 @@ function SelectCFDIS(
   $conn = DB::getConn();
 
   # Construyo dinamicamente la condicion WHERE
-  $where = "WHERE COALESCE(a.f1_uuid, '') != '' ";
+  # 25.04.2025 dRendon:
+  # Las Notas de Crédito en Proeli no guardan el UUID, por lo que no es un
+  # criterio correcto.
+  # Los documentos que tienen efecto fiscal son los que tiene en la serie (f1_serie)
+  # alguno de los valores: F, FF, G, GG
+
+  $where = "WHERE (COALESCE(a.f1_uuid, '') != '' OR a.f1_serie IN ('F', 'FF', 'G', 'GG') ) ";
   $where .= "AND a.f1_num = :strClienteCodigo AND a.f1_fil = :strClienteFilial ";
 
   if (in_array($TipoUsuario, ["A"])) {
@@ -292,7 +298,8 @@ function SelectCFDIS(
   }
 
   if (isset($Pedido)) {
-    $where .= "AND c.pe_ped = LPAD(:Pedido,6,' ') ";
+    //$where .= "AND c.pe_ped = LPAD(:Pedido,6,' ') ";
+    $where .= "AND a.f1_ref = LPAD(:Pedido,6,' ') ";
   }
 
   /*    if (isset($TipoDoc)) {
@@ -307,14 +314,14 @@ function SelectCFDIS(
 
   # Instrucción SELECT
   $sqlCmd = "SELECT f1_num,f1_fil,max(b.t_descr) t_descr,f1_serie,f1_apl,
-    f1_feex,max(f1_imp+f1_iva) total,c.pe_ped,
+    f1_feex,max(f1_imp+f1_iva) total,f1_ref,max(c.pe_ped) pe_ped,
     max(d.cc_raso) cc_raso,max(d.cc_suc) cc_suc, max(d.cc_rfc) cc_rfc  
     FROM fac010 a
     LEFT JOIN var020 b ON b.t_tica='10' AND b.t_gpo='80' AND b.t_clave = a.f1_mov
     LEFT JOIN ped100 c ON c.pe_serie=f1_serie AND c.pe_nufact=f1_apl
     LEFT JOIN cli010 d ON d.cc_num=f1_num AND d.cc_fil=f1_fil 
     $where 
-    GROUP BY f1_num,f1_fil,f1_serie,f1_apl,f1_feex,pe_ped ORDER BY f1_feex";
+    GROUP BY f1_num,f1_fil,f1_serie,f1_apl,f1_feex,f1_ref ORDER BY f1_feex";
 
   //var_dump($sqlCmd);
 
@@ -365,6 +372,7 @@ function CreaDataCompuesta($data)
 
   $contenido = array();
   $cfdis     = array();
+  $filas     = array();
 
   if (count($data) > 0) {
 
@@ -377,11 +385,13 @@ function CreaDataCompuesta($data)
         "Folio"     => $row["f1_apl"],
         "Fecha"     => $row["f1_feex"],
         "Total"     => floatval($row["total"]),
+        "Ref"       => $row["f1_ref"],
         "Pedido"    => $row["pe_ped"]
       ];
 
       // Se agrega el array a la seccion "contenido"
-      array_push($contenido, $cfdis);
+      //array_push($contenido, $cfdis);
+      array_push($filas, $cfdis);
     }   // foreach($data as $row)
 
     $contenido = [
@@ -390,7 +400,7 @@ function CreaDataCompuesta($data)
       "ClienteNombre" => $data[0]["cc_raso"],
       "Sucursal"      => $data[0]["cc_suc"],
       "ClienteRfc"    => $data[0]["cc_rfc"],
-      "Cfdis"         => $contenido
+      "Cfdis"         => $filas
     ];
   } // count($data)>0
 
