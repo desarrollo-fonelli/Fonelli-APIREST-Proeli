@@ -1,15 +1,15 @@
 [
   {
-    "version": "2.2.0",
-    "fecha": "2024-01-30",
-    "titulo": "Consulta de Guias: Paquetes y Ordenes de Retorno",
-    "descripcion": "Se agregan las consultas para presentar Paquetes Enviados y Ordenes de Retorno"
+    "version": "2.6.0",
+    "fecha": "2025-05-06",
+    "titulo": "ConsultaPedidos",
+    "descripcion": "A PARTIR DE LA VERSION 2.6 EL LOG DE VERSIONES SE REGISTRA EN EL ARCHIVO 'README.md' EN LA RAIZ DEL PROYECTO"
   },
   {
-    "version": "2.3.0",
-    "fecha": "2025-04-11",
-    "titulo": "ListaCFDIS: fac010",
-    "descripcion": "Se agrega servicio para obtener una lista con los CFDIs de clientes, consultando la tabla fac010 (consolidada todas las oficinas)"
+    "version": "2.5.0",
+    "fecha": "2025-04-29",
+    "titulo": "ExistenciasPT | ListaAlmacenes",
+    "descripcion": "Se agrega servicio para obtener lista de existencias de PT. Se agrega servicio para obtener lista de almacenes de PT"
   },
   {
     "version": "2.4.0",
@@ -18,9 +18,15 @@
     "descripcion": "Se agrega servicio para descargar PDF del CFDI solicitado"
   },
   {
-    "version": "2.5.0",
-    "fecha": "2025-04-29",
-    "titulo": "ExistenciasPT | ListaAlmacenes",
-    "descripcion": "Se agrega servicio para obtener lista de existencias de PT. Se agrega servicio para obtener lista de almacenes de PT"
+    "version": "2.3.0",
+    "fecha": "2025-04-11",
+    "titulo": "ListaCFDIS: fac010",
+    "descripcion": "Se agrega servicio para obtener una lista con los CFDIs de clientes, consultando la tabla fac010 (consolidada todas las oficinas)"
+  },
+  {
+    "version": "2.2.0",
+    "fecha": "2024-01-30",
+    "titulo": "Consulta de Guias: Paquetes y Ordenes de Retorno",
+    "descripcion": "Se agregan las consultas para presentar Paquetes Enviados y Ordenes de Retorno"
   }
 ]

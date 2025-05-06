@@ -1,21 +1,27 @@
-# MED_FONELLI_APIPortal
-**API Portal Fonelli**
+#### MED_FONELLI_APIPortal
+# Control de Cambios
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
-## v2.2.0 | Consulta de Guias: Paquetes y Ordenes de Retorno
-**30/ene/2025**
-Se agregan las consultas para presentar Paquetes Enviados y Ordenes de Retorno
+### v2.6.0 | 2025-05-06 | ConsultaPedidos
+#### Cambios:
+1. Se agregan criterios de filtro: num. de pedido y orden de compra
+2. Se agregan columnas en tabla resumida: orden de compra, tienda destino
 
-## v2.3.0 | ListaCFDIS: fac010
-**11/abr/2025**
-Se agrega servicio para obtener una lista con los CFDIs de clientes, consultando la tabla fac010 (consolidada todas las oficinas)
+### v2.5.0 | 2025-04-29 | ExistenciasPT | ListaAlmacenes
+#### Nuevo:
+1. Se agrega servicio para obtener lista de existencias de PT.
+2. Se agrega servicio para obtener lista de almacenes de PT.
 
-## v2.4.0 | DescargarCFDI
-**22/abr/2025**
-Se agrega servicio para descargar PDF del CFDI solicitado
+### v2.4.0 | 2025-04-22 | DescargarCFDI
+#### Nuevo:
+1. Se agrega servicio para descargar PDF del CFDI solicitado
 
-## V2.5.0 | ExistenciasPT | ListaAlmacenes
-**29/abr/2025**
-Se agrega servicio para obtener lista de existencias de PT.
-Se agrega servicio para obtener lista de almacenes de PT.
+### v2.3.0 | 2025-04-11 | ListaCFDIS: fac010
+#### Nuevo:
+1. Se agrega servicio para obtener una lista con los CFDIs de clientes, consultando la tabla fac010 (consolidada todas las oficinas)
+
+### v2.2.0 | 2025-01-30 | Consulta de Guias: Paquetes y Ordenes de Retorno
+#### Nuevo:
+1. Se agregan las consultas para presentar Paquetes Enviados y Ordenes de Retorno
+
