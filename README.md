@@ -3,6 +3,11 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.6.1 | 2025-05-08 | Carpeta "Llamadas"
+#### Nuevo:
+1. Se copia del servidor on-line la carpeta "llamadas" que se desarrolló en Agasys para el proyecto de "Configura tu Joya"
+
+
 ### v2.6.0 | 2025-05-06 | ConsultaPedidos
 #### Cambios:
 1. Se agregan criterios de filtro: num. de pedido y orden de compra
