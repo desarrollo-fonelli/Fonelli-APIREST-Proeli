@@ -3,10 +3,15 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.6.2 | 2025-05-09 | DetallePed2025 | DetallePedGuias | DocVentaDetalle
+#### Nuevo:
+1. Se crea nueva versión del servicio para devolver detalle del pedido solicitado: artículos y datos complementarios. También se incluyen los artículos externos recibidos (artículos comprados).
+2. Se crea servicio para devolver guias de paquetes enviados asociados al pedido solicitado.
+3. Se crea servicio para devolver los artículos incluidos en un documento de venta
+
 ### v2.6.1 | 2025-05-08 | Carpeta "Llamadas"
 #### Nuevo:
 1. Se copia del servidor on-line la carpeta "llamadas" que se desarrolló en Agasys para el proyecto de "Configura tu Joya"
-
 
 ### v2.6.0 | 2025-05-06 | ConsultaPedidos
 #### Cambios:
