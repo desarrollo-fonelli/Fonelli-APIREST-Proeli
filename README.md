@@ -3,6 +3,10 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.6.3 | 2025-05-26 | DocVentaDetalle
+#### Issues:
+1. En la consulta que busca artículos por documento, se consideran solamente artículos que son parte de un movimiento de "salida", lo cual es relevante en los traspasos de inventario, ya que las prefacturas se registran con este documento.
+
 ### v2.6.2 | 2025-05-09 | DetallePed2025 | DetallePedGuias | DocVentaDetalle
 #### Nuevo:
 1. Se crea nueva versión del servicio para devolver detalle del pedido solicitado: artículos y datos complementarios. También se incluyen los artículos externos recibidos (artículos comprados).

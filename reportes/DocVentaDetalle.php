@@ -246,7 +246,11 @@ function SelectArticulos($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFilial,
   $conn = DB::getConn();
 
   # Construyo dinamicamente la condicion WHERE
-  $where = "WHERE a.mo_serie = :DocSerie AND a.mo_doc = :strDocFolio ";
+  # En el caso de Liverpool las guias se asocian con el folio de traspaso,
+  # por lo que se agrega una condición para que no aparezcan las dos partidas
+  # del mismo, solo se consideran "salidas" de inventario (cantidades negativas).
+  $where = "WHERE a.mo_serie = :DocSerie AND a.mo_doc = :strDocFolio 
+   AND a.mo_pzas <= 0 ";
 
   // if (in_array($TipoUsuario, ["A"])) {
   //   // Solo aplica filtro cuando el usuario es un agente
