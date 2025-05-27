@@ -3,6 +3,14 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.6.5 | 2025-05-27 | DetallePed2025
+#### Issues:
+1. Se agrega lógica para ubicar correctamente el pedido cuando se tiene Orden de Producción sin ensobretar.
+
+### v2.6.4 | 2025-05-26 | Relacion de Pedidos
+#### Cambios:
+1. Se agrega el número de Orden de Compra en consulta SQL y en JSON devuelto por el endpoint 
+
 ### v2.6.3 | 2025-05-26 | DocVentaDetalle
 #### Issues:
 1. En la consulta que busca artículos por documento, se consideran solamente artículos que son parte de un movimiento de "salida", lo cual es relevante en los traspasos de inventario, ya que las prefacturas se registran con este documento.

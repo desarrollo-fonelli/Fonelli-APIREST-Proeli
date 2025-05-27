@@ -56,7 +56,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 if ($requestMethod != "GET") {
   http_response_code(405);
   $mensaje = "Esta API solo acepta verbos GET";   // quité K_SCRIPTNAME del mensaje
-  echo json_encode(["Code" => K_API_FAILVERB, "Mensaje" => $mensaje ]);
+  echo json_encode(["Code" => K_API_FAILVERB, "Mensaje" => $mensaje]);
   exit;
 }
 
@@ -67,8 +67,8 @@ try {
     throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");   // quité K_SCRIPTNAME del mensaje
   } else {
     $TipoUsuario = $_GET["TipoUsuario"];
-    if(! in_array($TipoUsuario, ["C","A","G"])){
-      throw new Exception("Valor '". $TipoUsuario ."' NO permitido para 'TipoUsuario'");
+    if (! in_array($TipoUsuario, ["C", "A", "G"])) {
+      throw new Exception("Valor '" . $TipoUsuario . "' NO permitido para 'TipoUsuario'");
     }
   }
 
@@ -84,13 +84,13 @@ try {
   # dRendon 05.05.2023 ********************
   # Ahora se va a verificar la identidad del usuario por medio del Token
   # recibido en el Header con Key "Auth" (PHP lo interpreta como "HTTP_AUTH")
-  if(!isset($_SERVER["HTTP_AUTH"])) {
+  if (!isset($_SERVER["HTTP_AUTH"])) {
     throw new Exception("No se recibio el Token de autenticacion");
   } else {
     $Token = $_SERVER["HTTP_AUTH"];
   }
   // ValidaToken está en ./include/funciones.php
-  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {    
+  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {
     throw new Exception("Error de autenticacion.");
   }
   # Fin dRendon 05.05.2023 ****************
@@ -116,7 +116,7 @@ try {
   if (!isset($_GET["FilialDesde"])) {
     throw new Exception("El parametro obligatorio 'FilialDesde' no fue definido.");
   } else {
-    $FilialDesde = $_GET["FilialDesde"] ;
+    $FilialDesde = $_GET["FilialDesde"];
   }
 
   if (!isset($_GET["ClienteHasta"])) {
@@ -128,15 +128,16 @@ try {
   if (!isset($_GET["FilialHasta"])) {
     throw new Exception("El parametro obligatorio 'FilialHasta' no fue definido.");
   } else {
-    $FilialHasta = $_GET["FilialHasta"] ;
+    $FilialHasta = $_GET["FilialHasta"];
   }
 
   # dRendon 05.05.2023 ********************
   # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
   # Verificando en este nivel ya no es necesario cambiar el código restante
   if ($TipoUsuario == "C") {
-    if ((TRIM($ClienteDesde). "-". TRIM($FilialDesde)) != $Usuario OR 
-        (TRIM($ClienteHasta). "-". TRIM($FilialHasta)) != $Usuario) {
+    if ((TRIM($ClienteDesde) . "-" . TRIM($FilialDesde)) != $Usuario or
+      (TRIM($ClienteHasta) . "-" . TRIM($FilialHasta)) != $Usuario
+    ) {
       throw new Exception("Error de autenticación");
     }
   }
@@ -146,8 +147,8 @@ try {
     throw new Exception("El parametro obligatorio 'FechaPedidoDesde' no fue definido.");
   } else {
     $FechaPedidoDesde = $_GET["FechaPedidoDesde"];
-    if(!ValidaFormatoFecha($FechaPedidoDesde)){
-      throw new Exception("El parametro 'FechaPedidoDesde' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");  
+    if (!ValidaFormatoFecha($FechaPedidoDesde)) {
+      throw new Exception("El parametro 'FechaPedidoDesde' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");
     }
   }
 
@@ -155,8 +156,8 @@ try {
     throw new Exception("El parametro obligatorio 'FechaPedidoHasta' no fue definido.");
   } else {
     $FechaPedidoHasta = $_GET["FechaPedidoHasta"];
-    if(!ValidaFormatoFecha($FechaPedidoHasta)){
-      throw new Exception("El parametro 'FechaPedidoHasta' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");  
+    if (!ValidaFormatoFecha($FechaPedidoHasta)) {
+      throw new Exception("El parametro 'FechaPedidoHasta' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");
     }
   }
 
@@ -164,8 +165,8 @@ try {
     throw new Exception("El parametro obligatorio 'FechaCancelacDesde' no fue definido.");
   } else {
     $FechaCancelacDesde = $_GET["FechaCancelacDesde"];
-    if(!ValidaFormatoFecha($FechaCancelacDesde)){
-      throw new Exception("El parametro 'FechaCancelacDesde' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");  
+    if (!ValidaFormatoFecha($FechaCancelacDesde)) {
+      throw new Exception("El parametro 'FechaCancelacDesde' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");
     }
   }
 
@@ -173,11 +174,10 @@ try {
     throw new Exception("El parametro obligatorio 'FechaCancelacHasta' no fue definido.");
   } else {
     $FechaCancelacHasta = $_GET["FechaCancelacHasta"];
-    if(!ValidaFormatoFecha($FechaCancelacHasta)){
-      throw new Exception("El parametro 'FechaCancelacHasta' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");  
+    if (!ValidaFormatoFecha($FechaCancelacHasta)) {
+      throw new Exception("El parametro 'FechaCancelacHasta' no tiene el formato 'yyyy-mm-dd' o la fecha es incorrecta.");
     }
   }
-
 } catch (Exception $e) {
   http_response_code(400);
   echo json_encode(["Code" => K_API_FAILAUTH, "Mensaje" => $e->getMessage()]);
@@ -185,25 +185,40 @@ try {
 }
 
 # Lista de parámetros aceptados por este endpoint
-$arrPermitidos = array("TipoUsuario", "Usuario", "OficinaDesde", "OficinaHasta",
-"ClienteDesde", "FilialDesde", "ClienteHasta", "FilialHasta", 
-"FechaPedidoDesde", "FechaPedidoHasta", "FechaCancelacDesde", "FechaCancelacHasta",
-"Status", "TipoPedido", "TipoOrigen", "SoloAtrasados", "Pagina");
+$arrPermitidos = array(
+  "TipoUsuario",
+  "Usuario",
+  "OficinaDesde",
+  "OficinaHasta",
+  "ClienteDesde",
+  "FilialDesde",
+  "ClienteHasta",
+  "FilialHasta",
+  "FechaPedidoDesde",
+  "FechaPedidoHasta",
+  "FechaCancelacDesde",
+  "FechaCancelacHasta",
+  "Status",
+  "TipoPedido",
+  "TipoOrigen",
+  "SoloAtrasados",
+  "Pagina"
+);
 
 # Obtiene todos los parametros pasados en la llamada y verifica que existan
 # en la lista de parámetros aceptados por el endpoint
 $mensaje = "";
 $arrParam = array_keys($_GET);
-foreach($arrParam as $param){
-  if(! in_array($param, $arrPermitidos)){
-    if(strlen($mensaje) > 1){
+foreach ($arrParam as $param) {
+  if (! in_array($param, $arrPermitidos)) {
+    if (strlen($mensaje) > 1) {
       $mensaje .= ", ";
     }
     $mensaje .= $param;
-  }  
+  }
 }
-if(strlen($mensaje) > 0){
-  $mensaje = "Parametros no reconocidos: ". $mensaje;   // quité K_SCRIPTNAME del mensaje
+if (strlen($mensaje) > 0) {
+  $mensaje = "Parametros no reconocidos: " . $mensaje;   // quité K_SCRIPTNAME del mensaje
   http_response_code(400);
   echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
   exit;
@@ -211,41 +226,41 @@ if(strlen($mensaje) > 0){
 
 if (isset($_GET["Status"])) {
   $Status = $_GET["Status"];
-  if(! in_array($Status, ["A", "I"]) ){
-    $mensaje = "Valor '". $Status. "' NO permitido para 'Status'";
-    http_response_code(400);  
+  if (! in_array($Status, ["A", "I"])) {
+    $mensaje = "Valor '" . $Status . "' NO permitido para 'Status'";
+    http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
+    exit;
   }
 }
 
 if (isset($_GET["TipoPedido"])) {
   $TipoPedido = $_GET["TipoPedido"];
-  if(! in_array($TipoPedido, ["P", "S", "E"]) ){
-    $mensaje = "Valor '". $TipoPedido. "' NO permitido para 'TipoPedido'";
-    http_response_code(400);  
+  if (! in_array($TipoPedido, ["P", "S", "E"])) {
+    $mensaje = "Valor '" . $TipoPedido . "' NO permitido para 'TipoPedido'";
+    http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
+    exit;
   }
 }
 
 if (isset($_GET["TipoOrigen"])) {
   $TipoOrigen = $_GET["TipoOrigen"];
-  if(! in_array($TipoOrigen, ["I", "E"]) ){
-    $mensaje = "Valor '". $TipoOrigen. "' NO permitido para 'TipoOrigen'";
-    http_response_code(400);  
+  if (! in_array($TipoOrigen, ["I", "E"])) {
+    $mensaje = "Valor '" . $TipoOrigen . "' NO permitido para 'TipoOrigen'";
+    http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
+    exit;
   }
 }
 
 if (isset($_GET["SoloAtrasados"])) {
   $SoloAtrasados = $_GET["SoloAtrasados"];
-  if(! in_array($SoloAtrasados, ["S"]) ){
-    $mensaje = "Valor '". $SoloAtrasados. "' NO permitido para 'SoloAtrasados'";
-    http_response_code(400);  
+  if (! in_array($SoloAtrasados, ["S"])) {
+    $mensaje = "Valor '" . $SoloAtrasados . "' NO permitido para 'SoloAtrasados'";
+    http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
-    exit;  
+    exit;
   }
 }
 
@@ -255,18 +270,33 @@ if (isset($_GET["Pagina"])) {
 
 # Ejecuta la consulta 
 try {
-  $data = SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHasta, 
-  $ClienteDesde, $FilialDesde, $ClienteHasta, $FilialHasta, $FechaPedidoDesde, $FechaPedidoHasta,
-  $FechaCancelacDesde,$FechaCancelacHasta,$Status,$TipoPedido,$TipoOrigen,$SoloAtrasados);
+  $data = SelectRelacionPedidos(
+    $TipoUsuario,
+    $Usuario,
+    $OficinaDesde,
+    $OficinaHasta,
+    $ClienteDesde,
+    $FilialDesde,
+    $ClienteHasta,
+    $FilialHasta,
+    $FechaPedidoDesde,
+    $FechaPedidoHasta,
+    $FechaCancelacDesde,
+    $FechaCancelacHasta,
+    $Status,
+    $TipoPedido,
+    $TipoOrigen,
+    $SoloAtrasados
+  );
 
   # Asigna código de respuesta HTTP por default
   http_response_code(200);
 
   # Compone el objeto JSON que devuelve el endpoint
   $numFilas = count($data);
-  $totalPaginas = ceil($numFilas/K_FILASPORPAGINA);
+  $totalPaginas = ceil($numFilas / K_FILASPORPAGINA);
 
-  if($numFilas > 0){
+  if ($numFilas > 0) {
     $codigo = K_API_OK;
     $mensaje = "success";
   } else {
@@ -274,7 +304,7 @@ try {
     $mensaje = "data not found";
   }
 
-  $dataCompuesta = CreaDataCompuesta( $data );
+  $dataCompuesta = CreaDataCompuesta($data);
 
   $response = [
     "Codigo"      => $codigo,
@@ -282,16 +312,14 @@ try {
     "Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => $dataCompuesta
 
-  ];    
-
+  ];
 } catch (Exception $e) {
   $response = [
     "Codigo"      => K_API_ERRSQL,
     "Mensaje"     => $conn->get_last_error(),
     "Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => []
-  ];    
- 
+  ];
 }
 
 $response = json_encode($response);
@@ -325,14 +353,28 @@ return;
  * @param string $SoloAtrasados
  * @return array
  */
-FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHasta, 
-  $ClienteDesde, $FilialDesde, $ClienteHasta, $FilialHasta, $FechaPedidoDesde, $FechaPedidoHasta,
-  $FechaCancelacDesde,$FechaCancelacHasta,$Status,$TipoPedido,$TipoOrigen,$SoloAtrasados) 
-{
+function SelectRelacionPedidos(
+  $TipoUsuario,
+  $Usuario,
+  $OficinaDesde,
+  $OficinaHasta,
+  $ClienteDesde,
+  $FilialDesde,
+  $ClienteHasta,
+  $FilialHasta,
+  $FechaPedidoDesde,
+  $FechaPedidoHasta,
+  $FechaCancelacDesde,
+  $FechaCancelacHasta,
+  $Status,
+  $TipoPedido,
+  $TipoOrigen,
+  $SoloAtrasados
+) {
   $where = "";    // Variable para almacenar dinamicamente la clausula WHERE del SELECT
 
   # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
-  switch($TipoUsuario){
+  switch ($TipoUsuario) {
     // Cliente 
     /*
     case "C":     <-- cuando el tipo es "Cliente", no se requiere "Usuario"
@@ -342,18 +384,18 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
 
     // Agente
     case "A":
-      $strUsuario = str_pad($Usuario, 2," ",STR_PAD_LEFT);
+      $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
       break;
     // Gerente
     case "G":
-      $strUsuario = str_pad($Usuario, 2," ",STR_PAD_LEFT);
-      break;      
+      $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
+      break;
   }
-  
+
   $OficinaDesde  = str_pad($OficinaDesde, 2, "0", STR_PAD_LEFT);
   $OficinaHasta  = str_pad($OficinaHasta, 2, "0", STR_PAD_LEFT);
-  $strClteInic   = str_replace(' ','0',str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT). str_pad($FilialDesde , 3, " ", STR_PAD_LEFT));
-  $strClteFinal  = str_replace(' ','0',str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT). str_pad($FilialHasta , 3, " ", STR_PAD_LEFT));  
+  $strClteInic   = str_replace(' ', '0', str_pad($ClienteDesde, 6, " ", STR_PAD_LEFT) . str_pad($FilialDesde, 3, " ", STR_PAD_LEFT));
+  $strClteFinal  = str_replace(' ', '0', str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT) . str_pad($FilialHasta, 3, " ", STR_PAD_LEFT));
 
   # Se conecta a la base de datos
   // require_once "../db/conexion.php";   <-- el script se leyó previamente
@@ -366,19 +408,19 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
   AND a.pe_fepe >= :FechaPedidoDesde AND a.pe_fepe <= :FechaPedidoHasta 
   AND a.pe_fecao >= :FechaCancelacDesde AND a.pe_fecao <= :FechaCancelacHasta ";
 
-  if(in_array($TipoUsuario, ["A"])){
+  if (in_array($TipoUsuario, ["A"])) {
     // Solo aplica filtro cuando el usuario es un agente
     $where .= "AND a.pe_age = :strUsuario ";
   }
 
   $filtroStatus = "";
-  if(isset($Status)){
+  if (isset($Status)) {
     $filtroStatus = "AND a.pe_status = :Status ";
   }
 
   $filtroTipope = "";
-  if(isset($TipoPedido)){
-    switch ($TipoPedido){
+  if (isset($TipoPedido)) {
+    switch ($TipoPedido) {
       case "P":
         $filtroTipope = "AND a.pe_tipope='01' ";
         break;
@@ -388,46 +430,46 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
       case "E":
         $filtroTipope = "AND a.pe_tipope='04' ";
         break;
-    }    
+    }
   }
 
   $filtroTipoie = "";
-  if(isset($TipoOrigen)){
-    switch ($TipoOrigen){
+  if (isset($TipoOrigen)) {
+    switch ($TipoOrigen) {
       case "I":
-        $filtroTipoie="AND a.pe_tipoie='I' ";
+        $filtroTipoie = "AND a.pe_tipoie='I' ";
         break;
       case "E":
-        $filtroTipoie="AND a.pe_tipoie='E' ";
+        $filtroTipoie = "AND a.pe_tipoie='E' ";
         break;
-    }    
+    }
   }
 
   $filtroSoloatrasados = "";
-  if(isset($SoloAtrasados)){    
-    $filtroSoloatrasados="AND a.pe_fecao::date - current_date < 0 ";
+  if (isset($SoloAtrasados)) {
+    $filtroSoloatrasados = "AND a.pe_fecao::date - current_date < 0 ";
 
     // Sobrescribe criterio "filtroStatus" porque presentar "SoloAtrasados" solo
     // aplica para pedidos Activos
     $Status = "A";  // Necesario para evitar error en Bindparam()
     $filtroStatus = "AND a.pe_status = :Status ";
-    
   }
 
   try {
     # Hay que definir dinamicamente el schema <---------------------------------
     $sqlCmd = "SET SEARCH_PATH TO dateli;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
 
     # Borra tabla temporal en caso de que exista
     $sqlCmd = "DROP TABLE IF EXISTS pe_detalle;";
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();   
-    
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
+
     # Instrucción SELECT para renglones "brutos" que se van a acumular posteriormente
     $sqlCmd = "CREATE TEMPORARY TABLE pe_detalle AS
-    SELECT a.pe_of,a.pe_tipope,a.pe_letra,trim(a.pe_ped) pe_ped,a.pe_fepe,a.pe_fecao,
+    SELECT a.pe_of,a.pe_tipope,a.pe_letra,trim(a.pe_ped) pe_ped,
+    a.pe_numeoc,a.pe_fepe,a.pe_fecao,
     CASE WHEN a.pe_tipoie='I' THEN b.pe_fepep ELSE c.pe_fepep END AS pe_fepep,
     a.pe_status,a.pe_num,a.pe_fil,a.pe_age,a.pe_tipoie,coalesce(a.pe_canpe,0) pe_canpe,
     CASE WHEN a.pe_ticos = 1 THEN coalesce(a.pe_canpe,0)*coalesce(a.pe_penep,0) 
@@ -447,31 +489,31 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
     LEFT JOIN ped160 c ON concat(a.pe_letra,a.pe_ped,a.pe_lin,a.pe_clave,a.pe_rengl) = concat(c.pe_letra,c.pe_ped,c.pe_lin,c.pe_clave,c.pe_rengl) 
     $where $filtroStatus $filtroTipope $filtroTipoie $filtroSoloatrasados ";
     $sqlCmd .= "ORDER BY a.pe_of,a.pe_letra,a.pe_ped,a.pe_tipope;";
-  
+
     //var_dump($sqlCmd);
 
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> bindParam(":OficinaDesde", $OficinaDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strClteInic", $strClteInic, PDO::PARAM_STR);
-    $oSQL-> bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
-    $oSQL-> bindParam(":FechaPedidoDesde", $FechaPedidoDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":FechaPedidoHasta", $FechaPedidoHasta, PDO::PARAM_STR);
-    $oSQL-> bindParam(":FechaCancelacDesde", $FechaCancelacDesde, PDO::PARAM_STR);
-    $oSQL-> bindParam(":FechaCancelacHasta", $FechaCancelacHasta, PDO::PARAM_STR);
-       
-    if($TipoUsuario == "A"){
-      $oSQL-> bindParam(":strUsuario", $strUsuario, PDO::PARAM_STR);
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->bindParam(":OficinaDesde", $OficinaDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":OficinaHasta", $OficinaHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":strClteInic", $strClteInic, PDO::PARAM_STR);
+    $oSQL->bindParam(":strClteFinal", $strClteFinal, PDO::PARAM_STR);
+    $oSQL->bindParam(":FechaPedidoDesde", $FechaPedidoDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":FechaPedidoHasta", $FechaPedidoHasta, PDO::PARAM_STR);
+    $oSQL->bindParam(":FechaCancelacDesde", $FechaCancelacDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":FechaCancelacHasta", $FechaCancelacHasta, PDO::PARAM_STR);
+
+    if ($TipoUsuario == "A") {
+      $oSQL->bindParam(":strUsuario", $strUsuario, PDO::PARAM_STR);
     }
-    if(isset($Status)){
-      $oSQL-> bindParam(":Status", $Status, PDO::PARAM_STR);
+    if (isset($Status)) {
+      $oSQL->bindParam(":Status", $Status, PDO::PARAM_STR);
     }
 
-    $oSQL-> execute();
-    $numRows = $oSQL->rowCount();    
+    $oSQL->execute();
+    $numRows = $oSQL->rowCount();
 
     // Si no hay registros con los criterios indicados, devuelve un array vacío
-    if($numRows < 1){
+    if ($numRows < 1) {
       $sqlCmd = "DROP TABLE IF EXISTS pe_detalle;";
       $oSQL = $conn->prepare($sqlCmd);
       $oSQL->execute();
@@ -484,7 +526,9 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
     // para no incluir todos los campos en la clausula GROUP BY
 
     $sqlCmd = "SELECT a.pe_of,a.pe_tipope,a.pe_letra,trim(a.pe_ped) pe_ped,
-    trim(max(a.pe_num)) pe_num, trim(max(a.pe_fil)) pe_fil,max(a.pe_fepe) pe_fepe,max(a.pe_fepep) pe_fepep,
+    trim(max(a.pe_num)) pe_num, trim(max(a.pe_fil)) pe_fil,
+    max(a.pe_numeoc) pe_numeoc,
+    max(a.pe_fepe) pe_fepe,max(a.pe_fepep) pe_fepep,
     max(a.pe_fecao) pe_fecao,max(a.pe_status) pe_status,max(a.pe_tipoie) pe_tipoie,
     max(a.pe_fecao::date - current_date) dias_atras,
     max(99999 + (a.pe_fecao::date - current_date)) as dias_atras_order,
@@ -508,12 +552,11 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
     GROUP BY pe_of,pe_tipope,pe_letra,pe_ped
     ORDER BY pe_of,pe_tipope,dias_atras_order,pe_letra,pe_ped";
 
-    $oSQL = $conn-> prepare($sqlCmd);
-    $oSQL-> execute();
-    $numRows = $oSQL->rowCount();    
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
+    $numRows = $oSQL->rowCount();
 
     $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
-
   } catch (Exception $e) {
     http_response_code(503);  // Service Unavailable
     $response = ["Codigo" => K_API_ERRCONNEX, "Mensaje" => $e->getMessage(), "Contenido" => []];
@@ -523,7 +566,6 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
 
   # Falta tener en cuenta la paginacion
   return $arrData;
-
 }
 
 /**
@@ -533,7 +575,7 @@ FUNCTION SelectRelacionPedidos($TipoUsuario, $Usuario,$OficinaDesde,$OficinaHast
  * @param array data 
  * @return object
  */
-FUNCTION CreaDataCompuesta( $data )
+function CreaDataCompuesta($data)
 {
 
   $contenido = array();
@@ -543,18 +585,18 @@ FUNCTION CreaDataCompuesta( $data )
   $arrFila = array();
 
   // Detalle de documentos con saldo
-  if(count($data)>0){
+  if (count($data) > 0) {
 
     $OficinaCodigo = $data[0]["pe_of"];
     $OficinaNombre = $data[0]["sucursal"];
     $TipoPedidoCodigo = $data[0]["pe_tipope"];
     $TipoPedido       = $data[0]["tipopedido"];
-    $OficTipoPed   = $data[0]["pe_of"]. $data[0]["sucursal"]. $data[0]["pe_tipope"];
-  
-    foreach($data as $row) {
-      
+    $OficTipoPed   = $data[0]["pe_of"] . $data[0]["sucursal"] . $data[0]["pe_tipope"];
+
+    foreach ($data as $row) {
+
       // Cambio de Oficina
-      if($row["pe_of"] != $OficinaCodigo){
+      if ($row["pe_of"] != $OficinaCodigo) {
 
         array_push($arrTiposPedido, [
           "TipoPedidoCodigo" => $TipoPedidoCodigo,
@@ -573,15 +615,14 @@ FUNCTION CreaDataCompuesta( $data )
         $OficinaNombre = $row["sucursal"];
         $TipoPedidoCodigo = $row["pe_tipope"];
         $TipoPedido    = $row["tipopedido"];
-        $OficTipoPed   = $row["pe_of"]. $row["sucursal"]. $row["pe_tipope"];
+        $OficTipoPed   = $row["pe_of"] . $row["sucursal"] . $row["pe_tipope"];
 
         $arrTiposPedido = array();
         $arrPedidos = array();
-
       }
 
       // Cambio en tipo de pedido
-      if($OficTipoPed != $row["pe_of"]. $row["sucursal"]. $row["pe_tipope"]){
+      if ($OficTipoPed != $row["pe_of"] . $row["sucursal"] . $row["pe_tipope"]) {
         array_push($arrTiposPedido, [
           "TipoPedidoCodigo" => $TipoPedidoCodigo,
           "TipoPedido" => $TipoPedido,
@@ -590,10 +631,9 @@ FUNCTION CreaDataCompuesta( $data )
 
         $TipoPedidoCodigo = $row["pe_tipope"];
         $TipoPedido       = $row["tipopedido"];
-        $OficTipoPed   = $row["pe_of"]. $row["sucursal"]. $row["pe_tipope"];
+        $OficTipoPed   = $row["pe_of"] . $row["sucursal"] . $row["pe_tipope"];
 
         $arrPedidos = array();
-
       }
 
       $arrFila = [
@@ -601,30 +641,30 @@ FUNCTION CreaDataCompuesta( $data )
         "PedidoFolio" => $row["pe_ped"],
         "ClienteCodigo" => $row["pe_num"],
         "ClienteFilial" => $row["pe_fil"],
+        "OrdenCompra" => $row["pe_numeoc"],
         "FechaPedido" => $row["pe_fepe"],
-        "FechaPedidoProduccion"=> $row["pe_fepep"],
-        "FechaCancelacion"=> $row["pe_fecao"],
-        "PedidoStatus"=> $row["pe_status"],
-        "DiasAtraso"=> intval($row["dias_atras"]),
-        "CantidadPedida"=> intval($row["pe_canpe"]),
-        "CantidadPedidaImporte"=> floatval($row["imp_canpe"]),
+        "FechaPedidoProduccion" => $row["pe_fepep"],
+        "FechaCancelacion" => $row["pe_fecao"],
+        "PedidoStatus" => $row["pe_status"],
+        "DiasAtraso" => intval($row["dias_atras"]),
+        "CantidadPedida" => intval($row["pe_canpe"]),
+        "CantidadPedidaImporte" => floatval($row["imp_canpe"]),
         "CantidadPedidaValorAgregado" => floatval($row["va_imppe"]),
-        "CantidadSurtida"=> intval($row["pe_cansu"]),
-        "CantidadSurtidaImporte"=> floatval($row["imp_cansu"]),
+        "CantidadSurtida" => intval($row["pe_cansu"]),
+        "CantidadSurtidaImporte" => floatval($row["imp_cansu"]),
         "CantidadSurtidaValorAgregado" => floatval($row["va_impsu"]),
-        "DiferenciaCantidadSurtido"=> intval($row["pe_difcia"]),
-        "DiferenciaImporteSurtido"=> floatval($row["imp_dif"]),
+        "DiferenciaCantidadSurtido" => intval($row["pe_difcia"]),
+        "DiferenciaImporteSurtido" => floatval($row["imp_dif"]),
         "DiferenciaValorAgregado" => floatval($row["va_imppe"] - $row["va_impsu"]),
-        "CantidadPedidaProduccion"=> intval($row["pe_canpep"]),
-        "CantidadProducida"=> intval($row["pe_canpro"]),
-        "DiferenciaCantidadProducido"=> intval($row["canp_dif"]),
-        "InternoExterno"=> $row["pe_tipoie"]
+        "CantidadPedidaProduccion" => intval($row["pe_canpep"]),
+        "CantidadProducida" => intval($row["pe_canpro"]),
+        "DiferenciaCantidadProducido" => intval($row["canp_dif"]),
+        "InternoExterno" => $row["pe_tipoie"]
       ];
 
       // Se agrega el array del nuevo cliente a la seccion "contenido"
       array_push($arrPedidos, $arrFila);
-
-    }   
+    }
 
     array_push($arrTiposPedido, [
       "TipoPedidoCodigo" => $TipoPedidoCodigo,
@@ -639,7 +679,6 @@ FUNCTION CreaDataCompuesta( $data )
       "TipoPedido" => $arrTiposPedido
     ];
     array_push($contenido, $arrOficinas);
-
   }  // foreach($data as $row)
 
 
@@ -649,6 +688,5 @@ FUNCTION CreaDataCompuesta( $data )
   ];
 */
 
-  return $contenido; 
-
+  return $contenido;
 }
