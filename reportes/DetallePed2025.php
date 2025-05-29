@@ -264,31 +264,36 @@ function SelectPedidos($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFilial, $
   # Instrucción SELECT
   $sqlCmd = "SELECT a.pe_of,a.pe_lin,trim(a.pe_clave) pe_clave,a.pe_letra,trim(a.pe_ped) pe_ped,
     trim(a.pe_rengl) pe_rengl,a.pe_status,a.pe_fepe,a.pe_fecao,a.pe_canpe,a.pe_grape,a.pe_fecs,
-    a.pe_cansu,a.pe_grasu,trim(a.pe_serie) pe_serie,trim(a.pe_nufact) pe_nufact,a.pe_fete,a.pe_canpro,a.pe_gpo,a.pe_cat,a.pe_scat,
+    a.pe_cansu,a.pe_grasu,trim(a.pe_serie) pe_serie,trim(a.pe_nufact) pe_nufact,a.pe_fete,a.pe_canpro,
+    a.pe_gpo,a.pe_cat,a.pe_scat,
     a.pe_cp3,a.pe_cp35,
-    a.pe_cp4,a.pe_cp45,a.pe_cp5,a.pe_cp55,a.pe_cp6,a.pe_cp65,a.pe_cp7,a.pe_cp75,a.pe_cp8,a.pe_cp85,
-    a.pe_cp9,a.pe_cp95,a.pe_cp10,a.pe_cp105,a.pe_cp11,a.pe_cp115,a.pe_cp12,a.pe_cp125,
+    a.pe_cp4,a.pe_cp45,a.pe_cp5,a.pe_cp55,a.pe_cp6,a.pe_cp65,a.pe_cp7,a.pe_cp75,a.pe_cp8,
+    a.pe_cp85,a.pe_cp9,a.pe_cp95,a.pe_cp10,a.pe_cp105,a.pe_cp11,a.pe_cp115,a.pe_cp12,a.pe_cp125,
     a.pe_cp13,a.pe_cp135,a.pe_cp14,a.pe_cp145,a.pe_cp15,a.pe_cp155,
-    a.pe_mpx pe_mpx,a.pe_cpx,trim(b.c_descr) cpt_descr,c.pe_fepep,c.pe_canpe pe_canpep,c.pe_grape pe_grapep,
-    c.pe_canpro,c.pe_grapro,c.pe_fecterm,
+    a.pe_mpx pe_mpx,a.pe_cpx,trim(b.c_descr) cpt_descr,c.pe_fepep,c.pe_canpe pe_canpep,
+    c.pe_grape pe_grapep,c.pe_canpro,c.pe_grapro,c.pe_fecterm,
     g.pe_canpro pzascompra,g.pe_grapro grmscompra,
     SUBSTRING(d.t_param FROM 17 FOR 1) medidas,
     SUBSTRING(d.t_param FROM 20 FOR 1) intext,
     e.so_orden ordprod,e.so_letrao ordprodletra,e.so_sobre ordprodsobre,
-    concat(e.so_alm,'-',trim(e.so_num)) ubicacprod,f.p_descr ubicacprodnomb
+    concat(e.so_alm) ubicacprod,f.p_descr ubicacprodnomb,
+    h.e_alm e_alm, j.p_descr ubicacexisnomb
     FROM ped100 a 
     LEFT JOIN inv010 b ON b.c_lin=a.pe_lin AND b.c_clave=a.pe_clave 
 		LEFT JOIN ped150 c ON c.pe_letra=a.pe_letra AND c.pe_ped=a.pe_ped
 					AND c.pe_lin=a.pe_lin AND c.pe_clave=a.pe_clave AND c.pe_rengl=a.pe_rengl
     LEFT JOIN var020 d ON d.t_tica='05' AND d.t_gpo=a.pe_lin
     LEFT JOIN op002 e ON e.so_letra=a.pe_letra AND e.so_ped=a.pe_ped AND e.so_renglp=a.pe_rengl 
-          AND e.so_status='A' AND e.so_stacar='A'
+          AND e.so_status='A' 
     LEFT JOIN maq012 f ON f.p_clave=e.so_alm 
     LEFT JOIN ped160 g ON g.pe_letra=a.pe_letra AND g.pe_ped=a.pe_ped AND g.pe_rengl=a.pe_rengl
+    LEFT JOIN mat042 h ON h.e_orden=e.so_orden AND h.e_letrao=' ' AND h.e_sobre='  0'
+ 		      AND (h.e_sacneto > 0 OR h.e_sacpzas >0)
+    	LEFT JOIN maq012 j ON j.p_clave=h.e_alm
     $where 
-    ORDER BY a.pe_rengl";
+    ORDER BY CAST(a.pe_rengl AS integer)";
 
-  //var_dump($sqlCmd);
+  //  var_dump($sqlCmd);
 
   try {
     $oSQL = $conn->prepare($sqlCmd);
@@ -330,6 +335,7 @@ function CreaDataCompuesta($data)
 
   $contenido  = array();
   $pedidos    = array();
+  $ubicacion  = "";
 
   if (count($data) > 0) {
 
@@ -342,6 +348,21 @@ function CreaDataCompuesta($data)
       $DiferenciaProducido = intval($CantidadPedidoProduccion - $CantidadProducida);
       $PzasCompra = intval(is_null($row["pzascompra"]) ? 0 : $row["pzascompra"]);
       $SumaPzasProdCompra = intval($CantidadProducida + $PzasCompra);
+
+      $ubicacion = "";
+
+      if (!is_null($row["ubicacprod"]) && trim($row["ubicacprod"]) != "") {
+        $ubicacion = trim($row["ubicacprodnomb"]);
+      } else {
+
+        if (!is_null($row["e_alm"])) {
+          $ubicacion = trim($row["ubicacexisnomb"]);
+        } else {
+          if ($row["intext"] == 'I' && !is_null($row["ordprod"])) {
+            $ubicacion = "ALMAC MP";
+          }
+        }
+      }
 
       // Se crea un array con los nodos requeridos
       $pedidos = [
@@ -402,7 +423,10 @@ function CreaDataCompuesta($data)
         "OrdProdLetra" => (is_null($row["ordprodletra"]) ? "" : $row["ordprodletra"]),
         "OrdProdSobre" => (is_null($row["ordprodsobre"]) ? "" : trim($row["ordprodsobre"])),
         "UbicacProd" => (is_null($row["ubicacprod"]) ? "" : trim($row["ubicacprod"])),
-        "UbicacProdNomb" => (is_null($row["ubicacprodnomb"]) ? "" : trim($row["ubicacprodnomb"]))
+        "UbicacProdNomb" => (is_null($row["ubicacprodnomb"]) ? "" : trim($row["ubicacprodnomb"])),
+        "UbicacExis" => (is_null($row["e_alm"]) ? "" : trim($row["e_alm"])),
+        "UbicacExisNomb" => (is_null($row["ubicacexisnomb"]) ? "" : trim($row["ubicacexisnomb"])),
+        "Ubicacion" => $ubicacion
       ];
 
       // Se agrega el array a la seccion "contenido"

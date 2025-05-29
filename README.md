@@ -3,7 +3,7 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
-### v2.6.5 | 2025-05-27 | DetallePed2025
+### v2.6.5 | 2025-05-28 | DetallePed2025
 #### Issues:
 1. Se agrega lógica para ubicar correctamente el pedido cuando se tiene Orden de Producción sin ensobretar.
 
