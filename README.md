@@ -3,6 +3,12 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.7.0 | 30.05.2025 | ConsultaGuias2025
+#### Nuevo:
+1. Se crea el servicio para ejecutar la "Consulta de Guias" (versión 2025) y devolver el JSON correspondiente.
+* ConsultaGuias2025.php --- Lista de Paquetes (Guias) y documentos que incluye
+* DocumArticulos.php ------ Articulos contenidos en un documento de venta o inventario
+
 ### v2.6.5 | 2025-05-28 | DetallePed2025
 #### Issues:
 1. Se agrega lógica para ubicar correctamente el pedido cuando se tiene Orden de Producción sin ensobretar.
