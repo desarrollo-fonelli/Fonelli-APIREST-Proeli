@@ -6,7 +6,7 @@ date_default_timezone_set('America/Mexico_City');
 /**
  * Detalle de Orden de Retorno
  * --------------------------------------------------------------------------
- * dRendon 14.02.2025
+ * dRendon 18.06.2025
  *  El parámetro "Usuario" es obligatorio
  *  Se recibe el "Token" con caracter obligatorio en los headers de la peticion
  * --------------------------------------------------------------------------
@@ -35,9 +35,9 @@ $sqlCmd   = "";     // comando SQL que se envía al engine de datos
 $TipoUsuario    = null;     // Tipo de usuario
 $Usuario        = null;     // Id del usuario (cliente, agente o gerente)
 $Token          = null;     // Token obtenido por el usuario al autenticarse
-$Folio          = null;     // Folio de Orden de Retorno
 $ClienteCodigo  = null;     // Id del cliente
 $ClienteFilial  = null;     // Filial del cliente
+$Folio          = null;     // Folio de Orden de Retorno
 $Pagina         = 1;        // Pagina devuelta del conjunto de datos obtenido
 
 # Comprueba Request Method
@@ -79,37 +79,9 @@ try {
     $Token = $_SERVER["HTTP_AUTH"];
   }
 
-  // ValidaToken está en ./include/funciones.php
   if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {
     throw new Exception("Error de autenticacion.");
   }
-  # Fin dRendon 04.05.2023 ****************
-
-  /*
-      if (!isset($_GET["ClienteCodigo"])) {
-        throw new Exception("El parametro obligatorio 'ClienteCodigo' no fue definido.");
-      } else {
-        $ClienteCodigo = $_GET["ClienteCodigo"];
-      }
-
-      if (!isset($_GET["ClienteFilial"])) {
-        throw new Exception("El parametro obligatorio 'ClienteFilial' no fue definido.");
-      } else {
-        $ClienteFilial = $_GET["ClienteFilial"];
-      }
-   */
-
-  # dRendon 04.05.2023 ********************
-  # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
-  # Verificando en este nivel ya no es necesario cambiar el código restante
-  /*
-      if ($TipoUsuario == "C") {
-        if ((TRIM($ClienteCodigo) . "-" . TRIM($ClienteFilial)) != $Usuario) {
-          throw new Exception("Error de autenticación");
-        }
-      }
-  */
-  # Fin dRendon 04.05.2023 ****************
 
   if (!isset($_GET["Folio"])) {
     throw new Exception("El parametro obligatorio 'Folio' no fue definido.");
@@ -217,18 +189,18 @@ function SelectDetalleOrden($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFili
 
   # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
   switch ($TipoUsuario) {
-      // Cliente 
-      /*
+    // Cliente 
+    /*
     case "C":     <-- cuando el tipo es "Cliente", no se requiere "Usuario"
       $strUsuario = str_pad($Usuario, 6," ",STR_PAD_LEFT);
       break;
       */
 
-      // Agente
+    // Agente
     case "A":
       $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
       break;
-      // Gerente
+    // Gerente
     case "G":
       $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
       break;
@@ -269,7 +241,8 @@ function SelectDetalleOrden($TipoUsuario, $Usuario, $ClienteCodigo, $ClienteFili
     c.c_descr descripcion
     FROM cli130 a
     JOIN cli135 b ON b.dor_folio = a.or_folio 
-    LEFT JOIN inv010 c ON c.c_lin=b.dor_lin AND c.c_clave=b.dor_clave 
+    LEFT JOIN (SELECT DISTINCT ON (c_lin,c_clave) * FROM inv010) c
+           ON c.c_lin=b.dor_lin AND c.c_clave=b.dor_clave
     $where 
     ";
 
@@ -315,34 +288,30 @@ function CreaDataCompuesta($data)
 {
 
   $contenido  = array();
-  $ordenes    = array();
+  $articulos  = array();
+  $articulo   = array();
 
   if (count($data) > 0) {
 
     foreach ($data as $row) {
 
       // Se crea un array con los nodos requeridos
-      $ordenes = [
-        "Fecha" => (is_null($row["dor_fecha"]) ? "" : $row["dor_fecha"]),
-        "FechaCanc" => (is_null($row["dor_feccan"]) ? "" : $row["dor_feccan"]),
+      $articulo = [
         "LineaPT" => $row["dor_lin"],
-        "ClaveArticulo" => $row["dor_clave"],
+        "ClaveArticulo" => trim($row["dor_clave"]),
         "Piezas" => intval($row["dor_pzas"]),
         "Gramos" => floatval($row["dor_grms"]),
-        "Descripcion" => $row["descripcion"],
-        "Status" => $row["dor_status"],
-        "RefSerie" => $row["dor_serie"],
-        "Referencia" => $row["dor_ref"],
-        "Tipo" => $row["dor_tipo"]
+        "Descripcion" => trim($row["descripcion"]),
+        "Status" => $row["dor_status"]
       ];
 
       // Se agrega el array a la seccion "contenido"
-      array_push($contenido, $ordenes);
+      array_push($articulos, $articulo);
     }   // foreach($data as $row)
 
     $contenido = [
       "Folio" => $data[0]["or_folio"],
-      "Articulos" => $contenido
+      "OrdRetoArticulos" => $articulos
     ];
   } // count($data)>0
 

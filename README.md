@@ -3,11 +3,27 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.8.0 | 18.06.2025 | Ordenes de Retorno
+#### Nuevo:
+1. Se crea el servicio para obtener los datos generales de las Ordenes de Retorno, devolviendo el JSON correspondiente.
+2. Se escribe nuevamente el servicio para obtener los artículos de la Orden de Retorno.
+3. Se ajustan los criterios de búsqueda para mejorar la interactividad entre los controles del formulario.
+3.1 Ahora se permite indicar algún documento, orden de compra, pedido, etc. sin tener que indicar un cliente.
+
+|Servicio                 | Descripcion |
+|-------------------------|--------------------------------------------|
+| OrdenesRetorno.php      | Lista de Ordenes de Retorno                |
+| DetalleOrdenRetorno.php | Articulos incluidos en la Orden de Retorno |
+| ConsultaGuias2025.php   | Consulta de Logistica (Paquetes, Guías)    |
+
 ### v2.7.0 | 30.05.2025 | ConsultaGuias2025
 #### Nuevo:
 1. Se crea el servicio para ejecutar la "Consulta de Guias" (versión 2025) y devolver el JSON correspondiente.
-* ConsultaGuias2025.php --- Lista de Paquetes (Guias) y documentos que incluye
-* DocumArticulos.php ------ Articulos contenidos en un documento de venta o inventario
+
+|Servicio                | Descripcion |
+|------------------------|----------------------------------------------------|
+| ConsultaGuias2025.php  | Lista de Paquetes (Guias) y documentos que incluye |
+| DocumArticulos.php     | Articulos contenidos en un documento de venta o inventario |
 
 ### v2.6.5 | 2025-05-28 | DetallePed2025
 #### Issues:

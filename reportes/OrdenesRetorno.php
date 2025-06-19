@@ -6,7 +6,7 @@ date_default_timezone_set('America/Mexico_City');
 /**
  * Lista de Ordenes de Retorno
  * --------------------------------------------------------------------------
- * dRendon 06.02.2025
+ * dRendon 13.06.2025
  *  El parámetro "Usuario" ahora es obligatorio
  *  Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
  * --------------------------------------------------------------------------
@@ -24,12 +24,12 @@ require_once "../include/funciones.php";
 const K_SCRIPTNAME  = "OrdenesRetorno.php";
 
 # Declara variables generales
-$codigo   = null;   // codigo devuelto en el json de respuesta
-$mensaje  = "";     // mensaje que complementa el codigo de respuesta del endpoint
-$data     = [];     // arreglo asociativo con la data devuelta por el comando SELECT
-$dataJson = null;   // data en formato JSON 
-$response = null;   // JSON devuelto por el endpoint conteniendo todos los nodos especificados
-$sqlCmd   = "";     // comando SQL que se envía al engine de datos
+$codigo         = null;   // codigo devuelto en el json de respuesta
+$mensaje        = "";     // mensaje que complementa el codigo de respuesta del endpoint
+$data           = [];     // arreglo asociativo con la data devuelta por el comando SELECT
+$dataJson       = null;   // data en formato JSON 
+$response       = null;   // JSON devuelto por el endpoint conteniendo todos los nodos especificados
+$sqlCmd         = "";     // comando SQL que se envía al engine de datos
 
 # Variables asociadas a los parámetros recibidos
 $TipoUsuario    = null;     // Tipo de usuario
@@ -37,10 +37,11 @@ $Usuario        = null;     // Id del usuario (cliente, agente o gerente)
 $Token          = null;     // Token obtenido por el usuario al autenticarse
 $ClienteCodigo  = null;     // Id del cliente
 $ClienteFilial  = null;     // Filial del cliente
-$AgenteCodigo   = null;     // Id del agente de ventas o gerente
+$AgenteCodigo   = null;     // Id del agente 
 $Folio          = null;     // Folio Orden de Retorno
 $Referencia     = null;     // Referencia del cliente
 $Status         = null;     // Status del cliente
+$OrdenRepo      = null;     // Orden en que se presentan las filas
 $Pagina         = 1;        // Pagina devuelta del conjunto de datos obtenido
 
 # Comprueba Request Method
@@ -52,34 +53,73 @@ if ($requestMethod != "GET") {
   exit;
 }
 
+if (!isset($_GET["Usuario"])) {
+  throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+} else {
+  $Usuario = $_GET["Usuario"];
+}
+
 # Hay que comprobar que se pasen los parametros obligatorios
 # OJO: Los nombres de parametro son sensibles a mayusculas/minusculas
 try {
   if (!isset($_GET["TipoUsuario"])) {
-    throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");   // quité K_SCRIPTNAME del mensaje
+    throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");
+    // quité K_SCRIPTNAME del mensaje
   } else {
     $TipoUsuario = $_GET["TipoUsuario"];
     if (! in_array($TipoUsuario, ["C", "A", "G"])) {
       throw new Exception("Valor '" . $TipoUsuario . "' NO permitido para 'TipoUsuario'");
     }
+
+    if ($TipoUsuario == "A") {
+      if (!isset($_GET["AgenteCodigo"])) {
+        throw new Exception("Debe indicar un valor para 'AgenteCodigo' cuando 'TipoUsuario' es 'A'");
+      }
+      if (trim($_GET["AgenteCodigo"]) != $Usuario) {
+        throw new Exception("Error de autenticacion");
+      }
+    }
+    if (isset($_GET["AgenteCodigo"])) {
+      $AgenteCodigo = $_GET["AgenteCodigo"];
+    }
+
     if ($TipoUsuario == 'C') {
       if (!isset($_GET["ClienteCodigo"])) {
         throw new Exception("El parametro obligatorio 'ClienteCodigo' no fue definido.");
+        // 
       } else {
         $ClienteCodigo = $_GET["ClienteCodigo"];
       }
+
       if (!isset($_GET["ClienteFilial"])) {
         throw new Exception("El parametro obligatorio 'ClienteFilial' no fue definido.");
       } else {
         $ClienteFilial = $_GET["ClienteFilial"];
       }
+      # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
+      # Verificando en este nivel ya no es necesario cambiar el código restante
+      if ((TRIM($ClienteCodigo) . "-" . TRIM($ClienteFilial)) != $Usuario) {
+        throw new Exception("Error de autenticación");
+      }
+    } else {
+      if (isset($_GET["ClienteCodigo"])) {
+        $ClienteCodigo = $_GET["ClienteCodigo"];
+        if (isset($_GET["ClienteFilial"])) {
+          $ClienteFilial = $_GET["ClienteFilial"];
+        } else {
+          $ClienteFilial = '0';
+        }
+      }
     }
   }
 
-  if (!isset($_GET["Usuario"])) {
-    throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+  if (!isset($_GET["OrdenRepo"])) {
+    throw new Exception("El parametro obligatorio 'OrdenRepo' no fue recibido");
   } else {
-    $Usuario = $_GET["Usuario"];
+    $OrdenRepo = $_GET["OrdenRepo"];
+    if (! in_array($OrdenRepo, ['Folio', 'ClteFolio'])) {
+      throw new Exception("Valor '" . $OrdenRepo . "' NO permitido para 'OrdenRepo'");
+    }
   }
 
   # Se conecta a la base de datos
@@ -97,13 +137,7 @@ try {
     throw new Exception("Error de autenticacion.");
   }
 
-  # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
-  # Verificando en este nivel ya no es necesario cambiar el código restante
-  if ($TipoUsuario == "C") {
-    if ((TRIM($ClienteCodigo) . "-" . TRIM($ClienteFilial)) != $Usuario) {
-      throw new Exception("Error de autenticación");
-    }
-  }
+  //
 } catch (Exception $e) {
   http_response_code(400);
   echo json_encode(["Code" => K_API_FAILAUTH, "Mensaje" => $e->getMessage()]);
@@ -120,6 +154,7 @@ $arrPermitidos = array(
   "Folio",
   "Referencia",
   "Status",
+  "OrdenRepo",
   "Pagina"
 );
 
@@ -164,10 +199,6 @@ if (isset($_GET["ClienteFilial"])) {
   $ClienteFilial = $_GET["ClienteFilial"];
 }
 
-if (isset($_GET["AgenteCodigo"])) {
-  $AgenteCodigo = $_GET["AgenteCodigo"];
-}
-
 if (isset($_GET["Folio"])) {
   $Folio = $_GET["Folio"];
 }
@@ -190,7 +221,7 @@ if (isset($_GET["Pagina"])) {
   $Pagina = $_GET["Pagina"];
 }
 
-# Ejecuta la consulta 
+# Llama la rutina que ejecuta la consulta 
 try {
   $data = SelectOrdenesRetorno(
     $TipoUsuario,
@@ -201,6 +232,7 @@ try {
     $Folio,
     $Referencia,
     $Status,
+    $OrdenRepo,
     $Pagina
   );
 
@@ -249,15 +281,6 @@ return;
  * Envía Consulta a la base de datos y devuelve un array con
  * los resultados obtenidos.
  * 
- * @param string $TipoUsuario
- * @param int $Usuario
- * @param int $ClienteCodigo
- * @param int $ClienteFilial
- * @param int $AgenteCodigo
- * @param int $Folio
- * @param string $Referencia
- * @param string $Status
- * @param int $Pagina
  * @return array
  */
 
@@ -270,26 +293,28 @@ function SelectOrdenesRetorno(
   $Folio,
   $Referencia,
   $Status,
+  $OrdenRepo,
   $Pagina
 ) {
 
   $arrData = array();   // Arreglo para almacenar los datos obtenidos
   $where = "";          // Variable para almacenar dinamicamente la clausula WHERE del SELECT
+  $orderBy = "";
 
   # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
   switch ($TipoUsuario) {
-      // Cliente 
-      /*
+    // Cliente 
+    /*
     case "C":     <-- cuando el tipo es "Cliente", no se requiere "Usuario"
       $strUsuario = str_pad($Usuario, 6," ",STR_PAD_LEFT);
       break;
       */
 
-      // Agente
+    // Agente
     case "A":
       $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
       break;
-      // Gerente
+    // Gerente
     case "G":
       $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
       break;
@@ -311,45 +336,58 @@ function SelectOrdenesRetorno(
   $conn = DB::getConn();
 
   # Construyo dinamicamente la condicion WHERE
-
+  # ------------------------------------------
   if (isset($ClienteCodigo)) {
-    $where = "a.or_num = :ClienteCodigo AND a.or_fil = :ClienteFilial";
+    $where = "WHERE a.or_num = :ClienteCodigo AND a.or_fil = :ClienteFilial ";
   }
+
   if (isset($AgenteCodigo)) {
     if ($where <> "") {
-      $where .= " AND ";
+      $where .= "AND ";
+    } else {
+      $where = "WHERE ";
     }
-    $where .= "a.or_age = :AgenteCodigo";
-  }
-  if (isset($Folio)) {
-    if ($where <> "") {
-      $where .= " AND ";
-    }
-    $where .= "a.or_folio = :Folio";
-  }
-  if (isset($Referencia)) {
-    if ($where <> "") {
-      $where .= " AND ";
-    }
-    $where .= "trim(a.or_refcia) = trim(:Referencia)";
-  }
-  if (isset($Status)) {
-    if ($where <> "") {
-      $where .= " AND ";
-    }
-    $where .= "a.or_status = :Status";
-  }
-  if (in_array($TipoUsuario, ["A"])) {
-    // Solo aplica filtro cuando el usuario es un agente
-    if ($where <> "") {
-      $where .= " AND ";
-    }
-    $where .= "a.or_age = :strUsuario";
-  }
-  if ($where <> "") {
-    $where = "WHERE " . $where;
+    $where .= "a.or_age = :AgenteCodigo ";
   }
 
+  if (isset($Folio)) {
+    if ($where <> "") {
+      $where .= "AND ";
+    } else {
+      $where = "WHERE ";
+    }
+    $where .= "a.or_folio = :Folio ";
+  }
+
+  if (isset($Referencia)) {
+    if ($where <> "") {
+      $where .= "AND ";
+    } else {
+      $where = "WHERE ";
+    }
+    $where .= "trim(a.or_refcia) = trim(:Referencia) ";
+  }
+
+  if (isset($Status)) {
+    if ($where <> "") {
+      $where .= "AND ";
+    } else {
+      $where = "WHERE ";
+    }
+    $where .= "a.or_status = :Status ";
+  }
+
+  // Clausula ORDER BY
+  if ($OrdenRepo == "ClteFolio") {
+    $orderBy = "ORDER BY CAST(a.or_num AS integer),CAST(a.or_fil AS integer),
+    COALESCE(NULLIF(a.or_folio, ''), '0')::INTEGER ";
+  } else {
+    $orderBy = "ORDER BY COALESCE(NULLIF(a.or_folio, ''), '0')::INTEGER ";
+  }
+
+
+  // Doy un plazo de hasta Cinco minutos para completar cada consulta...
+  set_time_limit(300);
   try {
     # Hay que definir dinamicamente el schema <---------------------------------
     $sqlCmd = "SET SEARCH_PATH TO dateli;";
@@ -359,7 +397,7 @@ function SelectOrdenesRetorno(
     # Borra tablas temporales
     BorraTemporales($conn);
 
-    # Crea tablas temporales normalizadas para categorias y subcategorias
+    # Crea tablas temporales: Carriers
     $sqlCmd = "CREATE TEMPORARY TABLE carriers AS 
     SELECT trim(t_gpo) as idcarrier, t_descr AS carriernom 
       FROM var020 WHERE t_tica = '35' AND t_gpo <> '' 
@@ -368,16 +406,23 @@ function SelectOrdenesRetorno(
     $oSQL->execute();
 
     # Construye la Instruccion SELECT de forma dinámica ------------------------
-    $sqlCmd = "SELECT a.*, 
+    # OJO: El nombre de los campos en la tabla "ope010" debe escribirse en mayusculas
+    $sqlCmd = "SELECT a.or_num,a.or_fil,a.or_age,a.or_folio,a.or_status,a.or_guiaemi,
+      a.or_carrier,a.or_pzas,a.or_grms,a.or_descr,a.or_kt,a.or_imp,a.or_tipo,a.or_refcia,
+      a.or_tipod,a.or_obs,a.or_email,a.or_fecha,a.or_fecaut,a.or_fecemi,a.or_fecrec,
+      a.or_feclib,a.or_serie,a.or_ref,a.or_pzaso,a.or_grmso,a.or_operec,
       c.carriernom, trim(d.cc_raso) cc_raso, trim(d.cc_suc) cc_suc,
-      e.gc_nom agentenom,f.gu_guia,f.gu_fecha 
-      FROM cli130   a 
+      e.gc_nom agentenom,f.gu_guia,f.gu_fecha,g.\"OP_NOM\" operadornom 
+      FROM cli130 a 
       LEFT JOIN carriers c ON a.or_carrier = c.idcarrier
       LEFT JOIN cli010   d ON (a.or_num = d.cc_num AND a.or_fil = d.cc_fil)
       LEFT JOIN var030   e ON a.or_age = e.gc_llave 
       LEFT JOIN guias10  f ON (a.or_folio = f.gu_ordret AND f.gu_ordret <> '')
-    $where 
-    ORDER BY a.or_folio ";
+      LEFT JOIN ope010   g ON a.or_operec = g.\"OP_LLAVE\"
+    $where $orderBy ";
+
+    // var_dump("AgenteCodigo", $AgenteCodigo, "where", $where, "sqlCmd", $sqlCmd);
+    // exit();
 
     # Preparación de la consulta y agregación de parámetros
     unset($oSQL);
@@ -398,9 +443,9 @@ function SelectOrdenesRetorno(
     if (isset($Status)) {
       $oSQL->bindParam(":Status", $Status, PDO::PARAM_STR);
     }
-    if ($TipoUsuario == "A") {
-      $oSQL->bindParam(":TipoUsuario", $TipoUsuario, PDO::PARAM_STR);
-    }
+    // if ($TipoUsuario == "A") {
+    //   $oSQL->bindParam(":TipoUsuario", $TipoUsuario, PDO::PARAM_STR);
+    // }
 
     # Ejecución de la consulta -------------------------------------------------
     $oSQL->execute();
@@ -432,37 +477,72 @@ function SelectOrdenesRetorno(
  */
 function CreaDataCompuesta($data)
 {
-  $contenido = array();
-  $OrdenReto = array();
-
+  $contenido    = array();
+  $clientes     = array();
+  $cliente      = array();
+  $ordenesReto  = array();
+  $ordenReto    = array();
+  $ordRetoFolio = "";  // Folio de la orden de retorno
   // Detalle de documentos con saldo
   if (count($data) > 0) {
 
+    $ClteNumFil     = $data[0]["or_num"] . $data[0]["or_fil"];
+    $ClienteCodigo  = $data[0]["or_num"];
+    $ClienteFilial  = $data[0]["or_fil"];
+    $ClienteNombre  = $data[0]["cc_raso"];
+    $ClienteSucursal = $data[0]["cc_suc"];
+    $AgenteCodigo   = $data[0]["or_age"];
+    $AgenteNom      = $data[0]["agentenom"];
+    $ordRetoFolio   = $data[0]["or_folio"];
+
     foreach ($data as $row) {
 
-      // Se crea array, en este caso no hay nodos adicionales
-      $OrdenReto = [
+      // Cambio de cliente-filial
+      if ($row["or_num"] . $row["or_fil"] != $ClteNumFil) {
+
+        // array_push($ordenesReto, $ordenReto);    ya no, ya traes lo ultimo del cliente anterior
+
+        $cliente = [
+          "ClienteCodigo"   => trim($ClienteCodigo),
+          "ClienteFilial"   => trim($ClienteFilial),
+          "ClienteNombre"   => trim($ClienteNombre),
+          "ClienteSucursal" => trim($ClienteSucursal),
+          "AgenteCodigo"    => $AgenteCodigo,
+          "AgenteNom"       => trim($AgenteNom),
+          "OrdRetoDocs"     => $ordenesReto
+        ];
+        array_push($clientes, $cliente);  // Se agrega el array del cliente a la sección "contenido"
+
+        $ClteNumFil     = $row["or_num"] . $row["or_fil"];
+        $ClienteCodigo  = $row["or_num"];
+        $ClienteFilial  = $row["or_fil"];
+        $ClienteNombre  = $row["cc_raso"];
+        $ClienteSucursal = $row["cc_suc"];
+        $AgenteCodigo   = $row["or_age"];
+        $AgenteNom      = $row["agentenom"];
+        $ordRetoFolio   = $row["or_folio"];
+
+        $ordenesReto = array();
+      }
+
+      // Ordenes de retorno del cliente que se está procesando
+      $ordenReto = [
         "Folio"       => $row["or_folio"],
         "Status"      => $row["or_status"],
-        "Agente"      => $row["or_age"],
-        "ClienteCodigo" => $row["or_num"],
-        "ClienteFilial" => $row["or_fil"],
         "GuiaEmi"     => $row["or_guiaemi"],
         "Carrier"     => $row["or_carrier"],
-        "CarrierNom"  => $row["carriernom"],
+        "CarrierNom"  => trim($row["carriernom"]),
         "Piezas"      => intval($row["or_pzas"]),
         "Gramos"      => floatval($row["or_grms"]),
-        "Descripc"    => $row["or_descr"],
+        "Descripc"    => trim($row["or_descr"]),
         "Kilataje"    => $row["or_kt"],
         "ValorMerc"   => floatval($row["or_imp"]),
         "TipoOrden"   => $row["or_tipo"],
         "TipoOrdDesc" => ($row["or_tipo"] == '1' ? "Devolución" : "Reparación"),
         "Referencia"  => $row["or_refcia"],
-        "TipoDefec"   => $row["or_tipod"],
-        "TipoDefDesc" => $row["or_obs"],
-        "Email"       => $row["or_email"],
-        "ClteNom"     => $row["cc_raso"],
-        "AgenteNom"   => $row["agentenom"],
+        "TipoDefec"   => trim($row["or_tipod"]),
+        "TipoDefDesc" => trim($row["or_obs"]),
+        "Email"       => trim($row["or_email"]),
         "FechaSolic"  => (is_null($row["or_fecha"]) ? "" : $row["or_fecha"]),
         "FechaAutor"  => (is_null($row["or_fecaut"]) ? "" : $row["or_fecaut"]),
         "FechaEmis"   => (is_null($row["or_fecemi"]) ? "" : $row["or_fecemi"]),
@@ -471,21 +551,40 @@ function CreaDataCompuesta($data)
         "FechaEnvio"  => (is_null($row["gu_fecha"]) ? "" : $row["gu_fecha"]),
         "Guia"        => $row["gu_guia"],
         "Serie"       => $row["or_serie"],
-        "Documento"   => $row["or_ref"]
+        "Documento"   => $row["or_ref"],
+        "PiezasO"     => intval($row["or_pzaso"]),
+        "GramosO"     => floatval($row["or_grmso"]),
+        "OpeRec"      => $row["or_operec"],
+        "OpeNom"      => $row["operadornom"]
       ];
 
       // Se agrega el array del nuevo cliente a la seccion "contenido"
-      array_push($contenido, $OrdenReto);
-    }
+      array_push($ordenesReto, $ordenReto);
+
+      $ordRetoFolio = $row["or_folio"];
+
+
+      //
+    }   // foreach ($data as $row)
+
+    // Ultimo registro
+    //array_push($ordenesReto, $ordenReto);      no es necesario, ya se inerto en el array
+
+    $cliente = [
+      "ClienteCodigo"   => trim($ClienteCodigo),
+      "ClienteFilial"   => trim($ClienteFilial),
+      "ClienteNombre"   => trim($ClienteNombre),
+      "ClienteSucursal" => trim($ClienteSucursal),
+      "AgenteCodigo"    => $AgenteCodigo,
+      "AgenteNom"       => trim($AgenteNom),
+      "OrdRetoDocs"     => $ordenesReto
+    ];
+    array_push($clientes, $cliente);  // Se agrega el array del cliente a la sección "contenido"
 
     $contenido = [
-      "ClienteCodigo" => $data[0]["or_num"],
-      "ClienteFilial" => $data[0]["or_fil"],
-      "ClienteNombre" => $data[0]["cc_raso"],
-      "ClienteSucursal" => $data[0]["cc_suc"],
-      "Ordenes"         => $contenido
+      "OrdRetoCltes" => $clientes
     ];
-  }
+  }  // if (count($data) > 0)
 
   return $contenido;
 }

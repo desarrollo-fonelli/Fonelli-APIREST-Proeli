@@ -62,14 +62,22 @@ if ($requestMethod != "GET") {
 
 # Hay que comprobar que se pasen los parametros obligatorios
 # OJO: Los nombres de parametro son sensibles a mayusculas/minusculas
+if (!isset($_GET["Usuario"])) {
+  throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
+} else {
+  $Usuario = $_GET["Usuario"];
+}
+
 try {
   if (!isset($_GET["TipoUsuario"])) {
-    throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");   // quité K_SCRIPTNAME del mensaje
+    throw new Exception("El parametro obligatorio 'TipoUsuario' no fue definido.");
+    // quité K_SCRIPTNAME del mensaje
   } else {
     $TipoUsuario = $_GET["TipoUsuario"];
     if (! in_array($TipoUsuario, ["C", "A", "G"])) {
       throw new Exception("Valor '" . $TipoUsuario . "' NO permitido para 'TipoUsuario'");
     }
+
     if ($TipoUsuario == 'C') {
       if (!isset($_GET["ClienteCodigo"])) {
         throw new Exception("El parametro obligatorio 'ClienteCodigo' no fue definido.");
@@ -81,13 +89,21 @@ try {
       } else {
         $ClienteFilial = $_GET["ClienteFilial"];
       }
+      # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
+      # Verificando en este nivel ya no es necesario cambiar el código restante
+      if ((TRIM($ClienteCodigo) . "-" . TRIM($ClienteFilial)) != $Usuario) {
+        throw new Exception("Error de autenticación");
+      }
+    } else {
+      if (isset($_GET["ClienteCodigo"])) {
+        $ClienteCodigo = $_GET["ClienteCodigo"];
+        if (isset($_GET["ClienteFilial"])) {
+          $ClienteFilial = $_GET["ClienteFilial"];
+        } else {
+          $ClienteFilial = '0';
+        }
+      }
     }
-  }
-
-  if (!isset($_GET["Usuario"])) {
-    throw new Exception("El parametro obligatorio 'Usuario' no fue definido.");
-  } else {
-    $Usuario = $_GET["Usuario"];
   }
 
   # Se conecta a la base de datos
@@ -103,14 +119,6 @@ try {
   // ValidaToken está en ./include/funciones.php
   if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {
     throw new Exception("Error de autenticacion.");
-  }
-
-  # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
-  # Verificando en este nivel ya no es necesario cambiar el código restante
-  if ($TipoUsuario == "C") {
-    if ((TRIM($ClienteCodigo) . "-" . TRIM($ClienteFilial)) != $Usuario) {
-      throw new Exception("Error de autenticación");
-    }
   }
 
   if (!isset($_GET["OficinaDesde"])) {
@@ -212,13 +220,12 @@ if (isset($_GET["Usuario"])) {
   }
 }
 
-if (isset($_GET["ClienteCodigo"])) {
-  $ClienteCodigo = $_GET["ClienteCodigo"];
-}
-
-if (isset($_GET["ClienteFilial"])) {
-  $ClienteFilial = $_GET["ClienteFilial"];
-}
+// if (isset($_GET["ClienteCodigo"])) {         <------ Se hizo la comprobación previamente
+//   $ClienteCodigo = $_GET["ClienteCodigo"];
+// }
+// if (isset($_GET["ClienteFilial"])) {
+//   $ClienteFilial = $_GET["ClienteFilial"];
+// }
 
 if (isset($_GET["Paquete"])) {
   $Paquete = $_GET["Paquete"];
@@ -483,7 +490,7 @@ function SelectConsultaGuias(
   # Construyo dinamicamente la condicion WHERE
   $where = "WHERE a.gu_of >= :OficinaDesde AND a.gu_of <= :OficinaHasta ";
 
-  if (isset($ClienteCodigo)) {
+  if (isset($ClienteCodigo) && trim($ClienteCodigo) != '0') {
     $where .= "AND a.gu_num = :ClienteCodigo AND a.gu_fil = :ClienteFilial ";
     //AND a.gu_fecha >= :FechaDesde ";
   }
@@ -594,7 +601,7 @@ function SelectConsultaGuias(
     unset($oSQL);
     $oSQL = $conn->prepare($sqlCmd);
 
-    if (isset($ClienteCodigo)) {
+    if (isset($ClienteCodigo) && trim($ClienteCodigo) != '0') {
       $oSQL->bindParam(":ClienteCodigo", $ClienteCodigo, PDO::PARAM_STR);
       $oSQL->bindParam(":ClienteFilial", $ClienteFilial, PDO::PARAM_STR);
     }
