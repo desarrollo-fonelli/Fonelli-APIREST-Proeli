@@ -3,7 +3,7 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
-### v2.8.0 | 18.06.2025 | Ordenes de Retorno
+### v2.8.0 | 18.06.2025 | Ordenes de Retorno | Consulta de Guias
 #### Nuevo:
 1. Se crea el servicio para obtener los datos generales de las Ordenes de Retorno, devolviendo el JSON correspondiente.
 2. Se escribe nuevamente el servicio para obtener los artículos de la Orden de Retorno.
