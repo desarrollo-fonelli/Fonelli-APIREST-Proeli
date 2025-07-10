@@ -3,6 +3,16 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.9.0 | 10.07.2025 | CltesDocVenta | ArticuloPrecio
+#### Nuevo:
+1. Se crea servicio para obtener los datos básicos de Cliente que se utilizan en documentos de venta, para cálculo de precios y condiciones de crédito, devolviendo el JSON correspondiente.
+2. Se crea servicio para obtener los datos esenciales del artículo que se va a incluir en documentos de venta, incluyendo el precio calculado y datos relacionados.
+
+| Servicio              | Descripcion |
+|-----------------------|--------------------------------------------|
+| CltesDocVenta.php     | Datos cliente para documentos de venta     |
+| ArticuloPrecio.php    | Datos artículo para documentos de venta    |
+
 ### v2.8.0 | 18.06.2025 | Ordenes de Retorno | Consulta de Guias
 #### Nuevo:
 1. Se crea el servicio para obtener los datos generales de las Ordenes de Retorno, devolviendo el JSON correspondiente.
