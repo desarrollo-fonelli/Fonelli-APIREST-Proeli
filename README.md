@@ -3,6 +3,13 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.9.1 | 11.07.2025 | CltesDocVenta
+#### Issues:
+1. Al solicitar datos con el "TipoUsuario"=Agente, el mecanismo de autenticación devuelve un error.
+1.1 Resuelto: no estaba asignada la variable que recibe el código del agente.
+2. Al acceder como "TipoUsuario"=Cliente, el código de "Usuario" no se recibe en el formato correcto.
+2.1 Resuelto: Este problema lo ocasiona el Frontend. Se hicieron las correcciones respectivas.
+
 ### v2.9.0 | 10.07.2025 | CltesDocVenta | ArticuloPrecio
 #### Nuevo:
 1. Se crea servicio para obtener los datos básicos de Cliente que se utilizan en documentos de venta, para cálculo de precios y condiciones de crédito, devolviendo el JSON correspondiente.

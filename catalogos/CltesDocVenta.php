@@ -112,7 +112,7 @@ try {
   # Verificando en este nivel ya no es necesario cambiar el código restante
   if ($TipoUsuario == "C") {
     if ((TRIM($ClienteCodigo) . "-" . TRIM($ClienteFilial)) != $Usuario) {
-      throw new Exception("Error de autenticación");
+      throw new Exception("Error de autenticación.");
     }
   }
   # Fin dRendon 04.05.2023 ****************
@@ -152,9 +152,14 @@ if (strlen($mensaje) > 0) {
   exit;
 }
 
+if (isset($_GET["AgenteCodigo"])) {
+  $AgenteCodigo = $_GET["AgenteCodigo"];
+}
+
+//var_dump($TipoUsuario, $Usuario, $_GET["AgenteCodigo"], $AgenteCodigo);
 if ($TipoUsuario == "A") {
   if (!isset($_GET["AgenteCodigo"]) or $AgenteCodigo != $Usuario) {
-    $mensaje = "Error de autenticación";
+    $mensaje = "Error de autenticación.";
     http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
     exit;
@@ -168,7 +173,7 @@ if ($TipoUsuario == "C") {
     !isset($ClienteCodigo) or
     (TRIM($ClienteCodigo) . "-" . TRIM($ClienteFilial) != $Usuario)
   ) {
-    $mensaje = "Error de autenticación";
+    $mensaje = "Error de autenticación.";
     http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
     exit;
