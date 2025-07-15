@@ -3,6 +3,16 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.10.0 | 14.07.2025 | ArticulosLista | CalcPrec2025
+#### Nuevo:
+1. Se crea el servicio que devuelve una lista de artículos incluidos en las líneas de producto seleccionadas. Se incluye el precio calculado de cada artículo.
+2. Se crea un script para el cálculo de precio de acuerdo a los parámetros 2025
+
+| Servicio           | Descripcion |
+|--------------------|--------------------------------------------|
+| ArticulosLista.php | Busca artículos que se van a incluir en el reporte     |
+| CalcPrec2025.php   | Rutina para Cálculo de Precios    |
+
 ### v2.9.1 | 11.07.2025 | CltesDocVenta
 #### Issues:
 1. Al solicitar datos con el "TipoUsuario"=Agente, el mecanismo de autenticación devuelve un error.
