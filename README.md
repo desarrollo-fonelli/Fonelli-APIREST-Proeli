@@ -3,6 +3,10 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.11.0 | 17.07.2025 | ArticulosBusqueda
+#### Nuevo:
+1. Se crea un servicio dedicado a buscar artículos semejantes al código introducido o con errores de tipografía, devolviendo datos mínimos.
+
 ### v2.10.0 | 14.07.2025 | ArticulosLista | CalcPrec2025
 #### Nuevo:
 1. Se crea el servicio que devuelve una lista de artículos incluidos en las líneas de producto seleccionadas. Se incluye el precio calculado de cada artículo.
