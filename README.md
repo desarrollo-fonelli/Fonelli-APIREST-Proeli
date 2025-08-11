@@ -3,6 +3,17 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.13.0 | 07.08.2025 | IndicadVenta2025
+#### Nuevo:
+1. Se crea el servicio para crear indicadores de venta versión 2025.
+2. Se crea el servicio para presentar acumulados de venta dividiendo importe bruto de valor agregado
+
+| Servicio               | Descripcion |
+|------------------------|-----------------------------
+| IndicadVenta2025.php   | Obtiene indicadores de Venta versión 2025
+| IndicadVentaAcum.php   | Acumulados de venta dividiendo importe bruto de valor agregado
+
+---
 ### v2.12.0 | 29.07.2025 | PrepedidosRepo | PrepedRepoDetalle
 #### Nuevo:
 1. Se crea el servicio que devuelve el conjunto de datos de Prepedidos, de acuerdo a los criterios de filtro.
