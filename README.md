@@ -3,6 +3,16 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+### v2.14.0 | 12.08.2025 | Ajustes Prepedidos
+#### Cambios:
+1. Se agrega columna para plazo documentado y se agregan nodos para subtotales y gran total en el JSON devuelto
+
+| Servicio               | Descripcion |
+|------------------------|-----------------------------
+| PrepedidosRepo.php     | ajustes varios
+| PrepedRepoDetalle.php  | ajustes varios
+
+---
 ### v2.13.0 | 07.08.2025 | IndicadVenta2025
 #### Nuevo:
 1. Se crea el servicio para crear indicadores de venta versión 2025.

@@ -252,7 +252,7 @@ if (isset($_GET["Status"])) {
 
 if (isset($_GET["Documentados"])) {
   $Documentados = $_GET["Documentados"];
-  if (! in_array($Documentados, ["A", "N"])) {
+  if (! in_array($Documentados, ["S", "N"])) {
     $mensaje = "Valor '" . $Documentados . "' NO permitido para 'Documentados'";
     http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
@@ -262,7 +262,7 @@ if (isset($_GET["Documentados"])) {
 
 if (isset($_GET["Autorizados"])) {
   $Autorizados = $_GET["Autorizados"];
-  if (! in_array($Autorizados, ["A", "N"])) {
+  if (! in_array($Autorizados, ["S", "N"])) {
     $mensaje = "Valor '" . $Autorizados . "' NO permitido para 'Autorizados'";
     http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
@@ -393,7 +393,7 @@ function SelectPedidos(
   $strClteFinal   = str_replace(' ', '0', str_pad($ClienteHasta, 6, " ", STR_PAD_LEFT) . str_pad($FilialHasta, 3, " ", STR_PAD_LEFT));
   $strFolioDesde  = str_pad($FolioDesde, 6, " ", STR_PAD_LEFT);
   $strFolioHasta  = str_pad($FolioHasta, 6, " ", STR_PAD_LEFT);
-  $strAutorizad   = ($Autorizados == "S") ? "X" : " ";
+  $strAutorizados = ($Autorizados == "S") ? "X" : " ";
 
   # Se conecta a la base de datos
   //require_once "../db/conexion.php";  <-- el script se leyó previamente
@@ -441,7 +441,7 @@ function SelectPedidos(
       END
         ) AS totalfila,
     MAX(pe.pe_obs) pe_obs,MAX(pe.pe_numeoc) pe_numeoc,MAX(pe.pe_boddes) pe_boddes,
-    MAX(pe.pe_docum) pe_docum,MAX(pe.pe_autod) pe_autod,
+    MAX(pe.pe_docum) pe_docum,MAX(pe.pe_autod) pe_autod,MAX(pe.pe_cand) pe_cand,MAX(pe.pe_intd) pe_intd,
     SUM(pe.pe_cp3) cp3, SUM(pe.pe_cp35) cp35, SUM(pe.pe_cp4) cp4, SUM(pe.pe_cp45) cp45, 
     SUM(pe.pe_cp5) cp5, SUM(pe.pe_cp55) cp55, SUM(pe.pe_cp6) cp6, SUM(pe.pe_cp65) cp65,
     SUM(pe.pe_cp7) cp7, SUM(pe.pe_cp75) cp75, SUM(pe.pe_cp8) cp8, SUM(pe.pe_cp85) cp85,
@@ -516,9 +516,19 @@ function CreaDataCompuesta($data)
   $pedidos    = array();
   $filaPedido = array();
 
+  $sumaPedOfic = 0;
+  $sumaPzasOfic = 0;
+  $sumaGrmsOfic = 0;
+  $sumaImpOfic = 0;
+
   if (count($data) > 0) {
     $OficinaCode  = $data[0]["pe_of"];
     $OficinaNom   = trim($data[0]["s_nomsuc"]);
+    /*
+    $sumaPzasOfic = $data[0]["pe_canpe"];
+    $sumaGrmsOfic = $data[0]["pe_grape"];
+    $sumaImpOfic  = $data[0]["totalfila"];
+    */
 
     foreach ($data as $row) {
 
@@ -528,6 +538,10 @@ function CreaDataCompuesta($data)
         $oficina = [
           "OficinaCode" => $OficinaCode,
           "OficinaNom"  => $OficinaNom,
+          "NumPedOfic"  => intval($sumaPedOfic),
+          "PzasOfic"    => intval($sumaPzasOfic),
+          "GrmsOfic"    => floatval($sumaGrmsOfic),
+          "ImpOfic"     => floatval($sumaImpOfic),
           "Pedidos"     => $pedidos
         ];
         array_push($oficinas, $oficina);
@@ -537,6 +551,11 @@ function CreaDataCompuesta($data)
         $OficinaNom  = trim($row["s_nomsuc"]);
         $pedidos = array();
         $filaPedido = array();
+
+        $sumaPedOfic  = 0;
+        $sumaPzasOfic = 0;
+        $sumaGrmsOfic = 0;
+        $sumaImpOfic  = 0;
       }
 
       // Se crea un array con los nodos requeridos
@@ -560,6 +579,8 @@ function CreaDataCompuesta($data)
         "TiendaDest"    => trim($row["pe_boddes"]),
         "Documentado"   => $row["pe_docum"],
         "DocAutoriz"    => $row["pe_autod"],
+        "PlazoDias"     => intval($row["pe_cand"]),
+        "PlazoTipo"     => $row["pe_intd"],
         "cp3" => intval($row["cp3"]),
         "cp35" => intval($row["cp35"]),
         "cp4" => intval($row["cp4"]),
@@ -591,12 +612,21 @@ function CreaDataCompuesta($data)
       ];
 
       array_push($pedidos, $filaPedido);
+
+      $sumaPedOfic  = $sumaPedOfic + 1;
+      $sumaPzasOfic = $sumaPzasOfic + $row["pe_canpe"];
+      $sumaGrmsOfic = ROUND($sumaGrmsOfic + $row["pe_grape"], 2);
+      $sumaImpOfic = ROUND($sumaImpOfic + $row["totalfila"], 2);
     }   // foreach($data as $row)
 
     // Último registro
     $oficina = [
       "OficinaCode" => $OficinaCode,
       "OficinaNom"  => $OficinaNom,
+      "NumPedOfic"  => intval($sumaPedOfic),
+      "PzasOfic"    => intval($sumaPzasOfic),
+      "GrmsOfic"    => floatval($sumaGrmsOfic),
+      "ImpOfic"     => intval($sumaImpOfic),
       "Pedidos"     => $pedidos
     ];
     array_push($oficinas, $oficina);
