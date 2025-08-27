@@ -617,6 +617,7 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
     # --------------------------------------------------------------------------
 
     // Resume gramos por Kilataje por cada agente
+    /*
     $sqlCmd = "CREATE TEMPORARY TABLE agente_kilataje AS
     SELECT ord.or_age, SUBSTR(lnp.t_param,11,2) ktje, SUM(dor.dor_grms) AS sum_grms
     FROM cli130 ord
@@ -626,6 +627,18 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
       AND ord.or_tipo='1' 
       AND trim(ord.or_age) >= trim(:strAgenteDesde) AND trim(ord.or_age) <= trim(:strAgenteHasta)
     GROUP BY ord.or_age,SUBSTR(lnp.t_param,11,2) ORDER BY ord.or_age";
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->bindParam(":strAgenteDesde", $strAgenteDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":strAgenteHasta", $strAgenteHasta, PDO::PARAM_STR);
+    $oSQL->execute();
+    */
+    $sqlCmd = "CREATE TEMPORARY TABLE agente_kilataje AS
+    SELECT ord.or_age, ord.or_kt ktje, SUM(ord.or_grms) AS sum_grms
+    FROM cli130 ord
+    WHERE ord.or_fecha >= '$fechaInic' AND ord.or_fecha <= '$fechaFinal'
+      AND ord.or_tipo='1' 
+      AND trim(ord.or_age) >= trim(:strAgenteDesde) AND trim(ord.or_age) <= trim(:strAgenteHasta)
+    GROUP BY ord.or_age,ord.or_kt ORDER BY ord.or_age";
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL->bindParam(":strAgenteDesde", $strAgenteDesde, PDO::PARAM_STR);
     $oSQL->bindParam(":strAgenteHasta", $strAgenteHasta, PDO::PARAM_STR);

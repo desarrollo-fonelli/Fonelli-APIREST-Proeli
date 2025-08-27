@@ -3,6 +3,22 @@
 
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
+---
+### v2.15.0 | 27.08.2025 | CotizCrear | CotizListar
+#### Nuevo:
+1. Se crea el servicio POST para agregar datos generales y filas al documento de cotización.
+2. Se crea el servicio GET para obtener la lista de Cotizaciones registradas.
+
+#### Cambios:
+1. Indicador de Devoluciones: Voy a tomar los gramos devueltos de la secciópn de datos generales, no de los renglones.
+
+| Servicio               | Descripcion |
+|------------------------|---------------------------------
+| CotizCrear.php         | INSERT en tablas de Cotizaciones
+| CotizListar.php        | Acción GET para obtener lista de Cotizaciones registradas
+| IndicadVenta2025.php   | Cambié la consulta para obtener los gramos devueltos.
+
+---
 ### v2.14.0 | 12.08.2025 | Ajustes Prepedidos
 #### Cambios:
 1. Se agrega columna para plazo documentado y se agregan nodos para subtotales y gran total en el JSON devuelto
