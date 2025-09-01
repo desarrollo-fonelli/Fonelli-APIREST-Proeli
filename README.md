@@ -4,6 +4,12 @@
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
 ---
+### v2.15.1 | 28.08.2025 | Ajustes después de la revisión
+#### Cambios:
+1. CotizCrear: Ahora se guardan el código de la lista de precios, el tipo de paridad y los comentarios del documento.
+2. CotizListar: Se incluyen los campos mencionados en el JSON que se retorna.
+
+---
 ### v2.15.0 | 27.08.2025 | CotizCrear | CotizListar
 #### Nuevo:
 1. Se crea el servicio POST para agregar datos generales y filas al documento de cotización.

@@ -233,9 +233,10 @@ try {
   # DATOS GENERALES DEL DOCUMENTO Construyo dinámicamente el statment SQL
   # No se incluyen ord_id ni ord_folio porque se asignan en la base de datos
   $sqlCmd = "INSERT INTO cotiz_doc (fecha_doc, status_doc, 
-  cliente_codigo, cliente_filial, cliente_nombre, cliente_sucursal)
+  cliente_codigo, cliente_filial, cliente_nombre, cliente_sucursal,
+  lprec_codigo, parid_tipo, comentarios)
   VALUES (:fecha_doc, :status_doc, :cliente_codigo, :cliente_filial, 
-  :cliente_nombre, :cliente_sucursal)
+  :cliente_nombre, :cliente_sucursal, :lprec_codigo, :parid_tipo, :comentarios)
   RETURNING id";
   $oSQL = $conn->prepare($sqlCmd);
   $oSQL->bindParam(":fecha_doc", $docVenta->FechaDoc);
@@ -244,6 +245,9 @@ try {
   $oSQL->bindParam(":cliente_filial", $strClienteFilial);
   $oSQL->bindParam(":cliente_nombre", $docVenta->ClienteNombre);
   $oSQL->bindParam(":cliente_sucursal", $docVenta->ClienteSucursal);
+  $oSQL->bindParam(":lprec_codigo", $docVenta->ListaPreciosCodigo);
+  $oSQL->bindParam(":parid_tipo", $docVenta->ParidadTipo);
+  $oSQL->bindParam(":comentarios", $docVenta->Comentarios);
 
   $oSQL->execute();
 
