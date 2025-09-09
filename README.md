@@ -4,6 +4,12 @@
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
 ---
+### v2.15.2 | 09.09.2025 | Update cotizaciones modificadas
+#### Nuevo:
+1. CotizUpdate: Se crea rutina para actualizar documento de venta modificado por el usuario.
+2. CotizListar: Ajustes para integrar funcionalidad para modificar documentos.
+
+---
 ### v2.15.1 | 28.08.2025 | Ajustes después de la revisión
 #### Cambios:
 1. CotizCrear: Ahora se guardan el código de la lista de precios, el tipo de paridad y los comentarios del documento.

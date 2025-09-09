@@ -372,7 +372,7 @@ function ListarCotizaciones(
   # Instrucción SELECT
   $sqlCmd = "SELECT doc.id,doc.folio,doc.fecha_doc,doc.status_doc,
     doc.cliente_codigo,doc.cliente_filial,doc.cliente_nombre,doc.cliente_sucursal,
-    cli.cc_age,
+    cli.cc_age, doc.lprec_codigo, doc.parid_tipo, trim(doc.comentarios) comentarios,
     det.fila,det.lineapt,det.itemcode,det.descripc,det.precio,det.costo,
     det.piezas,det.gramos,det.tipo_costeo,det.importe,det.kilataje,det.int_ext,
     det.lprec_dircomp
@@ -439,6 +439,7 @@ function CreaDataCompuesta($data)
   $sumaImpDoc   = 0;
 
   if (count($data) > 0) {
+    $DocId          = $data[0]["id"];
     $folio          = $data[0]["folio"];
     $fecha          = $data[0]["fecha_doc"];
     $status         = $data[0]["status_doc"];
@@ -447,6 +448,10 @@ function CreaDataCompuesta($data)
     $clienteNombre  = $data[0]["cliente_nombre"];
     $clienteSucursal = $data[0]["cliente_sucursal"];
     $agenteCodigo   = $data[0]["cc_age"];
+    $ListaPreciosCodigo = $data[0]["lprec_codigo"];
+    $ParidadTipo = $data[0]["parid_tipo"];
+    $Comentarios = $data[0]["comentarios"];
+
 
     foreach ($data as $row) {
 
@@ -456,6 +461,7 @@ function CreaDataCompuesta($data)
         $numDocs  = $numDocs + 1;
 
         $doc_vta = [
+          "DocId"         => intval($DocId),
           "Folio"         => intval($folio),
           "Fecha"         => $fecha,
           "Status"        => $status,
@@ -467,11 +473,15 @@ function CreaDataCompuesta($data)
           "PzasDoc"       => intval($sumaPzasDoc),
           "GrmsDoc"       => floatval($sumaGrmsDoc),
           "ImporteDoc"    => floatval($sumaImpDoc),
+          "ListaPreciosCodigo" => $ListaPreciosCodigo,
+          "ParidadTipo"   => $ParidadTipo,
+          "Comentarios"   => trim($Comentarios),
           "FilasDoc"      => $doc_filas
         ];
         array_push($docs_vta, $doc_vta);
 
         // Prepara variables para siguiente iteración
+        $DocId          = $row["id"];
         $folio          = $row["folio"];
         $fecha          = $row["fecha_doc"];
         $status         = $row["status_doc"];
@@ -480,6 +490,9 @@ function CreaDataCompuesta($data)
         $clienteNombre  = $row["cliente_nombre"];
         $clienteSucursal = $row["cliente_sucursal"];
         $agenteCodigo   = $row["cc_age"];
+        $ListaPreciosCodigo = $row["lprec_codigo"];
+        $ParidadTipo    = $row["parid_tipo"];
+        $Comentarios    = $row["comentarios"];
         $doc_filas      = array();
         $doc_fila       = array();
 
@@ -515,6 +528,7 @@ function CreaDataCompuesta($data)
     // Último registro
     $numDocs  = $numDocs + 1;
     $doc_vta = [
+      "DocId"         => intval($DocId),
       "Folio"         => intval($folio),
       "Fecha"         => $fecha,
       "Status"        => $status,
@@ -526,6 +540,9 @@ function CreaDataCompuesta($data)
       "PzasDoc"       => intval($sumaPzasDoc),
       "GrmsDoc"       => floatval($sumaGrmsDoc),
       "ImporteDoc"    => floatval($sumaImpDoc),
+      "ListaPreciosCodigo" => $ListaPreciosCodigo,
+      "ParidadTipo"   => $ParidadTipo,
+      "Comentarios"   => trim($Comentarios),
       "FilasDoc"      => $doc_filas
     ];
     array_push($docs_vta, $doc_vta);
