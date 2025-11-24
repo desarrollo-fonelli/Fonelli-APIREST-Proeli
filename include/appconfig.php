@@ -16,5 +16,6 @@
 return array(
   "rutaBaseCfdi_inicial" => "/usr/share/nginx/privCFDI/",
   "rutaBaseCfdi" => "/usr/share/nginx/html/assets/cfdis/",
+  "rutaBaseImgPT" => "assets/img/",
   "rfcFonelli"   => "FON900101R36"
 );

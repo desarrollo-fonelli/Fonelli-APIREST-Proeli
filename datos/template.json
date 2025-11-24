@@ -1,1 +1,171 @@
-{"Video":{"Url":"..\/..\/..\/assets\/videos\/intro\/","Video":"PaginaFonelli.mp4"},"BannerPrincipal":[{"Titulo":"","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_principal\/desk\/","Imagen":"BN2.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_principal\/movil\/","ImagenMovil":"BN2M.png","Orden":"1"},{"Titulo":"","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_principal\/desk\/","Imagen":"BN3.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_principal\/movil\/","ImagenMovil":"BN3M.png","Orden":"2"},{"Titulo":"","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_principal\/desk\/","Imagen":"BN4.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_principal\/movil\/","ImagenMovil":"BN4M.png","Orden":"3"},{"Titulo":"","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_principal\/desk\/","Imagen":"BN5.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_principal\/movil\/","ImagenMovil":"BN5M.png","Orden":"4"}],"Gif":{"Url":"..\/..\/..\/assets\/images\/puntos\/","Imagen1":"Joyas.gif","TextoSuperior1":"Mas de 800","TextoInferior1":"dise\u00f1os diferentes.","Imagen2":"Alcance.gif","TextoSuperior2":"600 distribuidores","TextoInferior2":"en todo el pa\u00eds.","Imagen3":"Puntos.gif","TextoSuperior3":"Presencia en m\u00e1s de","TextoInferior3":"2000 puntos de venta"},"Nosotros":{"Url":"..\/..\/..\/assets\/images\/Nosotros\/","Imagen1":"f1.png","Imagen2":"2.png","Imagen3":"3.png","Imagen4":"5.png","Texto":" Desde el nacimiento de Fonelli en 1985 nuestra pasi\u00f3n ha sido <strong>convertir metales preciosos en obras de arte que plasmen la historia detr\u00e1s de cada pieza.<\/strong><br><br>Para con ello satisfacer a nuestros clientes fabricando piezas buscando la perfecci\u00f3n hasta el m\u00e1s m\u00ednimo detalle.<br><br>Cada uno de nuestros colaboradores son parte esencial de este proceso, ya que <strong>gracias a ellos surge la magia de poder materializar una historia, una emoci\u00f3n, un sentimiento y un anhelo.<\/strong> La magia empieza desde la creaci\u00f3n de un boceto para dise\u00f1ar una joya, pasando por distintos procesos hasta que llega al \u00e1rea de lavado para dejarla perfecta y brillante.<br><br>Todo lo que hacemos, lo hacemos con <strong>pasi\u00f3n y delicadeza para poder entregar una joya impecable.<\/strong> <br><br> Nuestras joyas se crean para cada <strong>una de las historias importantes en tu vida;<\/strong> ya sea como un regalo de cumplea\u00f1os, d\u00eda de las madres, aniversarios, d\u00eda del padre, boda, graduaciones, inclusive como un auto regalo.Gracias por hacernos parte de tus historias."},"ImagenFinal":{"Url":"..\/..\/..\/assets\/images\/fin_pagina\/","Imagen":"Final.png"},"BannerDistribuidores":[{"Titulo":"Distribuidor 1","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/","Imagen":"1.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/","ImagenMovil":"1.png","Orden":"1"},{"Titulo":"Distribuidor 2","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/","Imagen":"2.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/","ImagenMovil":"2.png","Orden":"2"},{"Titulo":"Distribuidor 3","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/","Imagen":"3.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/","ImagenMovil":"3.png","Orden":"3"}],"BannerAsesores":[{"Titulo":"Asesores 1","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_asesor\/desk\/","Imagen":"1.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_asesor\/movil\/","ImagenMovil":"1.png","Orden":"1"},{"Titulo":"Asesores 2","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_asesor\/desk\/","Imagen":"2.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_asesor\/movil\/","ImagenMovil":"2.png","Orden":"2"},{"Titulo":"Asesores 3","Link":"","UrlImagen":"..\/..\/..\/assets\/images\/banner_asesor\/desk\/","Imagen":"3.png","UrlImagenMovil":"..\/..\/..\/assets\/images\/banner_asesor\/movil\/","ImagenMovil":"3.png","Orden":"3"}]}
+{
+  "Video": {
+    "Url": "..\/..\/..\/assets\/videos\/intro\/",
+    "Video": "WebFinal.mp4"
+  },
+  "BannerPrincipal": [
+    {
+      "Titulo": "Cat\u00e1logo Celebra 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/92868438\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
+      "Imagen": "1700x500_Celebra25.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
+      "ImagenMovil": "450x450_Celebra25.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Eternidad 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/299747105\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
+      "Imagen": "1700X500_ACTUALIZADO.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
+      "ImagenMovil": "450X450_Actualizado.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Bodas 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/79626950\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
+      "Imagen": "ACTUALIZADO 1700X500.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
+      "ImagenMovil": "ACTUALIZADO 450X450.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/138958789\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
+      "Imagen": "1700x500_actualizado.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
+      "ImagenMovil": "450X450_actualizado.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Anual 2024",
+      "Link": "https:\/\/online.flippingbook.com\/view\/372535595\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
+      "Imagen": "1700x500_final.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
+      "ImagenMovil": "450x450_web_anual.jpg",
+      "Orden": ""
+    }
+  ],
+  "Gif": {
+    "Url": "..\/..\/..\/assets\/images\/puntos\/",
+    "Imagen1": "PIEZAS.gif",
+    "TextoSuperior1": "M\u00e1s de 30,000",
+    "TextoInferior1": "dise\u00f1os diferentes.",
+    "Imagen2": "DISTRIBUIDOR.gif",
+    "TextoSuperior2": "600 distribuidores",
+    "TextoInferior2": "al rededor de todo el pa\u00eds.",
+    "Imagen3": "MAPA.gif",
+    "TextoSuperior3": "Presencia en m\u00e1s de",
+    "TextoInferior3": "2000 puntos de venta"
+  },
+  "Nosotros": {
+    "Url": "..\/..\/..\/assets\/images\/Nosotros\/",
+    "Imagen1": "f1.png",
+    "Imagen2": "2.png",
+    "Imagen3": "3.png",
+    "Imagen4": "5.png",
+    "Texto": " Desde el nacimiento de Fonelli en 1985 nuestra pasi\u00f3n ha sido <strong>convertir metales preciosos en obras de arte que plasmen la historia detr\u00e1s de cada pieza.<\/strong><br><br>Para con ello satisfacer a nuestros clientes fabricando piezas buscando la perfecci\u00f3n hasta el m\u00e1s m\u00ednimo detalle.<br><br>Cada uno de nuestros colaboradores son parte esencial de este proceso, ya que <strong>gracias a ellos surge la magia de poder materializar una historia, una emoci\u00f3n, un sentimiento y un anhelo.<\/strong> <br><br>Todo lo que hacemos, lo hacemos con <strong>pasi\u00f3n y delicadeza para poder entregar una joya impecable.<\/strong> <br><br> Nuestras joyas se crean para cada <strong>una de las historias importantes en tu vida;<\/strong> ya sea como un regalo de cumplea\u00f1os, d\u00eda de las madres, aniversarios, d\u00eda del padre, boda, graduaciones, inclusive como un auto regalo. <br><br>\u00a1Gracias por hacernos parte de tus historias!<br><br>\n\n<strong>Nuestra Misi\u00f3n<\/strong>: Trabajamos con pasi\u00f3n para impulsar el crecimiento y \u00e9xito de nuestros clientes en la industria de la joyer\u00eda fina. Proporcionamos productos de la m\u00e1s alta calidad y un servicio excepcional, respaldados por a\u00f1os de experiencia y una reputaci\u00f3n de honestidad. Nos esforzamos por ser una compa\u00f1\u00eda ejemplar, inspirando admiraci\u00f3n y confianza en nuestros clientes y colaboradores.<br><br>\n\n<strong>Nuestra Visi\u00f3n:<\/strong> Ser reconocidos como l\u00edderes indiscutibles en el mercado nacional e internacional de la joyer\u00eda fina. Aspiramos a ser una empresa inigualable en t\u00e9rminos de atenci\u00f3n al cliente, calidad, fortaleza econ\u00f3mica y servicio excepcional. Nos esforzamos por superar las expectativas de nuestros clientes y competir entre las mejores empresas del sector a nivel mundial.<br><br>\n\n<strong>Nuestros Valores:<\/strong><br><br>\n\n<strong>- Atenci\u00f3n y servicio al cliente:<\/strong> Nos enfocamos en brindar un servicio personalizado y de calidad, superando las expectativas de nuestros clientes en cada interacci\u00f3n.<br>\n<strong>- Honestidad:<\/strong> Actuamos con integridad y transparencia en todas nuestras operaciones y relaciones comerciales.<br>\n<strong>- Disciplina:<\/strong> Mantenemos altos est\u00e1ndares de trabajo, cumpliendo con los plazos, procedimientos y est\u00e1ndares de calidad establecidos.<br>\n<strong>- Lealtad:<\/strong> Construimos relaciones s\u00f3lidas y duraderas con nuestros clientes y colaboradores, basadas en la confianza y la lealtad mutua.<br>\n<strong>- Velocidad:<\/strong> Respondemos de manera \u00e1gil y eficiente a las necesidades y requerimientos de nuestros clientes, adapt\u00e1ndonos r\u00e1pidamente a los cambios del mercado.<br>\n<strong>- Credibilidad:<\/strong> Nos esforzamos por ser una empresa confiable y respetada, cumpliendo nuestras promesas y manteniendo la coherencia entre palabras y acciones.<br>\n<strong>- Respaldo:<\/strong> Brindamos el respaldo de nuestra experiencia y trayectoria en la industria de la joyer\u00eda fina, ofreciendo productos de calidad y duraderos.<br>\n<strong>- Agilidad:<\/strong> Nos adaptamos r\u00e1pidamente a las nuevas tendencias y demandas del mercado, siendo flexibles en nuestra estrategia y enfoque.<br>\n<strong>- Confianza:<\/strong> Construimos relaciones basadas en la confianza mutua, tanto con nuestros clientes como con nuestros colaboradores, fomentando un ambiente de trabajo positivo y colaborativo.<br>\n<br>\n<br>\n<strong>Cont\u00e1ctanos al 55 8738 4875, estaremos contentos de atenderte. <\/strong> "
+  },
+  "ImagenFinal": {
+    "Url": "..\/..\/..\/assets\/images\/fin_pagina\/",
+    "Imagen": "1600x300_banner 2.jpg"
+  },
+  "BannerDistribuidores": [
+    {
+      "Titulo": "Cat\u00e1logo Celebra 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/92868438\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
+      "Imagen": "800x600_Celebra25.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
+      "ImagenMovil": "450x450_Celebra25.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Eternidad 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/299747105\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
+      "Imagen": "800X600_Actualizado.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
+      "ImagenMovil": "450X450_Actualizado.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Bodas 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/79626950\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
+      "Imagen": "ACTUALOZADO 800X600.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
+      "ImagenMovil": "ACTUALIZADO 450X450.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/138958789\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
+      "Imagen": "800x600_actualizado.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
+      "ImagenMovil": "450X450_actualizado.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Anual 2024",
+      "Link": "https:\/\/online.flippingbook.com\/view\/372535595\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
+      "Imagen": "800X600_WEB_ANUAL.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
+      "ImagenMovil": "450x450_web_anual.jpg",
+      "Orden": ""
+    }
+  ],
+  "BannerAsesores": [
+    {
+      "Titulo": "Cat\u00e1logo Celebra 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/92868438\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
+      "Imagen": "800x600_Celebra25.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
+      "ImagenMovil": "450x450_Celebra25.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Eternidad 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/299747105\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
+      "Imagen": "800X600_Actualizado.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
+      "ImagenMovil": "450X450_Actualizado.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Bodas 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/79626950\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
+      "Imagen": "ACTUALOZADO 800X600.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
+      "ImagenMovil": "ACTUALIZADO 450X450.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/138958789\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
+      "Imagen": "800x600_actualizado.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
+      "ImagenMovil": "450X450_actualizado.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo Anual 2024",
+      "Link": "https:\/\/online.flippingbook.com\/view\/372535595\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
+      "Imagen": "800X600_WEB_ANUAL.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
+      "ImagenMovil": "450x450_web_anual.jpg",
+      "Orden": ""
+    }
+  ]
+}

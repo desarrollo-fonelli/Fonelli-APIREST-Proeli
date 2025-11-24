@@ -1,12 +1,33 @@
 <?php
 @session_start();
-header('Content-type: application/json');
+
+/**
+ * Estos headers solo son efectivos si se indican en el backend,
+ * no tiene caso indicarlos en los servicios de angular.
+ */
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Auth');
+header('Content-type: application/json; charset=UTF-8');
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+  header('Access-Control-Allow-Origin: *');
+  header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+  header('Access-Control-Allow-Headers: Content-Type, Auth');
+  http_response_code(200);
+  exit;
+}
+
 date_default_timezone_set('America/Mexico_City');
 
 /**
  * Lista de artículos como resultado de una búsqueda de códigos de producto 
  * similares o con errores tipográficos
+ * Creación:  17.07.2025 | dRendon
  * --------------------------------------------------------------------------
+ * 10.09.2025 | dRendon
+ * Se agrega un "campo virtual" para devolver la ruta completa de la imagen
+ * del producto, si es que existe.
  */
 
 # En el script 'constantes.php' se definen:
@@ -19,6 +40,9 @@ require_once "../include/funciones.php";
 
 # Función para cálculo de Precios
 require_once "../include/CalcPrec2025.php";
+
+# Rutas de acceso a recursos
+$arrAppConfig = require_once "../include/appconfig.php";
 
 # Constantes locales
 const K_SCRIPTNAME  = "ArticulosLista.php";
@@ -38,6 +62,8 @@ $Token          = null;     // Token obtenido por el usuario al autenticarse
 $ItemCode       = null;     // Codigo de modelo, puede ser un código parcial
 $MetodoBusqueda = null;     // Algoritmo que se va a usar en la búsqueda
 $Pagina         = 1;        // Pagina devuelta del conjunto de datos obtenido
+
+$rutaBaseImgPT  = $arrAppConfig["rutaBaseImgPT"];
 
 # Comprueba Request Method
 $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -149,7 +175,8 @@ try {
     $Usuario,
     $ItemCode,
     $MetodoBusqueda,
-    $Pagina
+    $Pagina,
+    $rutaBaseImgPT
   );
 
   # Asigna código de respuesta HTTP por default
@@ -202,7 +229,8 @@ function SelectData(
   $Usuario,
   $ItemCode,
   $MetodoBusqueda,
-  $Pagina
+  $Pagina,
+  $rutaBaseImgPT
 ) {
 
   $arrData = array();   // Arreglo para almacenar los datos obtenidos
@@ -248,10 +276,12 @@ function SelectData(
     $oSQL->execute();
 
     // Instrucción SELECT - SQL
-    $sqlCmd = "SELECT itm.c_lin,itm.c_clave,itm.c_descr
+    $sqlCmd = "SELECT itm.c_lin,itm.c_clave,itm.c_descr,
+    CONCAT('{$rutaBaseImgPT}', trim(itm.c_lin), '/', trim(itm.c_clave), '.png') AS img_path
     FROM inv010 itm
     $where 
     ORDER BY itm.c_lin,itm.c_clave";
+    //exit($sqlCmd);
 
     // Prepara la consulta SQL
     $oSQL = $conn->prepare($sqlCmd);
@@ -296,7 +326,8 @@ function CreaDataCompuesta($data)
       $contenido[] = array(
         "LineaPT"     => $row["c_lin"],
         "ItemCode"    => trim($row["c_clave"]),
-        "Descripc"    => trim($row["c_descr"])
+        "Descripc"    => trim($row["c_descr"]),
+        "ImgPath"     => $row["img_path"]
       );
     }
   }
