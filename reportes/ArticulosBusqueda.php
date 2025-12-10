@@ -205,7 +205,7 @@ try {
 } catch (Exception $e) {
   $response = [
     "Codigo"      => K_API_ERRSQL,
-    "Mensaje"     => $conn->get_last_error(),
+    "Mensaje"     => $e->getMessage(),
     "Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => []
   ];
@@ -277,8 +277,9 @@ function SelectData(
 
     // Instrucción SELECT - SQL
     $sqlCmd = "SELECT itm.c_lin,itm.c_clave,itm.c_descr,
-    CONCAT('{$rutaBaseImgPT}', trim(itm.c_lin), '/', trim(itm.c_clave), '.png') AS img_path
+    CONCAT('{$rutaBaseImgPT}', '/', trim(img.imagen), '.png') AS img_path
     FROM inv010 itm
+    LEFT JOIN item_img img ON CONCAT(img.linpt_id,img.item_code) = CONCAT(itm.c_lin,itm.c_clave)
     $where 
     ORDER BY itm.c_lin,itm.c_clave";
     //exit($sqlCmd);
@@ -289,6 +290,29 @@ function SelectData(
     $oSQL->execute();
     $numRows = $oSQL->rowCount();
     $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
+
+    /* 
+      // Preproceso los datos obtenidos para ajustar la extensión de la imagen.
+      // Se prefieren imagenes PNG
+      if ($numRows > 0) {
+        foreach ($arrData as $key => $row) {
+          // Verifica si el archivo de imagen existe
+          if (file_exists($row["img_path"] . ".png")) {
+            // La imagen existe con extension .png
+            $arrData[$key]["img_path"] = $row["img_path"] . '.png';
+          } elseif (file_exists($row["img_path"] . '.jpg')) {
+            // La imagen existe con extension .jpg
+            $arrData[$key]["img_path"] = $row["img_path"] . '.jpg';
+          } else {
+            // La imagen no existe, se asigna valor nulo
+            $arrData[$key]["img_path"] = "assets/img/diamante-azul.png";
+          }
+        }
+      }
+        OJO: El problema con esta solución es que las imagenes se guardan en una carpeta
+       administrada por el sitio web, no están en una carpeta "independiente", es por
+       eso que el código para reconocer la externsión se va a manejar en el frontend
+    */
 
     // fin del proceso normal
 

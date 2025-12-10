@@ -4,6 +4,11 @@
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
 ---
+### v2.16.0 | 10.12.2025 | ArticulosBusqueda.php - devuelve ruta imagen de producto
+#### Nuevo:
+1. Se modifica la consulta SQL para devolver la ruta y nombre de la imagen asociada a cada producto. 
+
+---
 ### v2.15.2 | 09.09.2025 | Update cotizaciones modificadas
 #### Nuevo:
 1. CotizUpdate: Se crea rutina para actualizar documento de venta modificado por el usuario.
