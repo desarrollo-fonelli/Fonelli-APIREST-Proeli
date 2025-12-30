@@ -183,7 +183,7 @@ try {
 } catch (Exception $e) {
   $response = [
     "Codigo"      => K_API_ERRSQL,
-    "Mensaje"     => $conn->get_last_error(),
+    "Mensaje"     => $e->getMessage(),
     "Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => []
   ];
@@ -259,8 +259,8 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
     $sqlCmd = "CREATE TABLE IF NOT EXISTS indicad_result (
       gc_llave character(2),
       gc_nom character(32),
-      eficiencia numeric(9,2)
-    )";
+      eficiencia numeric(9,2),
+      comision numeric(14,2))";
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL->execute();
 
@@ -709,6 +709,25 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
 
 
     # --------------------------------------------------------------------------
+    # Comisiones acumuladas por agente en el mes en curso
+    # --------------------------------------------------------------------------
+    # Por alguna razon no se está aceptando el paso de parametros,
+    # por lo tanto uso las variables 'tal cual'
+    $sqlCmd = "CREATE TEMPORARY TABLE agente_comision AS
+    SELECT com.f1_age, SUM(com.f1_imp) f1_imp, SUM(com.f1_comin) f1_comin,
+    SUM(com.f1_impage) f1_impage 
+    FROM nli080 com
+    WHERE com.f1_feex>= '" . $fechaInic . "' AND com.f1_feex <= '" . $fechaFinal . "' 
+      AND trim(com.f1_age) >= trim(:strAgenteDesde) AND trim(com.f1_age) <= trim(:strAgenteHasta)
+     GROUP BY com.f1_age ORDER BY com.f1_age";
+
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->bindParam(":strAgenteDesde", $strAgenteDesde, PDO::PARAM_STR);
+    $oSQL->bindParam(":strAgenteHasta", $strAgenteHasta, PDO::PARAM_STR);
+    $oSQL->execute();
+
+
+    # --------------------------------------------------------------------------
     # Tabla con resultado final de la evaluacion
     # --------------------------------------------------------------------------
     $sqlCmd = "INSERT INTO indicad_result (gc_llave,gc_nom,eficiencia)
@@ -732,10 +751,12 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
     // $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
 
     $sqlCmd = "SELECT res.gc_llave,trim(res.gc_nom) gc_nom,res.eficiencia,
+      com.f1_comin as comision,
       vt.indicad_id,vt.indicad_descr,vt.objetivo,vt.resultado,
       vt.porc_result,vt.porc_cump
     FROM indicad_result res
     LEFT JOIN indicad_venta vt ON vt.gc_llave = res.gc_llave
+    LEFT JOIN agente_comision com ON com.f1_age = res.gc_llave
     ORDER BY gc_llave,indicad_id";
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL->execute();
@@ -780,7 +801,8 @@ function BorraTemporales($conn)
     "pedidos_activos",
     "pedidos_agente",
     "devoluc",
-    "devoluc_agente"
+    "devoluc_agente",
+    "agente_comision"
   ];
 
   foreach ($tablasTemp as $tabla) {
@@ -810,6 +832,7 @@ function CreaDataCompuesta($data)
     $gc_llave   = $data[0]["gc_llave"];
     $gc_nom     = $data[0]["gc_nom"];
     $eficiencia = floatval($data[0]["eficiencia"]);
+    $comision   = floatval($data[0]["comision"]);
 
     foreach ($data as $row) {
 
@@ -819,6 +842,7 @@ function CreaDataCompuesta($data)
           "AgteCodigo"    => $gc_llave,
           "AgteNombre"    => $gc_nom,
           "AgteEficienc"  => $eficiencia,
+          "AgteComision"  => $comision,
           "Indicadores"   => $indicadores
         ];
         array_push($agentes, $agente);
@@ -826,6 +850,7 @@ function CreaDataCompuesta($data)
         $gc_llave   = $row["gc_llave"];
         $gc_nom     = $row["gc_nom"];
         $eficiencia = floatval($row["eficiencia"]);
+        $comision   = floatval($row["comision"]);
         $indicadores = array();
       }
 
@@ -845,10 +870,10 @@ function CreaDataCompuesta($data)
       "AgteCodigo"    => $gc_llave,
       "AgteNombre"    => $gc_nom,
       "AgteEficienc"  => $eficiencia,
+      "AgteComision"  => $comision,
       "Indicadores"   => $indicadores
     ];
     array_push($agentes, $agente);
-
 
     $contenido = ["IndicadoresVenta" => $agentes];
   } // if (count($data) > 0)

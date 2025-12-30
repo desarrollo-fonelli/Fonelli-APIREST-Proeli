@@ -277,7 +277,7 @@ function SelectData(
 
     // Instrucción SELECT - SQL
     $sqlCmd = "SELECT itm.c_lin,itm.c_clave,itm.c_descr,
-    CONCAT('{$rutaBaseImgPT}', '/', trim(img.imagen), '.png') AS img_path
+    CONCAT('{$rutaBaseImgPT}', trim(img.imagen), '.png') AS img_path
     FROM inv010 itm
     LEFT JOIN item_img img ON CONCAT(img.linpt_id,img.item_code) = CONCAT(itm.c_lin,itm.c_clave)
     $where 
