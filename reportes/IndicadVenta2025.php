@@ -1,6 +1,10 @@
 <?php
 @session_start();
-header('Content-type: application/json');
+header('Content-type: application/json; charset=UTF-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Headers: Content-Type, Auth');
+
 date_default_timezone_set('America/Mexico_City');
 
 /**
@@ -694,7 +698,6 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
         ELSE ROUND((1 - ROUND(dev.importe::numeric/ren.objetivo*100,2)/esc.minimo)*100,2)
       END AS porc_cump
 
-
     FROM var030 ag
     LEFT JOIN rentab_agente ren ON ren.gc_llave = ag.gc_llave
     LEFT JOIN resum_agtedevoluc dev ON dev.or_age = ag.gc_llave
@@ -726,6 +729,40 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
     $oSQL->bindParam(":strAgenteHasta", $strAgenteHasta, PDO::PARAM_STR);
     $oSQL->execute();
 
+
+    # --------------------------------------------------------------------------
+    # drendon 22.01.2026
+    # Corrige importe de comisiones para agentes del tipo "marketplace"
+
+    # 1. Obtiene lista de agentes marketplace
+    $sqlCmd = "SELECT ag_cod,ag_comis_porc FROM ag_marketplace WHERE ag_status='A'";
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
+    $arrMarketPlace = $oSQL->fetchAll(PDO::FETCH_ASSOC);
+
+    # 2. Por cada agente de marketplace se calcula la comisión correcta
+    if ($arrMarketPlace && count($arrMarketPlace) > 0) {
+      foreach ($arrMarketPlace as $agenteMarketPlace) {
+        $codAgente = $agenteMarketPlace['ag_cod'];
+        $porcComis = floatval($agenteMarketPlace['ag_comis_porc']);
+
+        # Se llama la función para calcular la comisión
+        $comis_marketplace = CalcComisionMarketplace($conn, $codAgente, $porcComis, $fechaInic, $fechaFinal);
+
+        $codAgente = trim($codAgente);
+
+        # 3. Update del importe en la tabla temporal agente_comision
+        $sqlCmd = "UPDATE agente_comision
+          SET f1_comin = :comis_marketplace
+          WHERE trim(f1_age) = :codAgente";
+
+        $oSQL = $conn->prepare($sqlCmd);
+        $oSQL->bindParam(":comis_marketplace", $comis_marketplace, PDO::PARAM_STR);
+        $oSQL->bindParam(":codAgente", $codAgente, PDO::PARAM_STR);
+        $oSQL->execute();
+      }
+    }
+    # Fin 22.01.2026 -----------------------------------------------------------
 
     # --------------------------------------------------------------------------
     # Tabla con resultado final de la evaluacion
@@ -761,7 +798,6 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL->execute();
     $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
-
 
     // -------
 
@@ -879,4 +915,138 @@ function CreaDataCompuesta($data)
   } // if (count($data) > 0)
 
   return $contenido;
+}
+
+/*******************************************************************************
+ * Calcula importe de Comision sobre ventas agentes marketplace
+ */
+function CalcComisionMarketplace($conn, $codAgente, $porcComis, $fechaInic, $fechaFinal)
+{
+
+  $importeComision = 0;   // Valor devuelto
+
+  # ---- importe pedidos y facturas
+  $sqlCmd = "CREATE TEMPORARY TABLE vtas_marketplace AS
+    SELECT cli.cc_age,cli.cc_num,cli.cc_fil,ped.pe_ped,ped.pe_fepe,ped.pe_status,
+      ped.pe_lin,ped.pe_clave,ped.pe_grape,ped.pe_canpe,ped.pe_prep,
+      CASE 
+        WHEN ped.pe_status='A' THEN
+          CASE 
+          WHEN ped.pe_ticos='2' THEN
+            round(ped.pe_grape*ped.pe_penep,2)
+          ELSE 
+            round(ped.pe_canpe*ped.pe_penep,2)
+          END
+        ELSE -- pedido inactivo sin factura = pedido cancelado
+          CASE
+          WHEN fac.mo_doc IS NULL OR TRIM(fac.mo_doc)='' THEN
+            CASE
+            WHEN ped.pe_ticos='2' THEN
+              round(ped.pe_grape*ped.pe_penep,2)*-1
+            ELSE 
+              round(ped.pe_canpe*ped.pe_penep,2)*-1
+            END
+          ELSE 0
+          END
+      END AS importe_ped,	
+      ped.pe_serie,ped.pe_nufact,
+      CASE
+        WHEN ped.pe_status='I' THEN
+          CASE 
+            WHEN fac.mo_doc IS NOT NULL AND TRIM(fac.mo_doc)!='' THEN
+              CASE
+              WHEN ped.pe_ticos='2' THEN
+                round(ped.pe_grasu*fac.mo_vta1*ROUND(1+(fac.mo_piva/100),2),2)
+              ELSE
+                round(ped.pe_cansu*fac.mo_vta1*ROUND(1+(fac.mo_piva/100),2),2)
+              END
+            ELSE 0
+          END
+        ELSE 0
+      END AS importe_fact
+      FROM cli010 cli
+      JOIN var030 age ON cli.cc_age=age.gc_llave
+      JOIN ped100 ped ON ped.pe_num=cli.cc_num AND ped.pe_fil=cli.cc_fil
+      LEFT JOIN inv040 fac ON fac.mo_lin=ped.pe_lin AND fac.mo_clave=ped.pe_clave
+          AND fac.mo_rengl=ped.pe_rengl 
+          AND fac.mo_serie=ped.pe_serie AND fac.mo_doc=ped.pe_nufact
+    WHERE age.gc_llave= :codAgente
+      AND ped.pe_fepe >= :fechaInic AND ped.pe_fepe <= :fechaFinal
+    ORDER BY cli.cc_age,cli.cc_num::integer,cli.cc_fil,ped.pe_ped::integer,ped.pe_rengl";
+
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->bindParam(":codAgente", $codAgente, PDO::PARAM_STR);
+  $oSQL->bindParam(":fechaInic", $fechaInic, PDO::PARAM_STR);
+  $oSQL->bindParam(":fechaFinal", $fechaFinal, PDO::PARAM_STR);
+  $oSQL->execute();
+  $response = $oSQL->fetchAll(PDO::FETCH_ASSOC);
+  if (!$response || count($response) == 0) {
+    // No hay ventas para este agente en el periodo
+    return 0;
+  }
+
+  # ---- resumen por agente y cliente
+  $sqlCmd = "CREATE TEMPORARY TABLE cltes_marketplace AS
+    SELECT cc_age,cc_num,cc_fil FROM vtas_marketplace 
+    GROUP BY cc_age,cc_num,cc_fil 
+    ORDER BY cc_age::integer,cc_num::integer,cc_fil::integer";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->execute();
+
+  # ---- importe total notas de credito (previamente se filtro el agente)
+  $sqlCmd = "CREATE TEMPORARY TABLE ncred_marketplace AS
+    SELECT SUM(ROUND(sc_imp + sc_iva,2)) AS total_ncr
+      FROM cltes_marketplace cli
+      JOIN cli020 ncr on ncr.sc_num=cli.cc_num AND ncr.sc_fil=cli.cc_fil
+      WHERE ncr.sc_num=cli.cc_num AND ncr.sc_fil=cli.cc_fil
+          AND (ncr.sc_mov='12' OR ncr.sc_mov='10') 
+          AND ncr.sc_feex >= :fechaInic AND ncr.sc_feex <= :fechaFinal";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->bindParam(":fechaInic", $fechaInic, PDO::PARAM_STR);
+  $oSQL->bindParam(":fechaFinal", $fechaFinal, PDO::PARAM_STR);
+  $oSQL->execute();
+
+  # ---- resumen pedidos y facturas
+  $sqlCmd = "CREATE TEMPORARY TABLE resumen_marketplace AS
+    SELECT mkp.total_ped, mkp.total_fact, COALESCE(ncr.total_ncr, 0) AS total_ncr
+    FROM
+      (SELECT
+        SUM(COALESCE(importe_ped,0))  AS total_ped,
+        SUM(COALESCE(importe_fact,0)) AS total_fact
+      FROM vtas_marketplace) mkp
+    LEFT JOIN
+      (SELECT
+        COALESCE(SUM(total_ncr), 0) AS total_ncr
+      FROM ncred_marketplace) ncr
+    ON 1=1";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->execute();
+
+  # ---- utiliza los datos agregados para obtener la comisión
+  $sqlCmd = "SELECT 
+    round((total_ped + total_fact + total_ncr) * :porcComis / 100, 2) total_comision 
+    FROM resumen_marketplace";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->bindParam(":porcComis", $porcComis, PDO::PARAM_STR);
+  $oSQL->execute();
+  $response = $oSQL->fetch(PDO::FETCH_ASSOC);
+
+  if ($response && isset($response['total_comision'])) {
+    $importeComision = floatval($response['total_comision']);
+  }
+
+  $tablasCreadas = [
+    "vtas_marketplace",
+    "cltes_marketplace",
+    "ncred_marketplace",
+    "resumen_marketplace"
+  ];
+
+  foreach ($tablasCreadas as $tabla) {
+    $sqlcmd = "DROP TABLE IF EXISTS $tabla";
+    $drop = $conn->prepare($sqlcmd);
+    $drop->execute();
+  }
+
+  return $importeComision;
 }
