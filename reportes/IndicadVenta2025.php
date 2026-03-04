@@ -716,13 +716,26 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
     # --------------------------------------------------------------------------
     # Por alguna razon no se está aceptando el paso de parametros,
     # por lo tanto uso las variables 'tal cual'
+    #$sqlCmd = "CREATE TEMPORARY TABLE agente_comision AS
+    #SELECT com.f1_age, SUM(com.f1_imp) f1_imp, SUM(com.f1_comin) f1_comin,
+    #SUM(com.f1_impage) f1_impage 
+    #FROM nli080 com
+    #WHERE com.f1_feex>= '" . $fechaInic . "' AND com.f1_feex <= '" . $fechaFinal . "' 
+    #  AND trim(com.f1_age) >= trim(:strAgenteDesde) AND trim(com.f1_age) <= trim(:strAgenteHasta)
+    # GROUP BY com.f1_age ORDER BY com.f1_age";
+
     $sqlCmd = "CREATE TEMPORARY TABLE agente_comision AS
-    SELECT com.f1_age, SUM(com.f1_imp) f1_imp, SUM(com.f1_comin) f1_comin,
-    SUM(com.f1_impage) f1_impage 
-    FROM nli080 com
-    WHERE com.f1_feex>= '" . $fechaInic . "' AND com.f1_feex <= '" . $fechaFinal . "' 
-      AND trim(com.f1_age) >= trim(:strAgenteDesde) AND trim(com.f1_age) <= trim(:strAgenteHasta)
-     GROUP BY com.f1_age ORDER BY com.f1_age";
+    SELECT age.gc_llave f1_age, 
+      SUM(COALESCE(com.f1_imp, 0)) f1_imp, 
+      SUM(COALESCE(com.f1_comin, 0)) f1_comin,
+        SUM(COALESCE(com.f1_impage, 0)) f1_impage 
+    FROM var030 age
+    LEFT JOIN nli080 com ON age.gc_llave = com.f1_age 
+          AND com.f1_feex >= '" . $fechaInic . "' AND com.f1_feex <= '" . $fechaFinal . "'
+    WHERE trim(age.gc_llave) >= trim(:strAgenteDesde) AND trim(age.gc_llave) <= trim(:strAgenteHasta)
+      AND age.gc_status = 'A' 
+    GROUP BY age.gc_llave ORDER BY age.gc_llave";
+
 
     $oSQL = $conn->prepare($sqlCmd);
     $oSQL->bindParam(":strAgenteDesde", $strAgenteDesde, PDO::PARAM_STR);
@@ -810,6 +823,7 @@ function SelectIndicadores($AgenteDesde, $AgenteHasta, $FechaCorte)
   }
 
   BorraTemporales($conn);
+
   $conn = null;   // Cierra la conexión 
 
   # Falta tener en cuenta la paginacion

@@ -5,48 +5,48 @@
   },
   "BannerPrincipal": [
     {
+      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2026",
+      "Link": "https:\/\/online.flippingbook.com\/view\/375947787\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
+      "Imagen": "Enamorate 1700x500.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
+      "ImagenMovil": "Enamorate 450X450.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo de L\u00ednea 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/300357014\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
+      "Imagen": "Catalogo de L\u00ednea1700x500.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
+      "ImagenMovil": "Cat\u00e1logo de Linea 450X450.jpg",
+      "Orden": ""
+    },
+    {
       "Titulo": "Cat\u00e1logo Celebra 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/92868438\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
-      "Imagen": "1700x500_Celebra25.jpg",
+      "Imagen": "Celebra 1700x500.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
-      "ImagenMovil": "450x450_Celebra25.jpg",
+      "ImagenMovil": "Celebra 450X450.jpg",
       "Orden": ""
     },
     {
       "Titulo": "Cat\u00e1logo Eternidad 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/299747105\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
-      "Imagen": "1700X500_ACTUALIZADO.jpg",
+      "Imagen": "1700X500_ACTUALIZADO ETERNIDAD.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
-      "ImagenMovil": "450X450_Actualizado.jpg",
+      "ImagenMovil": "450X450_Actualizado ETERNIDAD.jpg",
       "Orden": ""
     },
     {
       "Titulo": "Cat\u00e1logo Bodas 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/79626950\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
-      "Imagen": "ACTUALIZADO 1700X500.jpg",
+      "Imagen": "ACTUALIZADO 1700X500 BODAS.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
-      "ImagenMovil": "ACTUALIZADO 450X450.jpg",
-      "Orden": ""
-    },
-    {
-      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2025",
-      "Link": "https:\/\/online.flippingbook.com\/view\/138958789\/",
-      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
-      "Imagen": "1700x500_actualizado.jpg",
-      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
-      "ImagenMovil": "450X450_actualizado.jpg",
-      "Orden": ""
-    },
-    {
-      "Titulo": "Cat\u00e1logo Anual 2024",
-      "Link": "https:\/\/online.flippingbook.com\/view\/372535595\/",
-      "UrlImagen": "..\/..\/..\/assets\/images\/banner_principal\/desk\/",
-      "Imagen": "1700x500_final.jpg",
-      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_principal\/movil\/",
-      "ImagenMovil": "450x450_web_anual.jpg",
+      "ImagenMovil": "ACTUALIZADO 450X450 BODAS.jpg",
       "Orden": ""
     }
   ],
@@ -76,95 +76,95 @@
   },
   "BannerDistribuidores": [
     {
+      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2026",
+      "Link": "https:\/\/online.flippingbook.com\/view\/375947787\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
+      "Imagen": "enamorate2026_800x600.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
+      "ImagenMovil": "enamorate2026_450X450.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo de L\u00ednea 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/300357014\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
+      "Imagen": "linea2026_800x600.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
+      "ImagenMovil": "linea2026_450X450.jpg",
+      "Orden": ""
+    },
+    {
       "Titulo": "Cat\u00e1logo Celebra 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/92868438\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
-      "Imagen": "800x600_Celebra25.jpg",
+      "Imagen": "celebra2026_800x600.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
-      "ImagenMovil": "450x450_Celebra25.jpg",
+      "ImagenMovil": "celebra2026_450X450.jpg",
       "Orden": ""
     },
     {
       "Titulo": "Cat\u00e1logo Eternidad 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/299747105\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
-      "Imagen": "800X600_Actualizado.jpg",
+      "Imagen": "eternidad_800X600_Actualizado.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
-      "ImagenMovil": "450X450_Actualizado.jpg",
+      "ImagenMovil": "eternidad_450X450_Actualizado.jpg",
       "Orden": ""
     },
     {
       "Titulo": "Cat\u00e1logo Bodas 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/79626950\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
-      "Imagen": "ACTUALOZADO 800X600.jpg",
+      "Imagen": "bodas_ACTUALOZADO 800X600.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
-      "ImagenMovil": "ACTUALIZADO 450X450.jpg",
-      "Orden": ""
-    },
-    {
-      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2025",
-      "Link": "https:\/\/online.flippingbook.com\/view\/138958789\/",
-      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
-      "Imagen": "800x600_actualizado.jpg",
-      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
-      "ImagenMovil": "450X450_actualizado.jpg",
-      "Orden": ""
-    },
-    {
-      "Titulo": "Cat\u00e1logo Anual 2024",
-      "Link": "https:\/\/online.flippingbook.com\/view\/372535595\/",
-      "UrlImagen": "..\/..\/..\/assets\/images\/banner_distribuidor\/desk\/",
-      "Imagen": "800X600_WEB_ANUAL.jpg",
-      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_distribuidor\/movil\/",
-      "ImagenMovil": "450x450_web_anual.jpg",
+      "ImagenMovil": "bodas_ACTUALIZADO 450X450.jpg",
       "Orden": ""
     }
   ],
   "BannerAsesores": [
     {
+      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2026",
+      "Link": "https:\/\/online.flippingbook.com\/view\/375947787\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
+      "Imagen": "Enamorate 800x600.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
+      "ImagenMovil": "Enamorate 450X450.jpg",
+      "Orden": ""
+    },
+    {
+      "Titulo": "Cat\u00e1logo de L\u00ednea 2025",
+      "Link": "https:\/\/online.flippingbook.com\/view\/300357014\/",
+      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
+      "Imagen": "Catalogo de linea 800x600.jpg",
+      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
+      "ImagenMovil": "Cat\u00e1logo de Linea 450X450.jpg",
+      "Orden": ""
+    },
+    {
       "Titulo": "Cat\u00e1logo Celebra 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/92868438\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
-      "Imagen": "800x600_Celebra25.jpg",
+      "Imagen": "Celebra 800x600.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
-      "ImagenMovil": "450x450_Celebra25.jpg",
+      "ImagenMovil": "Celebra 450X450.jpg",
       "Orden": ""
     },
     {
       "Titulo": "Cat\u00e1logo Eternidad 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/299747105\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
-      "Imagen": "800X600_Actualizado.jpg",
+      "Imagen": "800X600_Actualizado ETERNIDAD.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
-      "ImagenMovil": "450X450_Actualizado.jpg",
+      "ImagenMovil": "450X450_Actualizado ETERNIDAD.jpg",
       "Orden": ""
     },
     {
       "Titulo": "Cat\u00e1logo Bodas 2025",
       "Link": "https:\/\/online.flippingbook.com\/view\/79626950\/",
       "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
-      "Imagen": "ACTUALOZADO 800X600.jpg",
+      "Imagen": "ACTUALOZADO 800X600 BODAS.jpg",
       "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
-      "ImagenMovil": "ACTUALIZADO 450X450.jpg",
-      "Orden": ""
-    },
-    {
-      "Titulo": "Cat\u00e1logo Enam\u00f3rate 2025",
-      "Link": "https:\/\/online.flippingbook.com\/view\/138958789\/",
-      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
-      "Imagen": "800x600_actualizado.jpg",
-      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
-      "ImagenMovil": "450X450_actualizado.jpg",
-      "Orden": ""
-    },
-    {
-      "Titulo": "Cat\u00e1logo Anual 2024",
-      "Link": "https:\/\/online.flippingbook.com\/view\/372535595\/",
-      "UrlImagen": "..\/..\/..\/assets\/images\/banner_asesor\/desk\/",
-      "Imagen": "800X600_WEB_ANUAL.jpg",
-      "UrlImagenMovil": "..\/..\/..\/assets\/images\/banner_asesor\/movil\/",
-      "ImagenMovil": "450x450_web_anual.jpg",
+      "ImagenMovil": "ACTUALIZADO 450X450 BODAS.jpg",
       "Orden": ""
     }
   ]

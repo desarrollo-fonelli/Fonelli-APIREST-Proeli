@@ -3,10 +3,12 @@ header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json; charset=utf-8');
 
 #Variable global que tiene la ruta del archico JSON donde se guardan las configuraciones de contenido del portal 
-#$file = 'C:\xampp\htdocs\med_fonelli_apiportal\datos\template.json';
-$file = '/usr/share/nginx/html/med_fonelli_apiportal/datos/template.json';
-#$target_dir = "C:\xampp\htdocs\MED_FONELLI_Portal\src\assets\\"; //image upload folder name
-$target_dir = "/usr/share/nginx/html/assets/";
+#TODO: Cambiar ruta según entorno de Desarrollo o Producción:
+$file = 'C:/xampp/htdocs/med_fonelli_apiportal/datos/template.json';                        #OJO OJO OJO OJO <--------
+//$file = '/usr/share/nginx/html/med_fonelli_apiportal/datos/template.json';
+
+$target_dir = "C:/xampp/htdocs/MED_FONELLI_Portal/src/assets/"; //image upload folder name  OJO OJO OJO OJO <--------
+//$target_dir = "/usr/share/nginx/html/assets/";
 
 #Se validan los metodos con los que se puede consumir este servicio solo se permite GET y POST
 #El Get se ocupara cuando el portal cargue por primera vez
@@ -22,7 +24,7 @@ if ($requestMethod == "GET") {
     $template = obtener_datos_json($file);
 
     if (!isset($template)) {
-      #En caso de que no exista el archivo se envía el errpr
+      #En caso de que no exista el archivo se envía el error
       http_response_code(404);
       header('Content-Type: application/json; charset=utf-8');
       $mensaje = "No se encontro el archivo JSON";

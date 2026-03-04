@@ -4,6 +4,12 @@
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
 ---
+### v2.17.1 | 27.01.2026 | IndicadVenta2025.php - Corrección Comisión Agentes MarketPlace
+#### Cambios:
+1. Se corrigen JOINS al sumar comisiones por agente para que aparezcan todos los agentes activos aunque no tengan venta registrada en la fecha solicitada.
+2. Se suben cambios menores a template.php para limpiar staging de Git
+
+---
 ### v2.17.0 | 27.01.2026 | IndicadVenta2025.php - Corrección Comisión Agentes MarketPlace
 #### Nuevo:
 1. Se agrega rutina para calcular comisión para agentes marketplace
