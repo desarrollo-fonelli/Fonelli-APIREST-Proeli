@@ -4,6 +4,16 @@
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
 ---
+### v2.17.2 | 04.03.2026 | Comentarios y Limpieza de archivos previo a cambios al Cálculo de precios.
+#### Cambios:
+| Servicio | Descripcion |
+|----------|-------------
+| ArticuloPrecio.php     | Basado en CalcPrec2025 pero mas actualizado. Es la rutina que se está utilizando para el módulo de cotizaciones y debe usarse en todos los módulos que requieran calcular el precio según las paridades del día.
+| CalcPrec2025.php       | No se está usando. Esta función se llama desde ArticulosLista.php, la cual a su vez se llama desde el front end componente "articulos-reporte.service.ts", el cual ya no se invoca desde el frontend.
+| ArticulosLista.php     | Se agregan comentarios.
+| ...
+
+---
 ### v2.17.1 | 27.01.2026 | IndicadVenta2025.php - Corrección Comisión Agentes MarketPlace
 #### Cambios:
 1. Se corrigen JOINS al sumar comisiones por agente para que aparezcan todos los agentes activos aunque no tengan venta registrada en la fecha solicitada.

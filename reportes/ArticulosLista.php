@@ -6,10 +6,20 @@ date_default_timezone_set('America/Mexico_City');
 /**
  * Lista de artículos incluyendo precio de venta calculado
  * --------------------------------------------------------------------------
+ * dRendon | 12.07.2025
  * Corresponde al reporte de Proeli: PT > Reportes > "Catálogo de Artículos"
  * Ahora se recibe el "Token" con caracter obligatorio en los headers de la peticion
- * dRendon | 12.07.2025
  * --------------------------------------------------------------------------
+ * drendon | 04.03.2025
+ * Este endpoint devuelve un listado de artículos con su precio de venta calculado,
+ * pero se dejó de usar en dic-2025 porque ahora se usa otro endpoint para devolver
+ * solamente una imagen del producto, la línea, clave y descripción del artículo.
+ * Este servicio llama la función CalcPrecio() que se encuentra en el script 
+ * "include/CalcPrec2025.php" para calcular el precio de venta de cada artículo, 
+ * a la cual no se le ha dado mantenimiento, por lo que es mejor utilizar el nuevo 
+ * endpoint "ArticuloPrecio.php" el cual debería ser usado por todos los scripts
+ * donde sea necesario obtener el precio de venta de un artículo, para así centralizar 
+ * el mantenimiento.
  */
 
 # En el script 'constantes.php' se definen:
@@ -356,7 +366,10 @@ function SelectData(
     $numRows = $oSQL->rowCount();
     $arrData = $oSQL->fetchAll(PDO::FETCH_ASSOC);
 
-    // Calcula el precio para cada file devuelta por la consulta
+    # Calcula el precio para cada fila devuelta por la consulta
+    # CalcPrecio() no tiene los ultimos ajustes, es mejor usar la rutina
+    # "ArticuloPrecio.php" para obtener el precio de venta de cada artículo,
+    # pero ten en cuenta que esta recibe más parámetros.
     foreach ($arrData as &$fila) {
       // include/CalcPrec2025.php
       $fila["precio"] = CalcPrecio(

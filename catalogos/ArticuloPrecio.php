@@ -10,11 +10,15 @@ date_default_timezone_set('America/Mexico_City');
 /**
  * ArticuloPrecio.php
  * --------------------------------------------------------------------------
+ * Creación: 30.06.2025 | dRendon
  * Recuperación de un artículo específico, incluyendo precio calculado.
  * Requiere que se pasen todos los parámetros necesarios para realizar el
  * cálculo:  lista de precios, paridad, datos relacionados con el artículo 
  * en sí mismo, etc.
- * Creación: 30.06.2025 | dRendon
+ * --------------------------------------------------------------------------
+ * Revisión: 04.03.2026 | dRendon
+ * Solo se está calculando el precio-venta.
+ * Es necesario agregar los cálculos para obtener precio-venta.
  * --------------------------------------------------------------------------
  */
 
@@ -265,7 +269,7 @@ try {
 } catch (Exception $e) {
   $response = [
     "Codigo"      => K_API_ERRSQL,
-    "Mensaje"     => $conn->get_last_error(),
+    "Mensaje"     => $e->getMessage(),
     //"Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => []
   ];

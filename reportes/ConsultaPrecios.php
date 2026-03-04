@@ -94,20 +94,20 @@ try {
   # dRendon 05.05.2023 ********************
   # Ahora se va a verificar la identidad del usuario por medio del Token
   # recibido en el Header con Key "Auth" (PHP lo interpreta como "HTTP_AUTH")
-  if(!isset($_SERVER["HTTP_AUTH"])) {
+  if (!isset($_SERVER["HTTP_AUTH"])) {
     throw new Exception("No se recibio el Token de autenticacion");
   } else {
     $Token = $_SERVER["HTTP_AUTH"];
   }
   // ValidaToken está en ./include/funciones.php
-  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {    
+  if (!ValidaToken($conn, $TipoUsuario, $Usuario, $Token)) {
     throw new Exception("Error de autenticacion.");
   }
 
   # Cuando aplique, se debe impedir la consulta de códigos diferentes al del usuario autenticado
   # Verificando en este nivel ya no es necesario cambiar el código restante
   if ($TipoUsuario == "C") {
-    if ((TRIM($ClienteCodigo). "-". TRIM($ClienteFilial)) != $Usuario) {
+    if ((TRIM($ClienteCodigo) . "-" . TRIM($ClienteFilial)) != $Usuario) {
       throw new Exception("Error de autenticación");
     }
   }
@@ -151,8 +151,16 @@ try {
 
 # Lista de parámetros aceptados por este endpoint
 $arrPermitidos = array(
-  "TipoUsuario", "Usuario", "ClienteCodigo", "ClienteFilial",
-  "Lista", "ListaCodigo", "ParidadTipo", "ArticuloLinea", "ArticuloCodigo", "Pagina"
+  "TipoUsuario",
+  "Usuario",
+  "ClienteCodigo",
+  "ClienteFilial",
+  "Lista",
+  "ListaCodigo",
+  "ParidadTipo",
+  "ArticuloLinea",
+  "ArticuloCodigo",
+  "Pagina"
 );
 
 # Obtiene todos los parametros pasados en la llamada y verifica que existan
@@ -199,7 +207,7 @@ if (isset($_GET["ClienteFilial"])) {
 if (isset($_GET["ListaCodigo"])) {
   $ListaCodigo = $_GET["ListaCodigo"];
 } else {
-  if ($ClienteCodigo=="0"){
+  if ($ClienteCodigo == "0") {
     $mensaje = "Debe indicar Codigo de Lista de Precios cuando cliente es cero";
     http_response_code(400);
     echo json_encode(["Code" => K_API_ERRPARAM, "Mensaje" => $mensaje]);
@@ -251,7 +259,7 @@ try {
 } catch (Exception $e) {
   $response = [
     "Codigo"      => K_API_ERRSQL,
-    "Mensaje"     => $conn->get_last_error(),
+    "Mensaje"     => $e->getMessage(),
     //"Paginacion"  => ["NumFilas" => $numFilas, "TotalPaginas" => $totalPaginas, "Pagina" => $Pagina],
     "Contenido"   => []
   ];
@@ -289,7 +297,8 @@ function SelectPrecio(
   $ListaCodigo,
   $ParidadTipo,
   $ArticuloLinea,
-  $ArticuloCodigo) {
+  $ArticuloCodigo
+) {
   // Se requieren en rutinas heredadas de Proeli
   global $NormalEquivalente, $TipoParidad;
   global $W_TCANIM, $W_PARAML, $W_FACSER;
@@ -308,18 +317,18 @@ function SelectPrecio(
 
   # En caso necesario, hay que formatear los parametros que se van a pasar a la consulta
   switch ($TipoUsuario) {
-      // Cliente 
-      /*
+    // Cliente 
+    /*
     case "C":     <-- cuando el tipo es "Cliente", no se requiere "Usuario"
       $strUsuario = str_pad($Usuario, 6," ",STR_PAD_LEFT);
       break;
       */
 
-      // Agente
+    // Agente
     case "A":
       $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
       break;
-      // Gerente
+    // Gerente
     case "G":
       $strUsuario = str_pad($Usuario, 2, " ", STR_PAD_LEFT);
       break;
@@ -359,33 +368,33 @@ function SelectPrecio(
      * parametros que aplican en el calculo de precio.
      * Cuando el codigo de cliente es "cero", se deben inicializar los parámetros
      * necesarios con los parametros recibidos en la llamada.
-     */  
-    if ($ClienteCodigo=="0"){
+     */
+    if ($ClienteCodigo == "0") {
 
       $strClienteCodigo = "0";
       $strClienteFilial = "0";
       // $ListaCodigo =   se queda el valor recibido como parámetro
-      $ListaDescr  = "Lista ". $ListaCodigo;
+      $ListaDescr  = "Lista " . $ListaCodigo;
       $FactorIncremento = 0;
       $TipoParidad = $ParidadTipo;
       $TipoCliente = "  ";
       $NormalEquivalente = "N";
       // $TipoMoneda  =   se esta utilizando la variable $W_TIMON que se asigna mas adelante
       //                  a partir de la lista de precios
-      
+
     } else {
 
       $strClienteCodigo = str_pad($ClienteCodigo, 6, " ", STR_PAD_LEFT);
       $strClienteFilial = str_pad($ClienteFilial, 3, " ", STR_PAD_LEFT);
-  
+
       # Construyo dinamicamente la condicion WHERE
       $where = "WHERE a.cc_num = :strClienteCodigo AND a.cc_fil = :strClienteFilial ";
-     
+
       if (in_array($TipoUsuario, ["A"])) {
         // Solo aplica filtro cuando el usuario es un agente
         $where .= "AND a.cc_age = :strUsuario ";
       }
-  
+
       # Obtiene lista de precios asignada al cliente y otros datos
       $sqlCmd = "SELECT trim(a.cc_num) cc_num,trim(a.cc_fil) cc_fil,trim(a.cc_raso) cc_raso,
       a.cc_tipoli,a.cc_tipoli2,a.cc_pincre,a.cc_cata,a.cc_ticte,a.cc_tparid,cc_timon,
@@ -760,7 +769,7 @@ function SelectPrecio(
             #COSTEO GRAMO ( > Insumos Grupo 1 + Insumos Grupo 2 a Precio Venta + Insumos Grupo 3) + Valor Agregado
             case "3":
 
-             /* 
+              /* 
              * OJO: Esta formulación no se está utilizando a jun/2022
              */
 
@@ -867,8 +876,8 @@ function SelectPrecio(
 
               break;
           }
-        
-        # MONEDA USD
+
+          # MONEDA USD
         } else {
 
           switch ($Formulacion) {
@@ -1202,33 +1211,33 @@ function SelectPrecio(
 
               break;
           }
-        
-        # MONEDA USD
+
+          # MONEDA USD
         } else {
 
           switch ($Formulacion) {
-          #COSTEO PIEZA ( > Insumos Grupo 1 e Insumos Grupo 2 e Insumos Grupo 3) * Factor
-          case "1":
-            break;            
-          #COSTEO GRAMO ( > Insumos Grupo 1 ) + Valor Agregado
-          case "2":
-            break;
-          #COSTEO GRAMO ( > Insumos Grupo 1 + Insumos Grupo 2 a Precio Venta + Insumos Grupo 3) + Valor Agregado
-          case "3":
-            break;
-          #COSTEO GRAMO   > (Insumos Grupo 1  + Valor Agregado) +  > Insumos Grupo 2 a Precio de Venta e Insumos Grupo 3
-          case "4":
-            break;
-          # COSTEO PIEZA [ Costo=Costo Compra * Paridad del Día (C_COSCOM*Paridad Normal del Día) 
-          #    Venta=Costo * Factor de Incremento (de la Tabla de Valores Agregados de acuerdo a la Lista de Precios, imagen 2) ]
-          case "5":
-            break;
+            #COSTEO PIEZA ( > Insumos Grupo 1 e Insumos Grupo 2 e Insumos Grupo 3) * Factor
+            case "1":
+              break;
+            #COSTEO GRAMO ( > Insumos Grupo 1 ) + Valor Agregado
+            case "2":
+              break;
+            #COSTEO GRAMO ( > Insumos Grupo 1 + Insumos Grupo 2 a Precio Venta + Insumos Grupo 3) + Valor Agregado
+            case "3":
+              break;
+            #COSTEO GRAMO   > (Insumos Grupo 1  + Valor Agregado) +  > Insumos Grupo 2 a Precio de Venta e Insumos Grupo 3
+            case "4":
+              break;
+            # COSTEO PIEZA [ Costo=Costo Compra * Paridad del Día (C_COSCOM*Paridad Normal del Día) 
+            #    Venta=Costo * Factor de Incremento (de la Tabla de Valores Agregados de acuerdo a la Lista de Precios, imagen 2) ]
+            case "5":
+              break;
           }
 
 
           # dRendon 24/jun/2022 Se agrega esta nueva fornmulacion
-            # COSTEO PIEZA [ Costo=Costo Compra * Paridad del Día (C_COSCOM*Paridad Normal del Día) 
-            #    Venta=Costo * Factor de Incremento (de la Tabla de Valores Agregados de acuerdo a la Lista de Precios, imagen 2) ]
+          # COSTEO PIEZA [ Costo=Costo Compra * Paridad del Día (C_COSCOM*Paridad Normal del Día) 
+          #    Venta=Costo * Factor de Incremento (de la Tabla de Valores Agregados de acuerdo a la Lista de Precios, imagen 2) ]
         }
       }
     }
@@ -1266,12 +1275,12 @@ function SelectPrecio(
       #-----------------------------------
       # LISTA POR COMPONENTE $W_NULIS == 2
       #-----------------------------------
-      
+
       if ($W_NULIS == "2") {
 
         # MONEDA NACIONAL
         if ($W_TIMON == "1") {
-          
+
           switch ($Formulacion) {
             #COSTEO PIEZA ( > Insumos Grupo 1 e Insumos Grupo 2 e Insumos Grupo 3) * Factor
             case "1":
@@ -1358,7 +1367,7 @@ function SelectPrecio(
 
               $ValorAgregado = $W_FACTOR;
               $Precio = $TPG;
-              $PrecioEquivalente = $TPGE;              
+              $PrecioEquivalente = $TPGE;
 
               break;
 
@@ -1397,7 +1406,7 @@ function SelectPrecio(
                   $W_NOAUMENTO = 1;
                 }
               }
-             
+
               break;
 
             #COSTEO GRAMO   > (Insumos Grupo 1  + Valor Agregado) +  > Insumos Grupo 2 a Precio de Venta e Insumos Grupo 3
@@ -1471,10 +1480,9 @@ function SelectPrecio(
 
 
               break;
+          }
 
-            }
-
-        # MONEDA USD
+          # MONEDA USD
         } else {
 
           switch ($Formulacion) {
@@ -1563,7 +1571,7 @@ function SelectPrecio(
 
               $ValorAgregado = $W_FACTOR;
               $Precio = $TPG;
-              $PrecioEquivalente = $TPGE;              
+              $PrecioEquivalente = $TPGE;
 
               break;
             #COSTEO GRAMO ( > Insumos Grupo 1 + Insumos Grupo 2 a Precio Venta + Insumos Grupo 3) + Valor Agregado
@@ -1590,193 +1598,192 @@ function SelectPrecio(
               $PrecioEquivalente = $TPREE;
 
               break;
-          }          
+          }
         }
-        
       }
     }
 
     #COMPONENTES QUE SE VAN A PRESENTAR EN LA TABLA DE LA PANTALLA
     #----------------------------------------------------------------------------
-      $sqlCmd = "CREATE TEMPORARY TABLE listacompo (grupo char (1), lin char(2), clave char (4),
+    $sqlCmd = "CREATE TEMPORARY TABLE listacompo (grupo char (1), lin char(2), clave char (4),
       descripcion char (32), piezas decimal(12,2),gramos decimal(12,2),
       piezase decimal(12,2),gramose decimal(12,2))";
-      $cmdCreate = $conn->prepare($sqlCmd);
-      $cmdCreate->execute();
+    $cmdCreate = $conn->prepare($sqlCmd);
+    $cmdCreate->execute();
 
-      $rowCOM = seekCompo($C_LCO1, $C_CO1);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+    $rowCOM = seekCompo($C_LCO1, $C_CO1);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA1);
-        $temp->bindParam(":gramos", $C_GR1);
-        $temp->bindParam(":piezase", $C_CA1E);
-        $temp->bindParam(":gramose", $C_GR1E);
-        $temp->execute();
-      }
-      $rowCOM = seekCompo($C_LCO1, $C_CO2);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA1);
+      $temp->bindParam(":gramos", $C_GR1);
+      $temp->bindParam(":piezase", $C_CA1E);
+      $temp->bindParam(":gramose", $C_GR1E);
+      $temp->execute();
+    }
+    $rowCOM = seekCompo($C_LCO1, $C_CO2);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA2);
-        $temp->bindParam(":gramos", $C_GR2);
-        $temp->bindParam(":piezase", $C_CA2E);
-        $temp->bindParam(":gramose", $C_GR2E);
-        $temp->execute();
-      }
-      $rowCOM = seekCompo($C_LCO3, $C_CO3);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA2);
+      $temp->bindParam(":gramos", $C_GR2);
+      $temp->bindParam(":piezase", $C_CA2E);
+      $temp->bindParam(":gramose", $C_GR2E);
+      $temp->execute();
+    }
+    $rowCOM = seekCompo($C_LCO3, $C_CO3);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA3);
-        $temp->bindParam(":gramos", $C_GR3);
-        $temp->bindParam(":piezase", $C_CA3E);
-        $temp->bindParam(":gramose", $C_GR3E);
-        $temp->execute();
-      }
-      $rowCOM = seekCompo($C_LCO4, $C_CO4);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA3);
+      $temp->bindParam(":gramos", $C_GR3);
+      $temp->bindParam(":piezase", $C_CA3E);
+      $temp->bindParam(":gramose", $C_GR3E);
+      $temp->execute();
+    }
+    $rowCOM = seekCompo($C_LCO4, $C_CO4);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA4);
-        $temp->bindParam(":gramos", $C_GR4);
-        $temp->bindParam(":piezase", $C_CA4E);
-        $temp->bindParam(":gramose", $C_GR4E);
-        $temp->execute();
-      }
-      $rowCOM = seekCompo($C_LCO5, $C_CO5);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA4);
+      $temp->bindParam(":gramos", $C_GR4);
+      $temp->bindParam(":piezase", $C_CA4E);
+      $temp->bindParam(":gramose", $C_GR4E);
+      $temp->execute();
+    }
+    $rowCOM = seekCompo($C_LCO5, $C_CO5);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA5);
-        $temp->bindParam(":gramos", $C_GR5);
-        $temp->bindParam(":piezase", $C_CA5E);
-        $temp->bindParam(":gramose", $C_GR5E);
-        $temp->execute();
-      }
-      $rowCOM = seekCompo($C_LCO6, $C_CO6);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA5);
+      $temp->bindParam(":gramos", $C_GR5);
+      $temp->bindParam(":piezase", $C_CA5E);
+      $temp->bindParam(":gramose", $C_GR5E);
+      $temp->execute();
+    }
+    $rowCOM = seekCompo($C_LCO6, $C_CO6);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA6);
-        $temp->bindParam(":gramos", $C_GR6);
-        $temp->bindParam(":piezase", $C_CA6E);
-        $temp->bindParam(":gramose", $C_GR6E);
-        $temp->execute();
-      }
-      $rowCOM = seekCompo($C_LCO7, $C_CO7);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA6);
+      $temp->bindParam(":gramos", $C_GR6);
+      $temp->bindParam(":piezase", $C_CA6E);
+      $temp->bindParam(":gramose", $C_GR6E);
+      $temp->execute();
+    }
+    $rowCOM = seekCompo($C_LCO7, $C_CO7);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA7);
-        $temp->bindParam(":gramos", $C_GR7);
-        $temp->bindParam(":piezase", $C_CA7E);
-        $temp->bindParam(":gramose", $C_GR7E);
-        $temp->execute();
-      }
-      $rowCOM = seekCompo($C_LCO8, $C_CO8);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA7);
+      $temp->bindParam(":gramos", $C_GR7);
+      $temp->bindParam(":piezase", $C_CA7E);
+      $temp->bindParam(":gramose", $C_GR7E);
+      $temp->execute();
+    }
+    $rowCOM = seekCompo($C_LCO8, $C_CO8);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA8);
-        $temp->bindParam(":gramos", $C_GR8);
-        $temp->bindParam(":piezase", $C_CA8E);
-        $temp->bindParam(":gramose", $C_GR8E);
-        $temp->execute();
-      }
-      $rowCOM = seekCompo($C_LCO9, $C_CO9);
-      if ($rowCOM <> null) {
-        $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA8);
+      $temp->bindParam(":gramos", $C_GR8);
+      $temp->bindParam(":piezase", $C_CA8E);
+      $temp->bindParam(":gramose", $C_GR8E);
+      $temp->execute();
+    }
+    $rowCOM = seekCompo($C_LCO9, $C_CO9);
+    if ($rowCOM <> null) {
+      $sqlCmd = "INSERT INTO listacompo (grupo,lin,clave,descripcion,piezas,gramos,
           piezase,gramose)
           VALUES (:grupo,:lin,:clave,:descripcion,:piezas,:gramos,:piezase,:gramose)";
-        $temp = $conn->prepare($sqlCmd);
-        $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
-        $temp->bindParam(":lin", $rowCOM["co_lin"]);
-        $temp->bindParam(":clave", $rowCOM["co_clave"]);
-        $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
-        $temp->bindParam(":piezas", $C_CA9);
-        $temp->bindParam(":gramos", $C_GR9);
-        $temp->bindParam(":piezase", $C_CA9E);
-        $temp->bindParam(":gramose", $C_GR9E);
-        $temp->execute();
-      }
+      $temp = $conn->prepare($sqlCmd);
+      $temp->bindParam(":grupo", $rowCOM["co_grupo"]);
+      $temp->bindParam(":lin", $rowCOM["co_lin"]);
+      $temp->bindParam(":clave", $rowCOM["co_clave"]);
+      $temp->bindParam(":descripcion", $rowCOM["co_descr"]);
+      $temp->bindParam(":piezas", $C_CA9);
+      $temp->bindParam(":gramos", $C_GR9);
+      $temp->bindParam(":piezase", $C_CA9E);
+      $temp->bindParam(":gramose", $C_GR9E);
+      $temp->execute();
+    }
 
     # Pasa los registros de la tabla de componentes a un array
     # --------------------------------------------------------
-      $sqlCmd = "SELECT * FROM listacompo";
-      $oSQL = $conn->prepare($sqlCmd);
-      $oSQL->execute();
-      $datacompo = $oSQL->fetchAll(PDO::FETCH_ASSOC);
+    $sqlCmd = "SELECT * FROM listacompo";
+    $oSQL = $conn->prepare($sqlCmd);
+    $oSQL->execute();
+    $datacompo = $oSQL->fetchAll(PDO::FETCH_ASSOC);
 
-      $RedonGlobal;  // equivale a $W_REDO de Proeli
-    
+    $RedonGlobal;  // equivale a $W_REDO de Proeli
+
     # Descripciones que se van a mostrar en la pantalla
     # -------------------------------------------------
-      $TipoCalcDescr = "";
-      if ($W_NULIS == 1) {
-        $TipoCalcDescr = "Directa";
-      } elseif ($W_NULIS == 2) {
-        $TipoCalcDescr = "Por Componentes";
-      }
+    $TipoCalcDescr = "";
+    if ($W_NULIS == 1) {
+      $TipoCalcDescr = "Directa";
+    } elseif ($W_NULIS == 2) {
+      $TipoCalcDescr = "Por Componentes";
+    }
 
-      $TipoCosteoDescr = "";
-      if ($TipoCosteo == 1) {
-        $TipoCosteoDescr = "Costeo por Pieza";
-      } elseif ($TipoCosteo == 2) {
-        $TipoCosteoDescr = "Costeo por Gramo";
-      }
+    $TipoCosteoDescr = "";
+    if ($TipoCosteo == 1) {
+      $TipoCosteoDescr = "Costeo por Pieza";
+    } elseif ($TipoCosteo == 2) {
+      $TipoCosteoDescr = "Costeo por Gramo";
+    }
 
     # Array con datos que se van a incluir en el JSON de retorno
     # ----------------------------------------------------------
-      $arrData = array(
+    $arrData = array(
       "cc_num"  => ($ClienteCodigo == "0" ? "0" : $rowCli010["cc_num"]),
       "cc_fil"  => ($ClienteCodigo == "0" ? "0" : $rowCli010["cc_fil"]),
       "cc_raso" => ($ClienteCodigo == "0" ? "<No indicado>" : $rowCli010["cc_raso"]),
