@@ -9,12 +9,13 @@
  * @date 17/may/2022
  */
 
-return array(
-  //"host"      => "localhost",
-  //"usuario"   => "postgres",
-  //"passw"     => "1234",   //"P0stgr3SQL",
-  //"dbname"    => "test",
+//"host"      => "localhost",
+//"usuario"   => "postgres",
+//"passw"     => "1234",   //"P0stgr3SQL",
+//"dbname"    => "test",
 
+
+return array(
   "driver"  => "pgsql",
   "host"    => "35.165.224.218",
   "puerto"  => "5432",

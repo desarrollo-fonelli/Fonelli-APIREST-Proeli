@@ -4,14 +4,21 @@
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
 ---
+### v2.18.0 | 03.06.2026 | Consultas Directivas. Maquetado de respuestas.
+#### Cambios:
+1. Se crean los servicios correspondientes a las consultas directivas comercial y financieras.
+2. Se utilizan arrays en código duro para devolver los JSON y permitir avanzar en el frontend.
+3. La siguiente fase debe crear las consultas sql para obtener datos reales.
+
+---
 ### v2.17.2 | 04.03.2026 | Comentarios y Limpieza de archivos previo a cambios al Cálculo de precios.
 #### Cambios:
-| Servicio | Descripcion |
-|----------|-------------
-| ArticuloPrecio.php     | Basado en CalcPrec2025 pero mas actualizado. Es la rutina que se está utilizando para el módulo de cotizaciones y debe usarse en todos los módulos que requieran calcular el precio según las paridades del día.
-| CalcPrec2025.php       | No se está usando. Esta función se llama desde ArticulosLista.php, la cual a su vez se llama desde el front end componente "articulos-reporte.service.ts", el cual ya no se invoca desde el frontend.
-| ArticulosLista.php     | Se agregan comentarios.
-| ...
+| Servicio           | Descripcion                                                                                                                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ArticuloPrecio.php | Basado en CalcPrec2025 pero mas actualizado. Es la rutina que se está utilizando para el módulo de cotizaciones y debe usarse en todos los módulos que requieran calcular el precio según las paridades del día. |
+| CalcPrec2025.php   | No se está usando. Esta función se llama desde ArticulosLista.php, la cual a su vez se llama desde el front end componente "articulos-reporte.service.ts", el cual ya no se invoca desde el frontend.            |
+| ArticulosLista.php | Se agregan comentarios.                                                                                                                                                                                          |
+| ...                |
 
 ---
 ### v2.17.1 | 27.01.2026 | IndicadVenta2025.php - Corrección Comisión Agentes MarketPlace
@@ -50,21 +57,21 @@ Este proyecto incluye los servicios (endpoints) que se consumen por la aplicaci�
 #### Cambios:
 1. Indicador de Devoluciones: Voy a tomar los gramos devueltos de la secciópn de datos generales, no de los renglones.
 
-| Servicio               | Descripcion |
-|------------------------|---------------------------------
-| CotizCrear.php         | INSERT en tablas de Cotizaciones
-| CotizListar.php        | Acción GET para obtener lista de Cotizaciones registradas
-| IndicadVenta2025.php   | Cambié la consulta para obtener los gramos devueltos.
+| Servicio             | Descripcion                                               |
+| -------------------- | --------------------------------------------------------- |
+| CotizCrear.php       | INSERT en tablas de Cotizaciones                          |
+| CotizListar.php      | Acción GET para obtener lista de Cotizaciones registradas |
+| IndicadVenta2025.php | Cambié la consulta para obtener los gramos devueltos.     |
 
 ---
 ### v2.14.0 | 12.08.2025 | Ajustes Prepedidos
 #### Cambios:
 1. Se agrega columna para plazo documentado y se agregan nodos para subtotales y gran total en el JSON devuelto
 
-| Servicio               | Descripcion |
-|------------------------|-----------------------------
-| PrepedidosRepo.php     | ajustes varios
-| PrepedRepoDetalle.php  | ajustes varios
+| Servicio              | Descripcion    |
+| --------------------- | -------------- |
+| PrepedidosRepo.php    | ajustes varios |
+| PrepedRepoDetalle.php | ajustes varios |
 
 ---
 ### v2.13.0 | 07.08.2025 | IndicadVenta2025
@@ -72,10 +79,10 @@ Este proyecto incluye los servicios (endpoints) que se consumen por la aplicaci�
 1. Se crea el servicio para crear indicadores de venta versión 2025.
 2. Se crea el servicio para presentar acumulados de venta dividiendo importe bruto de valor agregado
 
-| Servicio               | Descripcion |
-|------------------------|-----------------------------
-| IndicadVenta2025.php   | Obtiene indicadores de Venta versión 2025
-| IndicadVentaAcum.php   | Acumulados de venta dividiendo importe bruto de valor agregado
+| Servicio             | Descripcion                                                    |
+| -------------------- | -------------------------------------------------------------- |
+| IndicadVenta2025.php | Obtiene indicadores de Venta versión 2025                      |
+| IndicadVentaAcum.php | Acumulados de venta dividiendo importe bruto de valor agregado |
 
 ---
 ### v2.12.0 | 29.07.2025 | PrepedidosRepo | PrepedRepoDetalle
@@ -83,10 +90,10 @@ Este proyecto incluye los servicios (endpoints) que se consumen por la aplicaci�
 1. Se crea el servicio que devuelve el conjunto de datos de Prepedidos, de acuerdo a los criterios de filtro.
 2. Se crea el servicio que devuelve los artículos incluidos en un prepedido
 
-| Servicio               | Descripcion |
-|------------------------|-----------------------------
-| PrepedidosRepo.php     | Lista resumida de prepedidos 
-| PrepedRepoDetalle.php  | Artículos incluidos en un prepedido 
+| Servicio              | Descripcion                         |
+| --------------------- | ----------------------------------- |
+| PrepedidosRepo.php    | Lista resumida de prepedidos        |
+| PrepedRepoDetalle.php | Artículos incluidos en un prepedido |
 
 ---
 ### v2.11.0 | 17.07.2025 | ArticulosBusqueda
@@ -98,10 +105,10 @@ Este proyecto incluye los servicios (endpoints) que se consumen por la aplicaci�
 1. Se crea el servicio que devuelve una lista de artículos incluidos en las líneas de producto seleccionadas. Se incluye el precio calculado de cada artículo.
 2. Se crea un script para el cálculo de precio de acuerdo a los parámetros 2025
 
-| Servicio           | Descripcion |
-|--------------------|--------------------------------------------|
-| ArticulosLista.php | Busca artículos que se van a incluir en el reporte     |
-| CalcPrec2025.php   | Rutina para Cálculo de Precios    |
+| Servicio           | Descripcion                                        |
+| ------------------ | -------------------------------------------------- |
+| ArticulosLista.php | Busca artículos que se van a incluir en el reporte |
+| CalcPrec2025.php   | Rutina para Cálculo de Precios                     |
 ---
 ### v2.9.1 | 11.07.2025 | CltesDocVenta
 #### Issues:
@@ -115,10 +122,10 @@ Este proyecto incluye los servicios (endpoints) que se consumen por la aplicaci�
 1. Se crea servicio para obtener los datos básicos de Cliente que se utilizan en documentos de venta, para cálculo de precios y condiciones de crédito, devolviendo el JSON correspondiente.
 2. Se crea servicio para obtener los datos esenciales del artículo que se va a incluir en documentos de venta, incluyendo el precio calculado y datos relacionados.
 
-| Servicio              | Descripcion |
-|-----------------------|--------------------------------------------|
-| CltesDocVenta.php     | Datos cliente para documentos de venta     |
-| ArticuloPrecio.php    | Datos artículo para documentos de venta    |
+| Servicio           | Descripcion                             |
+| ------------------ | --------------------------------------- |
+| CltesDocVenta.php  | Datos cliente para documentos de venta  |
+| ArticuloPrecio.php | Datos artículo para documentos de venta |
 
 ### v2.8.0 | 18.06.2025 | Ordenes de Retorno | Consulta de Guias
 #### Nuevo:
@@ -127,8 +134,8 @@ Este proyecto incluye los servicios (endpoints) que se consumen por la aplicaci�
 3. Se ajustan los criterios de búsqueda para mejorar la interactividad entre los controles del formulario.
 3.1 Ahora se permite indicar algún documento, orden de compra, pedido, etc. sin tener que indicar un cliente.
 
-|Servicio                 | Descripcion |
-|-------------------------|--------------------------------------------|
+| Servicio                | Descripcion                                |
+| ----------------------- | ------------------------------------------ |
 | OrdenesRetorno.php      | Lista de Ordenes de Retorno                |
 | DetalleOrdenRetorno.php | Articulos incluidos en la Orden de Retorno |
 | ConsultaGuias2025.php   | Consulta de Logistica (Paquetes, Guías)    |
@@ -137,10 +144,10 @@ Este proyecto incluye los servicios (endpoints) que se consumen por la aplicaci�
 #### Nuevo:
 1. Se crea el servicio para ejecutar la "Consulta de Guias" (versión 2025) y devolver el JSON correspondiente.
 
-|Servicio                | Descripcion |
-|------------------------|----------------------------------------------------|
-| ConsultaGuias2025.php  | Lista de Paquetes (Guias) y documentos que incluye |
-| DocumArticulos.php     | Articulos contenidos en un documento de venta o inventario |
+| Servicio              | Descripcion                                                |
+| --------------------- | ---------------------------------------------------------- |
+| ConsultaGuias2025.php | Lista de Paquetes (Guias) y documentos que incluye         |
+| DocumArticulos.php    | Articulos contenidos en un documento de venta o inventario |
 
 ### v2.6.5 | 2025-05-28 | DetallePed2025
 #### Issues:
