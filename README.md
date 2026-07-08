@@ -4,6 +4,12 @@
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
 ---
+### v2.18.2 | 07.07.2026 | Consulta Directiva: BALANCE
+#### Cambios:
+1. Se crea servicio para calcular la información requerida y darle el formato JSON requerido por el frontend.
+2. Se crea servicios para devolver paridades del día.
+
+---
 ### v2.18.1 | 11.06.2026 | Consulta Directiva: COMERCIAL
 #### Cambios:
 1. Se crea servicio para calcular la información requerida y darle el formato JSON requerido por el frontend.

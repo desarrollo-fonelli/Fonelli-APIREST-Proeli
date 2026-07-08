@@ -3,3 +3,4 @@ reportes/nginx.conf - antes de cambios. conf.sh
 reportes/test.php
 /0.Proeli
 logs/
+reportes/debug.log
