@@ -316,9 +316,6 @@ function SelectData(
     // $msg = json_encode($resultDebug, JSON_PRETTY_PRINT);
     // file_put_contents('debug.log', "[" . date('H:i:s') . "] " . $msg . PHP_EOL, FILE_APPEND);
     // # DEBUG END ---------------------------------
-    $msg = json_encode($arrData, JSON_PRETTY_PRINT);
-    file_put_contents('debug.log', "[" . date('H:i:s') . "] " . $msg . PHP_EOL, FILE_APPEND);
-
 
     # ----
   } catch (Exception $e) {
@@ -455,51 +452,78 @@ function InventarioMP(
   float $TipoCambioORO,
   float $TipoCambioPLATA
 ) {
+
+  # Se requiere el valor del Oro Fino
+  # Actualizacion: actualmente no se usa este dato
+  # ----------------------------------------------------------------------------
+  $sqlCmd = "SELECT a_costo FROM inv020 
+    WHERE a_lin='01' AND trim(a_clave)='99'
+  ";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->execute();
+  $costoOroFino = $oSQL->fetchColumn();
+
   # Obtiene articulos del catalogo de MP que se van a incluir en el reporte.
-  # inv020 cmp catalogo ítems materia prima
+  # inv020 cmp catalogo ítems materia prima 
   # a_lin='01' <- metal y piedra | a_facoro='0' <- piedra
-  # --------------------------------------------------------------------------
+  # OJO: Solo se tiene el almacen "01" de MP por lo que no se filtra ni agrupa
+  #      por este criterio.
+  # ----------------------------------------------------------------------------
   $sqlCmd = "CREATE TEMPORARY TABLE IF NOT EXISTS catmp AS
     SELECT 
       -- Asigna grupo del metal: oro, plata	
       CASE
         WHEN cmp.a_facoro<>0 THEN
           CASE 
-          WHEN trim(COALESCE(com.co_clave,''))='1' 
-            OR trim(COALESCE(com.co_clave,''))='95'
-          THEN 'PLATA'
-          ELSE 'ORO'
-        END
-        ELSE ''
+            WHEN trim(COALESCE(com.co_clave,''))='1' 
+              OR trim(COALESCE(com.co_clave,''))='95'
+            THEN 'PLATA'
+            ELSE 'ORO'
+          END
+        ELSE 'PIEDRA'
       END AS grupo_metal,
+
       cmp.a_lin,cmp.a_clave,cmp.a_descr,cmp.a_facoro,
+
       -- en caso de piedra, se va a usar el costo premium del catalogo de componentes
+      -- en caso de metal, el costo se convierte usando el valor proporicional del Oro de 24 KTS
       CASE
-        WHEN cmp.a_facoro=0 THEN COALESCE(com.co_l1p, 0)
-        ELSE cmp.a_costo
+        WHEN cmp.a_facoro<>0 THEN
+          CASE 
+            WHEN trim(COALESCE(com.co_clave,''))<>'1' AND trim(COALESCE(com.co_clave,''))<>'95'
+              THEN ROUND(COALESCE(com.co_facmaq,0) * :costoOroFino,2)
+            ELSE cmp.a_costo
+          END
+        ELSE 
+          -- COALESCE(com.co_l1p, 0)
+          COALESCE(cmp.a_costo, 0)
       END AS a_costo,
+
       -- se reemplaza el factor oro en metales, excepto plata
       CASE
         WHEN cmp.a_facoro<>0 
-         AND trim(COALESCE(com.co_clave,''))<>'1' 
-         AND trim(COALESCE(com.co_clave,''))<>'95' 
-        THEN com.co_facmaq
+          AND trim(COALESCE(com.co_clave,''))<>'1' AND trim(COALESCE(com.co_clave,''))<>'95' 
+          THEN com.co_facmaq
         ELSE cmp.a_facoro
       END AS new_facoro,
+
       COALESCE(exi.i5_san, 0) saldo_anterior
+
     FROM inv020 cmp
-    LEFT JOIN compon com ON cmp.a_clave=com.co_clave
-    LEFT JOIN inv060 exi ON cmp.a_clave=exi.i5_clave
+    LEFT JOIN compon com ON cmp.a_lin=com.co_lin AND cmp.a_clave=com.co_clave
+    LEFT JOIN inv060 exi ON cmp.a_lin=exi.i5_lin AND cmp.a_clave=exi.i5_clave
     WHERE cmp.a_lin='01' -- AND cmp.a_facoro > 0
     ORDER BY cmp.a_lin,cmp.a_clave::INTEGER
     ";
   $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->bindParam(":costoOroFino", $costoOroFino);
   $oSQL->execute();
+
 
   # MOVIMIENTOS DE INVENTARIO A LA FECHA DE CORTE
   # ----------------------------------------------------------------
   $sqlCmd = "CREATE TEMPORARY TABLE IF NOT EXISTS movinv AS
-      SELECT c.grupo_metal,c.a_clave,
+      SELECT c.grupo_metal,c.a_lin,c.a_clave,
         MAX(c.saldo_anterior) AS saldo_anterior,
         SUM(COALESCE(i.m_can,0)) AS cant_mov,	
         MAX(c.new_facoro) new_facoro, 
@@ -509,12 +533,13 @@ function InventarioMP(
       LEFT JOIN var020 v ON v.t_tica='10' AND v.t_gpo='84' AND v.t_clave=i.m_mov
       WHERE i.m_fecha <= :FechaCorte
         AND SUBSTRING(v.t_param,7,1)<>'1' 	
-      GROUP BY c.grupo_metal,a_clave
+      GROUP BY c.grupo_metal,c.a_lin,c.a_clave
       ORDER BY c.a_clave::INTEGER
       ";
   $oSQL = $conn->prepare($sqlCmd);
   $oSQL->bindParam(":FechaCorte", $FechaCorte);
   $oSQL->execute();
+
 
   # Obtiene existencias de metal a la fecha de corte y lo convierte a gramos
   # (saldo_anterior + cant_mov) saldo_corte,
@@ -529,20 +554,19 @@ function InventarioMP(
   $oSQL = $conn->prepare($sqlCmd);
   $oSQL->execute();
 
-  $sqlCmd = "SELECT * FROM invmp_metal";
+  $sqlCmd = "SELECT grupo_metal, gramos FROM invmp_metal";
   $oSQL = $conn->prepare($sqlCmd);
   $oSQL->execute();
   $arrMP = $oSQL->fetchAll(PDO::FETCH_ASSOC);
-
 
   # Obtiene el importe de piedra para asignarlo a la columna "importe_mn"
   # ---------------------------------------------------------------------
   $sqlCmd = "CREATE TEMPORARY TABLE IF NOT EXISTS invmp_piedra AS
       SELECT
-      SUM((saldo_anterior + cant_mov) * a_costo) AS importe
+      SUM((saldo_anterior + COALESCE(cant_mov, 0)) * COALESCE(a_costo, 0)) AS importe
       FROM movinv 
-      WHERE trim(grupo_metal) = ''
-      GROUP BY grupo_metal
+      WHERE trim(grupo_metal) = 'PIEDRA'
+      --GROUP BY grupo_metal
       ";
   $oSQL = $conn->prepare($sqlCmd);
   $oSQL->execute();
@@ -565,7 +589,7 @@ function InventarioMP(
 
   $numFilas = count($arrPIED);
   if ($numFilas > 0) {
-    $mp_mn = $arrPIED[0]["importe"];
+    $mp_mn = floatval($arrPIED[0]["importe"]);
   }
 
   $numFilas = count($arrMP);
@@ -573,11 +597,11 @@ function InventarioMP(
     foreach ($arrMP as $itm) {
       switch ($itm["grupo_metal"]) {
         case 'ORO':
-          $mp_oro = $itm["gramos"];
+          $mp_oro = floatval($itm["gramos"]);
           $mp_oro_conv = round($itm["gramos"] * $TipoCambioORO, 2);
           break;
         case 'PLATA':
-          $mp_plata = $itm["gramos"];
+          $mp_plata = floatval($itm["gramos"]);
           $mp_plata_conv = round($itm["gramos"] * $TipoCambioPLATA, 2);
           break;
       }
@@ -596,7 +620,7 @@ function InventarioMP(
 }
 
 /**
- * Obtiene datos para el rubro "Inventario MP"
+ * Obtiene datos para el rubro "Inventario PT"
  */
 function InventarioPT(
   pdo $conn,
