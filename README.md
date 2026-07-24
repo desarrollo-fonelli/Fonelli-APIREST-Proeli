@@ -4,6 +4,11 @@
 Este proyecto incluye los servicios (endpoints) que se consumen por la aplicación web de Fonelli que presenta información de las operaciones de venta y cobranza, cuyos usuarios son clientes y ejecutivos de venta.
 
 ---
+### v2.18.5 | 24.07.2026 | Consulta Directiva: ESTADO DE RESULTADOS
+#### Cambios:
+1. Se ajustan detalles de presentación solicitados por Director General
+
+---
 ### v2.18.4 | 22.07.2026 | Consulta Directiva: ESTADO DE RESULTADOS
 #### Cambios:
 1. Se crean rutinas para obtener los diversos rubros incluidos en el reporte.

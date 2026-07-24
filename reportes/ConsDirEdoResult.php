@@ -242,12 +242,15 @@ function SelectData($FechaDesde, $FechaHasta)
     # Gastos de Fabricación               ----------------------------
     GastosFabricac($conn, $FechaDesde, $FechaHasta);
 
+    # Fila para Utilidad Bruta: ventas menos costos y gastos directos 
+    UtilidadBruta($conn);
+
     # Gastos Operativos, de "prueba" y de importacion  ---------------
     GastosOpera($conn, $FechaDesde, $FechaHasta);
     GastosPrueba($conn, $FechaDesde, $FechaHasta);
     GastosImportac($conn, $FechaDesde, $FechaHasta);
 
-    # Fila para Utilidad Neta
+    # Fila para Utilidad Neta: Utilidad Bruta menos gastos indirectos
     UtilidadNeta($conn);
 
     # Resumen con datos que se van a presentar
@@ -795,7 +798,7 @@ function GastosOpera(PDO $conn, string $FechaDesde, string $FechaHasta)
 
   $sqlCmd = "INSERT INTO resumen (ord_present, seccion, secc_descr, 
     signo_contable, rubro, interno, externo, total_fila, porc_vta) 
-    VALUES (4, 'GastIndir', 'Gastos indirectos', -1, 'Gastos Operativos', 
+    VALUES (5, 'GastIndir', 'Gastos indirectos', -1, 'Gastos Operativos', 
     :importe_int, :importe_ext, :totalFila, :porcVta)
   ";
   $oSQL = $conn->prepare($sqlCmd);
@@ -847,7 +850,7 @@ function GastosPrueba(PDO $conn, string $FechaDesde, string $FechaHasta)
 
   $sqlCmd = "INSERT INTO resumen (ord_present, seccion, secc_descr, 
     signo_contable, rubro, interno, externo, total_fila, porc_vta) 
-    VALUES (4, 'GastIndir', 'Gastos indirectos', -1, 'Gastos Prueba', 
+    VALUES (5, 'GastIndir', 'Gastos indirectos', -1, 'Gastos Prueba', 
     :importe_int, :importe_ext, :totalFila, :porcVta)
   ";
   $oSQL = $conn->prepare($sqlCmd);
@@ -900,7 +903,7 @@ function GastosImportac(PDO $conn, string $FechaDesde, string $FechaHasta)
 
   $sqlCmd = "INSERT INTO resumen (ord_present, seccion, secc_descr, 
     signo_contable, rubro, interno, externo, total_fila, porc_vta) 
-    VALUES (4, 'GastIndir', 'Gastos indirectos', -1, 'Gastos Importacion', 
+    VALUES (5, 'GastIndir', 'Gastos indirectos', -1, 'Gastos Importacion', 
     :importe_int, :importe_ext, :totalFila, :porcVta)
   ";
   $oSQL = $conn->prepare($sqlCmd);
@@ -909,6 +912,70 @@ function GastosImportac(PDO $conn, string $FechaDesde, string $FechaHasta)
   $oSQL->bindParam(":totalFila", $totalFila);
   $oSQL->bindParam(":porcVta", $porcVta);
   $oSQL->execute();
+}
+
+/** ****************************************************************************
+ * Calcula Utilidad Bruta en base a filas agregadas anteriormente
+ * @param PDO $conn
+ */
+function UtilidadBruta(PDO $conn)
+{
+
+  # El signo contable se usa para indicar si el importe se suma o resta 
+  # al total que se está calculando
+  $sqlCmd = "SELECT 
+      SUM(interno * signo_contable) AS interno,
+      SUM(externo * signo_contable) AS externo,
+      SUM(total_fila * signo_contable ) AS total_fila
+    FROM resumen
+    WHERE TRIM(seccion) IN('Vtas', 'CostDirec', 'GastDirec')
+    ";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->execute();
+  $arrUtilBruta = $oSQL->fetchall(PDO::FETCH_ASSOC);
+
+  # Agrega registro a la tabla que se envia al frontend
+  # ----------------------------------------------------------------------------
+  $importeInt  = 0.00;
+  $importeExt  = 0.00;
+  $totalFila   = 0.00;
+  $porcVta     = 0.00;
+
+  if ($arrUtilBruta) {
+    $importeInt = $arrUtilBruta[0]["interno"];
+    $importeExt = $arrUtilBruta[0]["externo"];
+    $totalFila = $arrUtilBruta[0]["total_fila"];
+  }
+
+  $sqlCmd = "INSERT INTO resumen (ord_present, seccion, secc_descr, 
+    signo_contable, rubro, interno, externo, total_fila, porc_vta) 
+    VALUES (4, 'UtilBr', 'Utilidad Bruta', 1, 'Utilidad Bruta', 
+    :importe_int, :importe_ext, :totalFila, :porcVta)
+  ";
+  $oSQL = $conn->prepare($sqlCmd);
+  $oSQL->bindParam(":importe_int", $importeInt);
+  $oSQL->bindParam(":importe_ext", $importeExt);
+  $oSQL->bindParam(":totalFila", $totalFila);
+  $oSQL->bindParam(":porcVta", $porcVta);
+  $oSQL->execute();
+
+
+  // # DEBUG -------------------------------------
+  // $msg = json_encode($arrUtilBruta, JSON_PRETTY_PRINT);
+  // file_put_contents('debug.log', "[" . date('H:i:s') . "] " . $msg . PHP_EOL, FILE_APPEND);
+  // # DEBUG END ---------------------------------
+  // exit;
+
+  // # DEBUG -------------------------------------
+  // $sqlCmd = "SELECT * FROM gasfab_pt";
+  // $oSQL = $conn->prepare($sqlCmd);
+  // $oSQL->execute();
+  // $resultDebug = $oSQL->fetchAll(PDO::FETCH_ASSOC);
+  // $msg = json_encode($resultDebug, JSON_PRETTY_PRINT);
+  // file_put_contents('debug.log', "[" . date('H:i:s') . "] " . $msg . PHP_EOL, FILE_APPEND);
+  // # DEBUG END ---------------------------------
+  // exit;
+
 }
 
 /** ****************************************************************************
@@ -944,7 +1011,7 @@ function UtilidadNeta(PDO $conn)
 
   $sqlCmd = "INSERT INTO resumen (ord_present, seccion, secc_descr, 
     signo_contable, rubro, interno, externo, total_fila, porc_vta) 
-    VALUES (5, 'Utild', 'Utilidad Neta', 1, 'Utilidad Neta', 
+    VALUES (7, 'Utild', 'Utilidad Neta', 1, 'Utilidad Neta', 
     :importe_int, :importe_ext, :totalFila, :porcVta)
   ";
   $oSQL = $conn->prepare($sqlCmd);
@@ -953,25 +1020,6 @@ function UtilidadNeta(PDO $conn)
   $oSQL->bindParam(":totalFila", $totalFila);
   $oSQL->bindParam(":porcVta", $porcVta);
   $oSQL->execute();
-
-
-  // # DEBUG -------------------------------------
-  // $msg = json_encode($arrGasComis, JSON_PRETTY_PRINT);
-  // file_put_contents('debug.log', "[" . date('H:i:s') . "] " . $msg . PHP_EOL, FILE_APPEND);
-  // # DEBUG END ---------------------------------
-  // exit;
-
-  // # DEBUG -------------------------------------
-  // $sqlCmd = "SELECT * FROM gasfab_pt";
-  // $oSQL = $conn->prepare($sqlCmd);
-  // $oSQL->execute();
-  // $resultDebug = $oSQL->fetchAll(PDO::FETCH_ASSOC);
-  // $msg = json_encode($resultDebug, JSON_PRETTY_PRINT);
-  // file_put_contents('debug.log', "[" . date('H:i:s') . "] " . $msg . PHP_EOL, FILE_APPEND);
-  // # DEBUG END ---------------------------------
-  // exit;
-
-
 }
 
 /** ****************************************************************************
